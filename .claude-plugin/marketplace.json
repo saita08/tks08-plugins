@@ -1,0 +1,13 @@
+{
+  "name": "tks08-plugins",
+  "owner": {
+    "name": "tks08"
+  },
+  "plugins": [
+    {
+      "name": "my-mcp-servers",
+      "source": "./plugins/my-mcp-servers",
+      "description": "Frequently used MCP servers collection"
+    }
+  ]
+}
