@@ -1,0 +1,5 @@
+{
+  "name": "gas-deploy",
+  "description": "Google Apps Script deployment management with clasp. Push code, list deployments, and update existing deployments.",
+  "version": "1.0.0"
+}

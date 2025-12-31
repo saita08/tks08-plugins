@@ -8,6 +8,11 @@
       "name": "my-mcp-servers",
       "source": "./plugins/my-mcp-servers",
       "description": "Frequently used MCP servers collection"
+    },
+    {
+      "name": "gas-deploy",
+      "source": "./plugins/gas-deploy",
+      "description": "Google Apps Script deployment management with clasp"
     }
   ]
 }
