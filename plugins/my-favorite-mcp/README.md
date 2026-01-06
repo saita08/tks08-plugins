@@ -1,4 +1,4 @@
-# my-mcp-servers
+# my-favorite-mcp
 
 よく使う MCP サーバーをまとめたプラグインです。
 
@@ -6,15 +6,15 @@
 
 ## 含まれるサーバー
 
-| Server | 用途 |
-|--------|------|
-| serena | シンボル単位でのコード解析・編集 |
-| context7 | ライブラリドキュメントの取得 |
+| Server   | 用途                             |
+| -------- | -------------------------------- |
+| serena   | シンボル単位でのコード解析・編集 |
+| context7 | ライブラリドキュメントの取得     |
 
 ## 使い方
 
 ```bash
-/plugin install my-mcp-servers
+/plugin install my-favorite-mcp
 ```
 
 その後、Claude Code を再起動してください。MCP サーバーが自動的に利用可能になります。

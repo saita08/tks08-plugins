@@ -12,7 +12,7 @@ Claude Code 用プラグイン集です。
 
 ```bash
 # マーケットプレイスを追加
-/plugin marketplace add https://github.com/tks08/tks08-plugins
+/plugin marketplace add https://github.com/saita08/tks08-plugins
 
 # 何があるか確認
 /plugin list

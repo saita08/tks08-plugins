@@ -5,8 +5,8 @@
   },
   "plugins": [
     {
-      "name": "my-mcp-servers",
-      "source": "./plugins/my-mcp-servers",
+      "name": "my-favorite-mcp",
+      "source": "./plugins/my-favorite-mcp",
       "description": "Frequently used MCP servers collection"
     },
     {
