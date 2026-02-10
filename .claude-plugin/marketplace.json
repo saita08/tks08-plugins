@@ -13,6 +13,11 @@
       "name": "gas-deploy",
       "source": "./plugins/gas-deploy",
       "description": "Google Apps Script deployment management with clasp"
+    },
+    {
+      "name": "myrule-review",
+      "source": "./plugins/myrule-review",
+      "description": "Custom coding standards code review with local Japanese output"
     }
   ]
 }
