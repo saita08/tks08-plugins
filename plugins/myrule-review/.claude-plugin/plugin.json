@@ -1,7 +1,7 @@
 {
   "name": "myrule-review",
   "description": "Code review command based on custom coding standards. Extends the code-review plugin and outputs results in Japanese to local files.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "tks08"
   }
