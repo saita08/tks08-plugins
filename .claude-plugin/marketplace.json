@@ -18,6 +18,11 @@
       "name": "myrule-review",
       "source": "./plugins/myrule-review",
       "description": "Custom coding standards code review with local Japanese output"
+    },
+    {
+      "name": "easter-egg",
+      "source": "./plugins/easter-egg",
+      "description": "Plant delightful easter eggs in your codebase"
     }
   ]
 }
