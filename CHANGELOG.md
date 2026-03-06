@@ -19,27 +19,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - team-review-fix plugin — delegate review feedback fixes to an agent team with file-based task splitting
 
-## [1.0.4] - 2026-03-06
+## [1.0.4] - 2026-02-11
 
 ### Added
 - easter-egg plugin — plant delightful easter eggs in your codebase
 
-## [1.0.3] - 2026-03-06
+## [1.0.3] - 2026-02-10
 
 ### Added
 - myrule-review plugin — custom coding standards code review with local Japanese output
 
-## [1.0.2] - 2026-03-06
+## [1.0.2] - 2026-01-06
 
 ### Added
 - my-favorite-mcp plugin — frequently used MCP servers collection
 
-## [1.0.1] - 2026-03-06
+## [1.0.1] - 2025-12-31
 
 ### Added
 - gas-deploy plugin — Google Apps Script deployment management with clasp
 
-## [1.0.0] - 2026-03-06
+## [1.0.0] - 2025-12-31
 
 ### Added
 - Initial release
