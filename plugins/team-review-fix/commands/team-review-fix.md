@@ -109,52 +109,30 @@ For each file group, create a task with TaskCreate and assign to a teammate via 
    - Commit after each fix with a descriptive commit message
    - Do NOT add Co-Authored-By trailer
 
-### 7. Review Fix Plans
+### 7. Review Plans and Monitor Progress (continuous loop)
 
-As teammates report their plans:
+Do NOT wait for all teammates to finish before reviewing. Process each teammate's output as soon as it arrives.
 
-For each plan, evaluate using the `team-fix-strategy` skill's plan evaluation criteria:
+Repeat the following loop until all teammates have completed implementation:
 
-**Approve** if the plan addresses root causes:
-- Fixes the source of the problem
-- Makes invalid states unrepresentable
-- Adds validation at appropriate boundaries
-- Would prevent similar bugs
-
-**Reject** if the plan is symptomatic:
-- Suppresses errors without fixing the source
-- Adds defensive checks where the real fix is upstream
-- Uses type assertions to bypass type errors
-- Adds comments explaining broken behavior instead of fixing it
-
-When rejecting:
-- Explain WHY the plan is symptomatic
-- Suggest the direction for a root-cause fix
-- Ask the teammate to revise and re-submit
-
-When approving:
-- Tell the teammate to proceed with implementation
-- Remind them to commit after each fix
+1. Check teammate progress using TaskGet and TaskOutput
+2. For each teammate that has reported a plan but not yet been reviewed:
+   - Evaluate using the `team-fix-strategy` skill's plan evaluation criteria
+   - **Approve** if the plan addresses root causes (fixes the source, makes invalid states unrepresentable, adds validation at boundaries, prevents similar bugs)
+   - **Reject** if the plan is symptomatic (suppresses errors, adds defensive checks where fix should be upstream, uses type assertions to bypass type errors, adds comments instead of fixing)
+   - When rejecting: explain WHY, suggest root-cause direction, ask to revise and re-submit
+   - When approving: tell the teammate to proceed with implementation, remind them to commit after each fix
+3. For teammates already implementing, monitor for completion or issues
+4. If a teammate encounters an unexpected issue: help them understand (you may read code for analysis), guide toward a solution, but do NOT write the fix yourself (C-1)
 
 ### 8. Self-Critique Checkpoint
 
-After all plans are reviewed, verify:
+After all teammates have completed, verify:
 - "Did I approve any plan without checking if it's symptomatic?" — If yes, re-review it. (C-7)
 - "Did any teammate start implementing before I approved?" — If yes, flag it. (C-8)
 - "Did I write any code myself?" — If yes, violates C-1. Undo and delegate.
 
-### 9. Monitor and Collect Results
-
-Wait for all teammates to complete their work.
-
-Use TaskGet and TaskOutput to track progress.
-
-If a teammate encounters an unexpected issue:
-- Help them understand the problem (you may read code for analysis)
-- Guide them toward a solution
-- But do NOT write the fix yourself (C-1)
-
-### 10. Report Completion
+### 9. Report Completion
 
 Once all teammates are done, summarize the results to the user:
 
