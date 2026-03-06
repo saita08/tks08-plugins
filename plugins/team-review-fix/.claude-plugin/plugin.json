@@ -1,0 +1,8 @@
+{
+  "name": "team-review-fix",
+  "description": "Delegate review feedback fixes to an agent team. Splits issues by file, each agent investigates, plans, and implements autonomously.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}
