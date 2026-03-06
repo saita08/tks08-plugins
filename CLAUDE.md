@@ -23,8 +23,7 @@ Claude Code プラグインリポジトリ。
 ## Updating a Plugin
 
 1. `plugin.json` の `version` を更新する（semver に従う）
-2. `CHANGELOG.md` に変更内容を記録する
-3. マージ後にリポジトリのタグを打つ（ルールは `docs/versioning.md` を参照）
+2. `CHANGELOG.md` に変更内容を記録する（タグとリリースは CI が自動作成）
 
 ## Rules
 
