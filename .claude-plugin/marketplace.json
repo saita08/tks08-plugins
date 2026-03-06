@@ -23,6 +23,11 @@
       "name": "easter-egg",
       "source": "./plugins/easter-egg",
       "description": "Plant delightful easter eggs in your codebase"
+    },
+    {
+      "name": "team-review-fix",
+      "source": "./plugins/team-review-fix",
+      "description": "Delegate review feedback fixes to an agent team with file-based task splitting"
     }
   ]
 }
