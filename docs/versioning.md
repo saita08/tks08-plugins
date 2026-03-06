@@ -25,11 +25,15 @@ This repository follows [Semantic Versioning](https://semver.org/) with the rule
 - Breaking changes to the marketplace or plugin format
 - Changes that require users to reinstall or reconfigure plugins
 
-## Tagging
+## Tagging and Release
 
-- Every release gets a git tag in the format `vMAJOR.MINOR.PATCH`
-- Tags are created on the main branch after merging
-- All changes are recorded in `CHANGELOG.md` using [Keep a Changelog](https://keepachangelog.com/) format
+Tags and GitHub Releases are created automatically by CI (`.github/workflows/release.yml`).
+
+When `CHANGELOG.md` is updated on main, CI extracts the latest version and:
+1. Creates a git tag `vMAJOR.MINOR.PATCH`
+2. Creates a GitHub Release with the changelog section as release notes
+
+Manual tagging is not needed.
 
 ## Plugin-Level Versioning
 
