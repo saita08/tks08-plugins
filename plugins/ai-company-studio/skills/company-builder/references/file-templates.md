@@ -416,6 +416,40 @@ Recurring insights should be summarized in `shared/knowledge-base/`. Re-reading 
 - A 1-person department is not a department; wait until at least 2 people share a function
 - Department directories enable department-level meetings and delegated decision-making
 
+## Signs You're Ready for the Next Stage
+
+These are not tasks to do now. They are signals. When you notice them, it means the company has grown enough to need new structure.
+
+### "Quality is inconsistent"
+
+- Different employees produce noticeably different quality for similar tasks
+- You find yourself re-doing or heavily correcting deliverables
+- → Consider: defining explicit quality criteria per deliverable type in `standards/`
+
+### "I can't tell what's working"
+
+- You feel the company is busy but can't point to concrete outcomes
+- Owner asks "how's it going?" and you struggle to answer with specifics
+- → Consider: introducing simple output tracking (e.g., a `docs/metrics.md` updated monthly)
+
+### "Sessions feel expensive for what they produce"
+
+- Long sessions with little tangible output
+- Employees being called in but contributing marginally
+- → Consider: reviewing who gets called per task, trimming unnecessary participants
+
+### "We keep re-learning the same things"
+
+- The same mistakes or discoveries repeat across sessions
+- Knowledge stays in meeting minutes that nobody re-reads
+- → Consider: building a `shared/knowledge-base/` and making it part of standup review
+
+### "The process doesn't match reality anymore"
+
+- Written policies describe how the company used to work, not how it works now
+- New patterns have emerged that aren't documented
+- → Consider: a quarterly policy review cycle
+
 ## Monthly Maintenance
 
 1. **File inventory**: Archive old files
