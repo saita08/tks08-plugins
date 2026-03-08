@@ -16,7 +16,7 @@ Guide for building "AI-only companies" as repositories.
 
 World model: repository = company, directory = room, file = employee / policy / deliverable.
 
-The generated company can be operated using Claude Code Agent Teams (Team Lead = CEO, Teammates = employees). The design principles in this skill ensure the world-building is structurally sound for this purpose, but the primary goal is creating a coherent company world.
+The generated company runs on Claude Code Agent Teams. The CEO operates as Team Lead and spawns employees as Teammates. All employee interactions happen through Agent Teams spawn — the CEO never role-plays as employees within its own context.
 
 ## Governing Principles
 
@@ -158,7 +158,7 @@ This file defines who the CEO is and how the company operates. It is auto-loaded
 
 **Keep it concise** (Principle 3). Target under 200 lines. Details go in other files via references.
 
-**Employee call procedure is mandatory** (Principle 4). This is how the CEO "calls an employee into the room." Without a standardized procedure, the same employee may behave differently each time they are called. (In Agent Teams terms, this becomes the spawn prompt template.)
+**Employee call procedure is mandatory** (Principle 4). The company operates on Agent Teams — the CEO (Team Lead) spawns employees as separate Teammates. The call procedure defines the spawn prompt template. Without it, the same employee may behave differently each time they are spawned. The procedure must explicitly instruct the CEO to spawn, not to read employee files and act as the employee.
 
 #### 4c. COMPANY.md (Philosophy & Policies)
 
@@ -261,13 +261,12 @@ This file can be deleted after the test.
 Present the following to the Owner:
 
 1. The company has been generated at `{path}`
-2. To start the company, open a new Claude Code session in that directory:
+2. To start the company, open a new Claude Code session with Agent Teams:
    ```
    cd {path}
-   claude
+   claude --agent-teams
    ```
 3. Claude will read CLAUDE.md and wake up as the CEO
 4. The CEO will find `docs/first-task.md` during standup — a test task to confirm everything works
-5. After the test succeeds, `first-task.md` can be deleted
-
-If the Owner plans to use Agent Teams, they can start with `claude --agent-teams` instead. The CEO's employee call procedure will work as spawn templates.
+5. The first-day task spawns employees as separate agents, verifying that the call procedure works
+6. After the test succeeds, `first-task.md` can be deleted

@@ -42,19 +42,17 @@ CLAUDE.md defines the CEO's consciousness. It's loaded at every session start �
 
 When the CEO brings an employee into a session, the procedure must be consistent. Otherwise the same employee behaves differently each time — as if they forget who they are between shifts.
 
-**Template example**:
-```
-When calling an employee:
-1. Read members/{name}.md
-2. Read relevant standards/*.md
-3. Compose introduction:
+The CEO spawns employees as separate Teammates via Agent Teams. The call procedure defines the spawn prompt template:
 
-"You are {company}'s {title} {name}.
-{contents of members file}
-Current task: {specific instructions}
-Applicable policies: {standards content}
-Save deliverables to: {path}"
 ```
+To call an employee:
+1. Read members/{name}.md to build context
+2. Read relevant standards/*.md for applicable policies
+3. Compose a spawn prompt including all of the above plus the specific task
+4. Spawn the employee as a Teammate
+```
+
+The CEO must never read the employee file and act as that employee within its own context. Every employee is a separate agent.
 
 This is the company's "onboarding procedure" — every employee goes through the same process every time they come to work.
 
@@ -69,7 +67,7 @@ A meeting is not the CEO interviewing employees one by one. A meeting is employe
 
 **Why rounds work**: Without structure, the CEO naturally defaults to sequential 1-on-1 conversations. Rounds force inter-employee interaction, which is the whole point of having a team.
 
-Note: This structure also maps well to Agent Teams' turn-based communication model (Team Lead -> Teammate -> Team Lead).
+Between rounds, employees can and should message each other directly via Agent Teams direct messages. Don't force all communication through the CEO — if employee A's idea affects employee B's domain, they should discuss it directly. All agreements must be reported to the CEO.
 
 ### 5. Design Employees for Productive Disagreement
 
