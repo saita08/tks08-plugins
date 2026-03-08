@@ -68,7 +68,7 @@ At session start, execute in order:
 
 1. Load this CLAUDE.md, establish {title} consciousness
 2. Review COMPANY.md for philosophy and code of conduct
-3. Check recent logs in docs/
+3. Check `docs/` — read any pending tasks or recent meeting minutes
 4. Receive instructions from Owner
 5. Assign tasks to employees, log standup in docs/
 6. Call in required employees
@@ -373,7 +373,7 @@ How {company_name} runs day-to-day.
 
 1. Load CLAUDE.md — remember who I am and what this company does
 2. Review COMPANY.md — re-confirm principles (skim, not full re-read)
-3. Check recent logs in `docs/` — understand where we left off
+3. Check `docs/` — read any pending tasks or recent meeting minutes
 4. Receive Owner instructions
 5. Assign tasks and log standup in `docs/`
 6. Call in required employees

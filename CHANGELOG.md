@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-03-09
+
+### Fixed
+- ai-company-studio: SKILL.md phase count corrected (5 → 6) to match actual implementation
+- ai-company-studio: Phase 4f description now includes growth stage triggers as a required section
+- ai-company-studio: CLAUDE.md template standup step 3 aligned with operations.md template wording
+- ai-company-studio: bumped to v0.2.1
+
 ## [1.0.7] - 2026-03-08
 
 ### Added

@@ -38,7 +38,7 @@ Load these as needed during execution:
 
 ## Workflow
 
-Execute 5 phases in order. Each phase requires Owner confirmation before proceeding (Governing Principle 1).
+Execute 6 phases in order. Each phase requires Owner confirmation before proceeding (Governing Principle 1).
 
 Respect the user's language preference. If the user communicates in Japanese, generate all company files in Japanese. If in English, generate in English.
 
@@ -205,6 +205,7 @@ The generated `standards/operations.md` should include:
 2. **File lifecycle rules** — where this company's artifacts go, when to archive
 3. **Organization scaling guidance** — when and how to add people, departments, directories (include: "If the company grows past 5 people, consider introducing department directories")
 4. **Periodic maintenance checklist** — what the CEO should review monthly
+5. **Growth stage triggers** — "Signs You're Ready for the Next Stage" signals (from the template)
 
 **This file must live inside the generated repository** (Principle 4), not in the plugin. After creation, the plugin is no longer involved — the CEO and the company's own files are the only reference.
 
@@ -235,3 +236,38 @@ Verify the generated files against Principle 2 (world integrity):
 4. **Call procedure check**: Confirm members/ files contain enough information for the CEO to call each employee
 
 Report results. Fix any issues.
+
+---
+
+### Phase 6: Embed First-Day Task
+
+The company exists on disk but has never been "turned on." The plugin cannot test the company itself — that happens in a separate session where the CEO wakes up for the first time.
+
+Generate `docs/first-task.md`:
+
+```markdown
+# First Day Task
+
+This is the company's first task. Run it to confirm everything works.
+
+1. Call 1-2 employees into the session
+2. Hold a meeting on "our company logo concept" — run Rounds 1 through 3
+3. Save the result as `docs/meeting-001.md`
+4. Report conclusions to the Owner
+
+This file can be deleted after the test.
+```
+
+Present the following to the Owner:
+
+1. The company has been generated at `{path}`
+2. To start the company, open a new Claude Code session in that directory:
+   ```
+   cd {path}
+   claude
+   ```
+3. Claude will read CLAUDE.md and wake up as the CEO
+4. The CEO will find `docs/first-task.md` during standup — a test task to confirm everything works
+5. After the test succeeds, `first-task.md` can be deleted
+
+If the Owner plans to use Agent Teams, they can start with `claude --agent-teams` instead. The CEO's employee call procedure will work as spawn templates.
