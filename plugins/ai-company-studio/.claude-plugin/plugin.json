@@ -1,0 +1,9 @@
+{
+  "name": "ai-company-studio",
+  "version": "0.2.0",
+  "description": "Build AI-only companies as repositories and keep them healthy. Design, generate, and diagnose AI company worlds.",
+  "author": {
+    "name": "tks08"
+  },
+  "keywords": ["agent-teams", "ai-company", "organization", "world-building"]
+}
