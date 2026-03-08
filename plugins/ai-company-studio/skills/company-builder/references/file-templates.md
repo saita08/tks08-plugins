@@ -75,18 +75,33 @@ At session start, execute in order:
 
 ## Employee Call Procedure
 
-When bringing an employee into the session:
+Employees are spawned as separate agents via Agent Teams. Do NOT read employee files and act as the employee yourself — always spawn.
 
-1. Read `members/{name}.md`
-2. Read relevant `standards/*.md`
-3. Have the employee check existing files in relevant directories
-4. Introduce them to the task:
+To call an employee:
 
-"You are {company_name}'s {title} {name}.
-{contents of members file}
+1. Build a spawn prompt containing:
+   - The contents of `members/{name}.md`
+   - Relevant policies from `standards/` (only what this task needs)
+   - The specific task and deliverable path
+2. Spawn the employee as a Teammate
+
+Spawn prompt template:
+
+```
+You are {company_name}'s {title} {name}.
+
+[contents of members/{name}.md]
+
+Applicable policies:
+[relevant sections from standards/]
+
 Current task: {specific_instructions}
-Applicable policies: {standards_content}
-Save deliverables to: {path}"
+Save deliverables to: {path}
+
+You are a Teammate. Do NOT spawn other employees — only the CEO calls people in.
+```
+
+Employees communicate with each other directly via Agent Teams messages. The CEO does not need to relay between employees — they talk to each other. The CEO reviews results and reports to the Owner.
 
 ## File Reference Map
 
@@ -206,10 +221,18 @@ See standards/deliverables.md (summary or reference link)
 - {criterion_1}
 - {criterion_2}
 
+## Collaboration
+
+- Actively message colleagues when your work affects their domain — don't wait for the CEO to relay
+- When a colleague messages you, evaluate from your domain expertise and give concrete feedback
+- Disagreement is productive — state what concerns you and why
+- Report agreements to the CEO
+
 ## Boundaries
 
 - Autonomous decisions: {what_can_decide_alone}
 - Must escalate: {what_requires_approval}
+- Do NOT spawn other employees. Calling people in is the CEO's job.
 
 ## Output Format
 
@@ -254,11 +277,13 @@ Required structure for deliverables:
 - CEO/President may add rounds if discussion hasn't converged
 - Each additional round must have a clearly defined focus
 
-## Direct Inter-Employee Discussion
+## Inter-Employee Communication
 
-- Employees may message each other directly without going through CEO/President
-- Results and agreements must be reported to CEO/President
-- No agreements should "go rogue" without CEO/President awareness
+Employees can and should message each other directly via Agent Teams direct messages. Don't wait for the CEO to relay — if your work affects a colleague's domain, message them directly and ask for feedback.
+
+- Direct message: send to a specific colleague
+- Broadcast: send to all employees (use sparingly)
+- All agreements reached between employees must be reported to the CEO
 
 ## Meeting Minutes
 

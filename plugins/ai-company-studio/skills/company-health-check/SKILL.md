@@ -53,10 +53,17 @@ Check that the company's file structure is consistent and complete.
 - File reference map in CLAUDE.md matches actual directory structure (no dead references, no unlisted directories)
 - ROOM.md exists in workspace directories (directories where work happens, not storage like `docs/` or `archive/`)
 
+**Agent Teams readiness checks:**
+- Employee call procedure in CLAUDE.md mentions spawn/Teammate (not just "read and introduce")
+- Employee call procedure explicitly prohibits the CEO from role-playing as employees
+- Each `members/*.md` file contains a Boundaries section with spawn restriction (employees don't call other employees)
+- Each `members/*.md` file contains a Collaboration section (employees actively communicate with colleagues)
+- `standards/meeting-rules.md` describes direct inter-employee messaging via Agent Teams
+
 **Status criteria:**
-- Healthy: All checks pass
-- Warning: Minor mismatches (e.g., 1 unlisted directory)
-- Concern: Missing core files or major inconsistencies
+- Healthy: All checks pass, including Agent Teams readiness
+- Warning: Minor mismatches (e.g., 1 unlisted directory) or Agent Teams readiness partially met
+- Concern: Missing core files, major inconsistencies, or employee call procedure suggests single-session role-play
 
 ---
 

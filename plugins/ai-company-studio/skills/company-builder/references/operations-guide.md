@@ -157,7 +157,7 @@ Check if each employee's `members/{name}.md` defines an "Output Format" section.
 
 - Verify CLAUDE.md is under 200 lines
 - Confirm old files are being archived
-- Check that employee calls don't load unnecessary files
+- Check that spawn prompts don't include unnecessary files
 
 ### Too many / too few Owner confirmations
 

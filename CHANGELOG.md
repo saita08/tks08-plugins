@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.9] - 2026-03-09
+
+### Changed
+- ai-company-studio: Agent Teams is now the assumed runtime (CEO = Team Lead, employees = Teammates)
+- ai-company-studio: Employee Call Procedure rewritten as spawn prompt template (CEO must not role-play as employees)
+- ai-company-studio: inter-employee communication uses Agent Teams direct messages (not CEO relay)
+- ai-company-studio: employee files include Collaboration section and spawn restriction in Boundaries
+- ai-company-studio: design-principles.md updated for Agent Teams spawn and direct messaging
+- ai-company-studio: health check category 1 now includes Agent Teams readiness checks
+- ai-company-studio: startup command changed to `claude --agent-teams`
+- ai-company-studio: bumped to v0.3.0
+
 ## [1.0.8] - 2026-03-09
 
 ### Fixed
