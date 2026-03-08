@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - ai-company-studio: growth stage triggers in operations.md template ("Signs You're Ready for the Next Stage")
 
 ### Changed
+- ai-company-studio: governing principles integrated into both skills as constitutional AI behavior (replaces separate Prohibitions sections)
 - ai-company-studio: bumped to v0.2.0
 
 ## [1.0.7] - 2026-03-08

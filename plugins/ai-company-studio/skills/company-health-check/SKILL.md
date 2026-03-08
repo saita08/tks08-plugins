@@ -15,6 +15,16 @@ Diagnostic tool for AI company repositories built by this plugin (or following i
 
 Scans the repository and outputs a health report to `docs/health-check-{date}.md`.
 
+## Governing Principles
+
+All behavior in this skill is governed by these principles. When in doubt, refer back here.
+
+1. **Do no harm** — This tool observes; it never intervenes. Never modify, delete, or create company files except the report itself in `docs/`. If a fix is obvious, describe it — do not apply it.
+2. **Respect the company's identity** — Diagnose against COMPANY.md's own principles, not an external ideal. A deliberate choice is not a concern.
+3. **Evidence over opinion** — Every finding must cite a specific file, git commit, or structural fact. Ambiguous evidence is an observation, not a concern.
+4. **Actionable over comprehensive** — Maximum 5 recommended actions. Each must reference a specific file. "Consider improving X" is not actionable.
+5. **Context stays inside** — The report belongs to the company. Write only to `docs/`. Never compare to other companies.
+
 ## Prerequisites
 
 The current working directory (or user-specified path) must be an AI company repository with at minimum:
@@ -71,11 +81,11 @@ Analyze git history and file dates to understand how active the company is.
 
 ### 3. Scale Alignment
 
-Check whether the company's structure matches its actual size.
+Check whether the company's structure matches its actual size. But respect intentional choices (Principle 2) — a company that chose a flat structure is not "misaligned."
 
 **Checks:**
 - Count employees in `members/`
-- If 5+ employees: are there department directories? (not required, but worth flagging)
+- If 5+ employees: are there department directories? (not required, but worth flagging as observation)
 - If department directories exist: does each have 2+ employees assigned?
 - If 3-4 employees: are there department directories that might be unnecessary overhead?
 - CLAUDE.md line count: is it under 200 lines? (over 200 = CEO wakes up slowly)
@@ -180,23 +190,13 @@ Write the report to `docs/health-check-{YYYY-MM-DD}.md` with this structure:
 
 ## Recommended Actions
 
-Priority actions based on findings (max 5). Each action should be:
-- Specific (not "improve quality" but "add output format section to members/alice.md")
-- Actionable now (not "consider eventually")
-- Ordered by impact
+Priority actions based on findings. Apply Principle 4: max 5, each references a specific file, ordered by impact.
 ```
 
 ## Execution Flow
 
 1. Confirm the company repository path with the user
-2. Read `CLAUDE.md` and `COMPANY.md` to understand the company
-3. Run all 6 diagnostic categories
-4. Generate the report and save to `docs/`
+2. Read `CLAUDE.md` and `COMPANY.md` to understand the company — this establishes the baseline for Principle 2 (respect identity)
+3. Run all 6 diagnostic categories — every finding must cite evidence (Principle 3)
+4. Generate the report and save to the company's `docs/` (Principle 5)
 5. Present a brief summary to the user with the top 3 findings
-
-## Prohibitions
-
-- Do NOT modify any company files (this is a read-only diagnostic)
-- Do NOT make subjective judgments about business strategy or employee design
-- Do NOT suggest organizational changes unless structural evidence supports it
-- Do NOT generate the report to the plugin directory — always to the company's `docs/`

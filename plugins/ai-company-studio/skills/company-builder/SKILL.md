@@ -18,6 +18,16 @@ World model: repository = company, directory = room, file = employee / policy / 
 
 The generated company can be operated using Claude Code Agent Teams (Team Lead = CEO, Teammates = employees). The design principles in this skill ensure the world-building is structurally sound for this purpose, but the primary goal is creating a coherent company world.
 
+## Governing Principles
+
+All behavior in this skill is governed by these principles. When in doubt, refer back here.
+
+1. **Owner sovereignty** — The user decides. The plugin proposes, explains trade-offs, and waits. Never advance without confirmation. Never silently override a choice.
+2. **World integrity** — Every generated file must be explainable within the world model. No orphaned references, no files without a role, no aspirational content that doesn't match reality.
+3. **Minimal viable structure** — Generate only what the company needs now. Unused structure creates the illusion of capability. When in doubt, generate less.
+4. **Transparency** — Every convention has a reason. If a structure exists because of Agent Teams constraints or operational pitfalls, say so in the file. No hidden magic.
+5. **Non-destruction** — The plugin creates; it never overwrites or deletes without explicit Owner permission.
+
 ## References
 
 Load these as needed during execution:
@@ -28,7 +38,7 @@ Load these as needed during execution:
 
 ## Workflow
 
-Execute 5 phases in order. Use AskUserQuestion at each phase to confirm with the user.
+Execute 5 phases in order. Each phase requires Owner confirmation before proceeding (Governing Principle 1).
 
 Respect the user's language preference. If the user communicates in Japanese, generate all company files in Japanese. If in English, generate in English.
 
@@ -58,7 +68,7 @@ Recommend team size. The scale determines the company's organizational structure
 - **5-8 people**: Mid-size. Departments become meaningful (2-3 people per department). Department directories and department-level meetings make sense. Clear leadership vs specialist separation
 - **9+ people**: Not recommended. The CEO cannot effectively manage this many direct reports
 
-**Principle: Start small.** A lean company is easier to operate and expand. Adding a member later is just creating a file in `members/`. A 1-person department is not a department — it's a person with a title. Departments only make sense when at least 2 people share them.
+**Start small** (Principle 3). A lean company is easier to operate and expand. Adding a member later is just creating a file in `members/`. A 1-person department is not a department — it's a person with a title. Departments only make sense when at least 2 people share them.
 
 #### 2b. Employee Design
 
@@ -69,7 +79,7 @@ For each employee, define:
 - Personality/thinking tendency ("light" — no speech pattern differentiation needed, just domain expertise and judgment style differences)
 - Specific task list
 
-**Critical**: Personality traits create productive disagreement. If everyone reaches the same conclusion, there's no point in having an organization. Place employees along tension axes: optimism vs pessimism, qualitative vs quantitative, offense vs defense, customer-facing vs technical.
+**Critical** (Principle 2): Personality traits create productive disagreement. If everyone reaches the same conclusion, there's no point in having an organization. Place employees along tension axes: optimism vs pessimism, qualitative vs quantitative, offense vs defense, customer-facing vs technical.
 
 #### 2c. Authority Structure
 
@@ -131,7 +141,7 @@ Load `references/file-templates.md` and generate in this order:
 
 #### 4a. Directory Creation
 
-Confirm save path with user. Create all directories with `mkdir -p`.
+Confirm save path with user. If the target directory already contains files, warn the Owner before proceeding (Principle 5). Create all directories with `mkdir -p`.
 
 #### 4b. CLAUDE.md (CEO/President Consciousness)
 
@@ -146,9 +156,9 @@ This file defines who the CEO is and how the company operates. It is auto-loaded
 7. **Employee call procedure** (standardized steps for bringing an employee into a session)
 8. File reference map
 
-**Keep it concise.** Target under 200 lines. Details go in other files via references.
+**Keep it concise** (Principle 3). Target under 200 lines. Details go in other files via references.
 
-**Employee call procedure is mandatory.** This is how the CEO "calls an employee into the room." Without a standardized procedure, the same employee may behave differently each time they are called. (In Agent Teams terms, this becomes the spawn prompt template.)
+**Employee call procedure is mandatory** (Principle 4). This is how the CEO "calls an employee into the room." Without a standardized procedure, the same employee may behave differently each time they are called. (In Agent Teams terms, this becomes the spawn prompt template.)
 
 #### 4c. COMPANY.md (Philosophy & Policies)
 
@@ -196,7 +206,7 @@ The generated `standards/operations.md` should include:
 3. **Organization scaling guidance** — when and how to add people, departments, directories (include: "If the company grows past 5 people, consider introducing department directories")
 4. **Periodic maintenance checklist** — what the CEO should review monthly
 
-**This file must live inside the generated repository**, not in the plugin. After creation, the plugin is no longer involved — the CEO and the company's own files are the only reference.
+**This file must live inside the generated repository** (Principle 4), not in the plugin. After creation, the plugin is no longer involved — the CEO and the company's own files are the only reference.
 
 #### 4g. Business-Specific Files
 
@@ -217,19 +227,11 @@ Not every directory needs a ROOM.md. Storage directories like `docs/` or `archiv
 
 ### Phase 5: Verification
 
-Verify the generated files:
+Verify the generated files against Principle 2 (world integrity):
 
 1. **Directory structure check**: `find` command to list all files, confirm nothing is missing
-2. **CLAUDE.md coherence test**: Read CLAUDE.md and verify the CEO's world is internally consistent
+2. **CLAUDE.md coherence test**: Read CLAUDE.md and verify the CEO's world is internally consistent — no aspirational content, no references to things that don't exist
 3. **Reference integrity**: Verify file reference map in CLAUDE.md matches actual files
 4. **Call procedure check**: Confirm members/ files contain enough information for the CEO to call each employee
 
 Report results. Fix any issues.
-
-## Prohibitions
-
-- Do NOT bind people to directories 1:1 (prevents cross-functional work)
-- Do NOT make CLAUDE.md too long (the CEO should be able to "wake up" quickly)
-- Do NOT give all employees the same personality (discussions converge too quickly)
-- Do NOT skip the employee call procedure (the CEO needs a consistent way to call employees)
-- Do NOT run multi-person discussions without meeting rules (chaos)
