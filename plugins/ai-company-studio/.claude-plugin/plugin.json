@@ -1,7 +1,7 @@
 {
   "name": "ai-company-studio",
-  "version": "0.1.0",
-  "description": "Build AI-only companies as repositories for Claude Code Agent Teams. Interactively design the world and generate all directories and files.",
+  "version": "0.2.0",
+  "description": "Build AI-only companies as repositories and keep them healthy. Design, generate, and diagnose AI company worlds.",
   "author": {
     "name": "tks08"
   },
