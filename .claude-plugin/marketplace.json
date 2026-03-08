@@ -28,6 +28,11 @@
       "name": "team-review-fix",
       "source": "./plugins/team-review-fix",
       "description": "Delegate review feedback fixes to an agent team with file-based task splitting"
+    },
+    {
+      "name": "ai-company-studio",
+      "source": "./plugins/ai-company-studio",
+      "description": "Design and generate AI-only companies as repositories"
     }
   ]
 }

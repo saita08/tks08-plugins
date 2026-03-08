@@ -2,27 +2,29 @@
 name: company-builder
 description: >
   This skill should be used when the user asks to "create an AI company",
-  "build an Agent Teams organization", "set up a virtual company",
-  "make a company with AI agents", or wants to design and generate
-  a repository structure that functions as an AI-only company for
-  Claude Code Agent Teams. Provides a guided workflow from concept
-  design through file generation.
+  "build a virtual company", "set up a company with AI employees",
+  "make an AI-only organization", or wants to design and generate
+  a repository structure that functions as an AI-only company.
+  Provides a guided workflow from world-building concept design
+  through file generation.
 version: 0.1.0
 ---
 
 # AI Company Builder
 
-Guide for building "AI-only companies" as repositories using Agent Teams.
+Guide for building "AI-only companies" as repositories.
 
 World model: repository = company, directory = room, file = employee / policy / deliverable.
+
+The generated company can be operated using Claude Code Agent Teams (Team Lead = CEO, Teammates = employees). The design principles in this skill ensure the world-building is structurally sound for this purpose, but the primary goal is creating a coherent company world.
 
 ## References
 
 Load these as needed during execution:
 
-- `references/design-principles.md` — Design principles and anti-patterns (lessons from real deployments)
+- `references/design-principles.md` — Design principles and anti-patterns for AI company world-building
 - `references/file-templates.md` — Templates for each file type with required fields
-- `references/operations-guide.md` — Post-build operations guide (standup, file lifecycle, spawn procedures)
+- `references/operations-guide.md` — Post-build guide for running the company across sessions
 
 ## Workflow
 
@@ -50,36 +52,36 @@ Confirm concept summary before proceeding.
 
 #### 2a. Scale
 
-Recommend based on Agent Teams constraints:
+Recommend team size. The scale determines the company's organizational structure:
 
-- **3-5 people**: Startup, small project. CEO + few specialists. Many concurrent roles
-- **6-8 people**: Mid-size. Department differentiation begins. C-Suite vs members
-- **9+ people**: Not recommended. Context overhead for Team Lead is too high
+- **3-4 people**: Startup. CEO + few specialists. No departments — everyone is one team. One person may cover multiple roles. Directory structure is flat (projects/ or task-based workspaces)
+- **5-8 people**: Mid-size. Departments become meaningful (2-3 people per department). Department directories and department-level meetings make sense. Clear leadership vs specialist separation
+- **9+ people**: Not recommended. The CEO cannot effectively manage this many direct reports
 
-**Principle: Start small.** Question scope before adding headcount. Adding a member later is just creating a file in `members/`.
+**Principle: Start small.** A lean company is easier to operate and expand. Adding a member later is just creating a file in `members/`. A 1-person department is not a department — it's a person with a title. Departments only make sense when at least 2 people share them.
 
 #### 2b. Employee Design
 
 For each employee, define:
 
-- Name (English names recommended for spawn identification)
+- Name (English names recommended for identification)
 - Title and domain
 - Personality/thinking tendency ("light" — no speech pattern differentiation needed, just domain expertise and judgment style differences)
 - Specific task list
 
-**Critical**: Personality traits are a device for "disagreement" in Agent Teams. If everyone reaches the same conclusion, there's no point in having an organization. Place employees along tension axes: optimism vs pessimism, qualitative vs quantitative, offense vs defense, customer-facing vs technical.
+**Critical**: Personality traits create productive disagreement. If everyone reaches the same conclusion, there's no point in having an organization. Place employees along tension axes: optimism vs pessimism, qualitative vs quantitative, offense vs defense, customer-facing vs technical.
 
 #### 2c. Authority Structure
 
 Use 3 layers as baseline:
 
 1. **Owner (user)**: Final decision-maker
-2. **CEO/President (Team Lead)**: Daily management, cross-department coordination, reporting to Owner
-3. **Employees (Teammates)**: Domain-specific work
+2. **CEO/President**: Daily management, cross-department coordination, reporting to Owner
+3. **Employees**: Domain-specific work
 
 #### 2d. Escalation Criteria
 
-Define what can be decided autonomously vs what requires Owner approval. Ambiguity here causes agents to either go rogue or block on every decision.
+Define what can be decided autonomously vs what requires Owner approval. Ambiguity here causes the company to either go rogue or stall on every decision.
 
 Present organization proposal and get approval.
 
@@ -93,7 +95,7 @@ Load `references/design-principles.md` and follow its principles.
 
 ```
 company-name/
-├── CLAUDE.md           # CEO/President consciousness (Team Lead bootstrap)
+├── CLAUDE.md           # CEO/President consciousness (loaded at session start)
 ├── COMPANY.md          # Company philosophy / code of conduct
 ├── members/            # Employee files (1 file per person)
 ├── standards/          # Internal policies (meeting rules, deliverables, hiring)
@@ -101,15 +103,23 @@ company-name/
 └── shared/             # Shared space (inbox, knowledge-base)
 ```
 
-#### Business-Specific Rooms
+#### Business-Specific Directories
 
-Add based on business type. Examples:
+Add based on business type AND company scale:
 
+**Small (3-4 people)** — No department directories. Use task-based or project-based workspaces:
 - Game studio: `projects/{title-name}/`
-- Investment advisory: `research/`, `strategy/`, `risk/`
-- Consulting: `clients/{client-name}/`, `deliverables/`
+- Consulting: `clients/{client-name}/`
+- General: organize by what the company produces, not by who produces it
 
-**Principle**: Do NOT bind people to rooms 1:1. Rooms are tied to functions, not people.
+**Mid-size (5-8 people)** — Department directories are appropriate when at least 2 people share a department:
+- Investment advisory: `research/` (2-3 analysts), `strategy/` (2 strategists)
+- Agency: `design/` (2 designers), `development/` (2 developers)
+- Each department directory can hold department-specific meeting minutes and deliverables
+
+**In both cases**: Employees are defined in `members/` and can work in any directory. Department membership is noted in employee files, but employees are not confined to their department's directory.
+
+**Principle**: Directories should be places where artifacts accumulate — whether organized by project, by department function, or by output type. Avoid creating a directory that only one person ever uses.
 
 Present directory structure and get approval.
 
@@ -125,7 +135,7 @@ Confirm save path with user. Create all directories with `mkdir -p`.
 
 #### 4b. CLAUDE.md (CEO/President Consciousness)
 
-Auto-loaded at Team Lead session start. Must include:
+This file defines who the CEO is and how the company operates. It is auto-loaded at session start. Must include:
 
 1. Self-awareness (who I am, what company, what role)
 2. Company summary (details -> COMPANY.md)
@@ -133,12 +143,12 @@ Auto-loaded at Team Lead session start. Must include:
 4. Leadership principles
 5. Escalation criteria
 6. Standup (morning briefing) procedure
-7. **Spawn template** (specific steps for launching Teammates)
+7. **Employee call procedure** (standardized steps for bringing an employee into a session)
 8. File reference map
 
 **Keep it concise.** Target under 200 lines. Details go in other files via references.
 
-**Spawn template is mandatory.** Without it, each spawn uses a different prompt and employee behavior varies across sessions.
+**Employee call procedure is mandatory.** This is how the CEO "calls an employee into the room." Without a standardized procedure, the same employee may behave differently each time they are called. (In Agent Teams terms, this becomes the spawn prompt template.)
 
 #### 4c. COMPANY.md (Philosophy & Policies)
 
@@ -161,7 +171,7 @@ Create for all employees except CEO/President. Each file includes:
 5. Judgment criteria
 6. **Output format** (required structure for this employee's deliverables)
 
-**Output format is critical.** Without it, Teammate outputs are inconsistent and Team Lead integration cost increases.
+**Output format is critical.** Without it, employee outputs are inconsistent and the CEO's integration work increases.
 
 #### 4e. standards/ (Internal Policies)
 
@@ -173,11 +183,24 @@ Create at minimum:
 
 Add more based on business type.
 
-**Round-based meeting rules are strongly recommended.** This pattern matches Agent Teams' turn-based communication model (Team Lead -> Teammate -> Team Lead) and is proven in production.
+**Round-based meeting rules are strongly recommended.** When the CEO facilitates a meeting, a round structure (Round 1: ideas, Round 2: cross-feedback, Round 3: integration) ensures that employees discuss with each other, not just report to the CEO individually.
 
-#### 4f. Business-Specific Files
+#### 4f. standards/operations.md (Operations Guide)
 
-Create ROOM.md for business-specific directories. Each ROOM.md includes:
+Generate a company-specific operations guide. Load `references/operations-guide.md` as the source of general knowledge, then tailor it to this company's scale, business type, and structure.
+
+The generated `standards/operations.md` should include:
+
+1. **Standup procedure** — adapted to this company's specific directories and roles
+2. **File lifecycle rules** — where this company's artifacts go, when to archive
+3. **Organization scaling guidance** — when and how to add people, departments, directories (include: "If the company grows past 5 people, consider introducing department directories")
+4. **Periodic maintenance checklist** — what the CEO should review monthly
+
+**This file must live inside the generated repository**, not in the plugin. After creation, the plugin is no longer involved — the CEO and the company's own files are the only reference.
+
+#### 4g. Business-Specific Files
+
+Create ROOM.md for business-specific directories if they need functional definition. Each ROOM.md includes:
 
 1. Room name
 2. Mission (1-2 sentences)
@@ -188,6 +211,8 @@ Create ROOM.md for business-specific directories. Each ROOM.md includes:
 
 **Do NOT put personality information in ROOM.md.** People info belongs in members/.
 
+Not every directory needs a ROOM.md. Storage directories like `docs/` or `archive/` don't need one.
+
 ---
 
 ### Phase 5: Verification
@@ -195,18 +220,16 @@ Create ROOM.md for business-specific directories. Each ROOM.md includes:
 Verify the generated files:
 
 1. **Directory structure check**: `find` command to list all files, confirm nothing is missing
-2. **CLAUDE.md bootstrap test**: Read CLAUDE.md and self-check if CEO/President behavior is coherent
+2. **CLAUDE.md coherence test**: Read CLAUDE.md and verify the CEO's world is internally consistent
 3. **Reference integrity**: Verify file reference map in CLAUDE.md matches actual files
-4. **Spawn template check**: Confirm members/ files are in a format that works with spawn prompts
+4. **Call procedure check**: Confirm members/ files contain enough information for the CEO to call each employee
 
 Report results. Fix any issues.
 
-Finally, inform the user about `references/operations-guide.md` for post-build operations.
-
 ## Prohibitions
 
-- Do NOT bind people to rooms 1:1 (prevents cross-department work)
-- Do NOT make CLAUDE.md too long (increases boot cost)
+- Do NOT bind people to directories 1:1 (prevents cross-functional work)
+- Do NOT make CLAUDE.md too long (the CEO should be able to "wake up" quickly)
 - Do NOT give all employees the same personality (discussions converge too quickly)
-- Do NOT skip the spawn template (reproducibility is lost)
+- Do NOT skip the employee call procedure (the CEO needs a consistent way to call employees)
 - Do NOT run multi-person discussions without meeting rules (chaos)

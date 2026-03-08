@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-03-08
+
+### Added
+- ai-company-studio plugin — design and generate AI-only companies as repositories
+
 ## [1.0.6] - 2026-03-06
 
 ### Changed

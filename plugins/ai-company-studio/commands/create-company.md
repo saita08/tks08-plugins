@@ -1,5 +1,5 @@
 ---
-description: Design an AI company and build an Agent Teams repository
+description: Design an AI company and generate its repository
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, TodoWrite, WebSearch
 ---
 

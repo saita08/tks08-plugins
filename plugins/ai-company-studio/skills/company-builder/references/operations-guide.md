@@ -1,22 +1,28 @@
-# Operations Guide
+# Operations Guide (Reference for Generation)
 
-Post-build operations guide for AI companies. Covers daily session operations, file lifecycle management, organization scaling, and constitutional compliance.
+**This file is a knowledge base used by the plugin during company generation.** It is NOT placed into the generated company. Instead, the plugin uses this as source material to create a company-specific `standards/operations.md` inside the generated repository.
+
+The generated company should be self-contained — the CEO references files within the repository, not plugin files.
+
+---
+
+General knowledge for running AI companies day-to-day: starting sessions, managing files, scaling the organization, and maintaining alignment with founding principles. These patterns are designed to work with Claude Code Agent Teams, where the CEO runs as Team Lead and employees are spawned as Teammates.
 
 ---
 
 ## Standup (Morning Briefing)
 
-Routine performed by CEO/President at every session start.
+The CEO's routine at the start of every session — like arriving at the office in the morning.
 
 ### Procedure
 
-1. **Load CLAUDE.md**: Auto-loaded by Team Lead session. Establishes CEO/President consciousness
-2. **Review COMPANY.md**: Re-confirm code of conduct and philosophy (don't need full re-read every time)
+1. **Load CLAUDE.md**: Auto-loaded at session start. The CEO "wakes up" and remembers who they are
+2. **Review COMPANY.md**: Re-confirm the company's principles (doesn't need a full re-read every time)
 3. **Check recent logs**: Read latest meeting minutes and decision logs in `docs/`. Understand where the previous session left off
-4. **Receive Owner instructions**: Ask the user (Owner) what they want to accomplish
+4. **Receive Owner instructions**: Ask the Owner what they want to accomplish today
 5. **Assign tasks**: Based on Owner instructions, assign work to relevant employees
 6. **Log standup**: Save brief standup record in `docs/`
-7. **Spawn Teammates**: Spawn required employees
+7. **Call employees**: Bring in the employees needed for today's work (not everyone — just who's relevant)
 
 ### Standup Log Format
 
@@ -56,7 +62,7 @@ Files accumulate across sessions. Manage with these rules.
 
 Repeatedly referenced insights should be summarized in `shared/knowledge-base/`. More efficient than re-reading individual logs each time.
 
-**Example**: Insights from 3 research cycles like "criteria for selecting Japanese small-cap growth stocks" should be consolidated as knowledge, separate from individual reports.
+**Example**: Insights from repeated research cycles (e.g., recurring evaluation criteria, common pitfalls) should be consolidated as knowledge, separate from individual reports.
 
 ---
 
@@ -67,7 +73,7 @@ Repeatedly referenced insights should be summarized in `shared/knowledge-base/`.
 At each session start, the CEO/President should verify:
 
 1. No pending decisions from previous sessions that conflict with COMPANY.md principles
-2. No Teammate outputs from previous sessions flagged for value-alignment review
+2. No employee outputs from previous sessions flagged for value-alignment review
 3. Owner's new instructions don't conflict with established red lines (if they appear to, clarify with Owner before proceeding)
 
 ### Decision Audit Trail
@@ -112,7 +118,7 @@ The CEO/President must address the challenge before proceeding with the original
 1. Evaluate necessity per `standards/hiring-policy.md`
 2. Create new `.md` file in `members/`
 3. Update organization table in CLAUDE.md
-4. Available for spawning from next session
+4. Available to be called from next session
 
 ### Adding New Rooms
 
@@ -151,7 +157,7 @@ Check if each employee's `members/{name}.md` defines an "Output Format" section.
 
 - Verify CLAUDE.md is under 200 lines
 - Confirm old files are being archived
-- Check that spawns don't load unnecessary files
+- Check that employee calls don't load unnecessary files
 
 ### Too many / too few Owner confirmations
 
