@@ -42,17 +42,15 @@ CLAUDE.md defines the CEO's consciousness. It's loaded at every session start �
 
 When the CEO brings an employee into a session, the procedure must be consistent. Otherwise the same employee behaves differently each time — as if they forget who they are between shifts.
 
-The CEO spawns employees as separate Teammates via Agent Teams. The call procedure defines the spawn prompt template:
+The CEO spawns employees as Teammates via Agent Teams (TeamCreate + Agent spawn with team_name). The call procedure defines the spawn prompt template:
 
 ```
 To call an employee:
 1. Read members/{name}.md to build context
 2. Read relevant standards/*.md for applicable policies
 3. Compose a spawn prompt including all of the above plus the specific task
-4. Spawn the employee as a Teammate
+4. Spawn the employee as a Teammate via Agent Teams
 ```
-
-The CEO must never read the employee file and act as that employee within its own context. Every employee is a separate agent.
 
 This is the company's "onboarding procedure" — every employee goes through the same process every time they come to work.
 
