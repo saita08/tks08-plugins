@@ -7,11 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.10] - 2026-03-09
+
+### Changed
+- ai-company-studio: Employee Call Procedure simplified — specifies Agent Teams (TeamCreate + Agent spawn with team_name) as the mechanism, prohibition lists removed in favor of correct procedure only
+- ai-company-studio: health check Agent Teams readiness checks simplified to verify correct mechanism is specified
+- ai-company-studio: removed redundant spawn restrictions from employee file templates and spawn prompts
+- ai-company-studio: bumped to v0.3.1
+
 ## [1.0.9] - 2026-03-09
 
 ### Changed
 - ai-company-studio: Agent Teams is now the assumed runtime (CEO = Team Lead, employees = Teammates)
-- ai-company-studio: Employee Call Procedure rewritten as spawn prompt template (CEO must not role-play as employees)
+- ai-company-studio: Employee Call Procedure rewritten as spawn prompt template — explicitly prohibits both CEO role-play and Agent tool subagent usage
 - ai-company-studio: inter-employee communication uses Agent Teams direct messages (not CEO relay)
 - ai-company-studio: employee files include Collaboration section and spawn restriction in Boundaries
 - ai-company-studio: design-principles.md updated for Agent Teams spawn and direct messaging

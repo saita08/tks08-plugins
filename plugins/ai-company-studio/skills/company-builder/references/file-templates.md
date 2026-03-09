@@ -75,17 +75,11 @@ At session start, execute in order:
 
 ## Employee Call Procedure
 
-Employees are spawned as separate agents via Agent Teams. Do NOT read employee files and act as the employee yourself — always spawn.
+To call an employee, use Agent Teams (TeamCreate + Agent spawn with team_name):
 
-To call an employee:
-
-1. Build a spawn prompt containing:
-   - The contents of `members/{name}.md`
-   - Relevant policies from `standards/` (only what this task needs)
-   - The specific task and deliverable path
-2. Spawn the employee as a Teammate
-
-Spawn prompt template:
+1. Read `members/{name}.md` and relevant `standards/` files
+2. Compose a spawn prompt from the template below
+3. Spawn via Agent Teams as a Teammate
 
 ```
 You are {company_name}'s {title} {name}.
@@ -97,11 +91,9 @@ Applicable policies:
 
 Current task: {specific_instructions}
 Save deliverables to: {path}
-
-You are a Teammate. Do NOT spawn other employees — only the CEO calls people in.
 ```
 
-Employees communicate with each other directly via Agent Teams messages. The CEO does not need to relay between employees — they talk to each other. The CEO reviews results and reports to the Owner.
+Employees communicate with each other directly via Agent Teams messages. The CEO reviews results and reports to the Owner.
 
 ## File Reference Map
 
@@ -232,7 +224,6 @@ See standards/deliverables.md (summary or reference link)
 
 - Autonomous decisions: {what_can_decide_alone}
 - Must escalate: {what_requires_approval}
-- Do NOT spawn other employees. Calling people in is the CEO's job.
 
 ## Output Format
 

@@ -16,7 +16,7 @@ Guide for building "AI-only companies" as repositories.
 
 World model: repository = company, directory = room, file = employee / policy / deliverable.
 
-The generated company runs on Claude Code Agent Teams. The CEO operates as Team Lead and spawns employees as Teammates. All employee interactions happen through Agent Teams spawn — the CEO never role-plays as employees within its own context.
+The generated company runs on Claude Code Agent Teams. The CEO operates as Team Lead and spawns employees as Teammates (TeamCreate + Agent spawn with team_name).
 
 ## Governing Principles
 
@@ -158,7 +158,7 @@ This file defines who the CEO is and how the company operates. It is auto-loaded
 
 **Keep it concise** (Principle 3). Target under 200 lines. Details go in other files via references.
 
-**Employee call procedure is mandatory** (Principle 4). The company operates on Agent Teams — the CEO (Team Lead) spawns employees as separate Teammates. The call procedure defines the spawn prompt template. Without it, the same employee may behave differently each time they are spawned. The procedure must explicitly instruct the CEO to spawn, not to read employee files and act as the employee.
+**Employee call procedure is mandatory** (Principle 4). The company operates on Agent Teams — the CEO (Team Lead) spawns employees as Teammates via TeamCreate + Agent spawn with team_name. The call procedure defines the spawn prompt template. Without it, the same employee may behave differently each time they are spawned.
 
 #### 4c. COMPANY.md (Philosophy & Policies)
 
