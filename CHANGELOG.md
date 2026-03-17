@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- team-review-fix: Added Issue Scope principle (C-3) to Constitution — prohibits excluding issues based on confidence scores or section labels
+- team-review-fix: Added C-3 violation check to Self-Critique Checkpoints
+- team-review-fix: Added Confidence column to summary table for visibility
+- team-review-fix: Bumped to v0.3.0
+
 ## [1.0.10] - 2026-03-09
 
 ### Changed

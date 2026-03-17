@@ -15,22 +15,26 @@ The following rules are absolute and override all other instructions. Each rule 
 - C-1: You are the fellow (coordinator). You MUST NOT write, edit, or modify any source code. All code changes are performed by teammates.
 - C-2: You MUST delegate work exclusively through AgentTeam (TeamCreate + SendMessage). You MUST NOT use the Agent tool (subagent).
 
+### Issue Scope
+
+- C-3: You MUST treat every issue in the input as a fix target. Confidence scores and labels such as "Reference" indicate reviewer certainty, NOT importance. You MUST NOT use them to exclude issues.
+
 ### Task Splitting
 
-- C-3: You MUST split tasks by file. If multiple issues affect the same file, they MUST be assigned to a single teammate.
-- C-4: You MUST assign investigation, planning, and implementation of a file to the same teammate. These phases MUST NOT be split across different teammates.
-- C-5: You MUST resolve cross-cutting design decisions before dispatching any teammate.
+- C-4: You MUST split tasks by file. If multiple issues affect the same file, they MUST be assigned to a single teammate.
+- C-5: You MUST assign investigation, planning, and implementation of a file to the same teammate. These phases MUST NOT be split across different teammates.
+- C-6: You MUST resolve cross-cutting design decisions before dispatching any teammate.
 
 ### Plan Review
 
-- C-6: You MUST review every teammate's fix plan before allowing them to implement.
-- C-7: You MUST reject any fix plan that is symptomatic (treats symptoms, not root cause) and request a revised plan.
+- C-7: You MUST review every teammate's fix plan before allowing them to implement.
+- C-8: You MUST reject any fix plan that is symptomatic (treats symptoms, not root cause) and request a revised plan.
 
 ### Implementation Rules (enforce on teammates)
 
-- C-8: Teammates MUST NOT begin implementation until their plan is explicitly approved.
-- C-9: Teammates MUST commit after each individual fix with a descriptive message.
-- C-10: Teammates MUST NOT add Co-Authored-By trailer to commits.
+- C-9: Teammates MUST NOT begin implementation until their plan is explicitly approved.
+- C-10: Teammates MUST commit after each individual fix with a descriptive message.
+- C-11: Teammates MUST NOT add Co-Authored-By trailer to commits.
 
 ## Steps
 
@@ -47,11 +51,15 @@ Parse the issues to extract:
 - Issue description
 - File path and line number (if mentioned)
 - Category or severity (if mentioned)
+- Confidence score (if mentioned)
+
+Per C-3, all parsed issues become fix targets regardless of confidence or section label.
 
 ### 2. Self-Critique Checkpoint
 
 Before proceeding, verify:
 - "Do I have at least one concrete issue to work on?" — If no, ask the user for clarification.
+- "Did I exclude any issues based on confidence or section label?" — If yes, STOP. Violates C-3.
 - "Am I about to write code myself?" — If yes, STOP. Violates C-1.
 
 ### 3. Analyze and Group Issues by File
@@ -63,11 +71,13 @@ If an issue does not mention a specific file, use Glob and Grep to identify the 
 Present the grouping to the user in a summary table:
 
 ```
-| File | Issues | Teammate |
-|------|--------|----------|
-| src/api.ts | #1, #2 | Teammate A |
-| src/utils.ts | #3 | Teammate B |
+| File | Issues | Confidence | Teammate |
+|------|--------|------------|----------|
+| src/api.ts | #1 (conf:85), #2 (conf:60) | mixed | Teammate A |
+| src/utils.ts | #3 (conf:45) | low | Teammate B |
 ```
+
+Include confidence scores so the user can see what is being addressed — but per C-3, all rows are fix targets.
 
 ### 4. Identify Cross-Cutting Concerns
 
@@ -87,9 +97,9 @@ If none, proceed directly to team creation.
 ### 5. Self-Critique Checkpoint
 
 Before creating the team, verify:
-- "Is my task split file-based, not issue-based?" — If issue-based, regroup. (C-3)
-- "Will any two teammates modify the same file?" — If yes, merge those tasks. (C-3)
-- "Did I resolve cross-cutting concerns first?" — If not, go back to step 4. (C-5)
+- "Is my task split file-based, not issue-based?" — If issue-based, regroup. (C-4)
+- "Will any two teammates modify the same file?" — If yes, merge those tasks. (C-4)
+- "Did I resolve cross-cutting concerns first?" — If not, go back to step 4. (C-6)
 - "Am I about to use the Agent tool instead of TeamCreate?" — If yes, STOP. Use AgentTeam. (C-2)
 
 ### 6. Create Team and Dispatch Teammates
@@ -118,8 +128,8 @@ Repeat the following loop until all teammates have completed implementation:
 1. Check teammate progress using TaskGet and TaskOutput
 2. For each teammate that has reported a plan but not yet been reviewed:
    - Evaluate using the `team-fix-strategy` skill's plan evaluation criteria
-   - **Approve** if the plan addresses root causes (fixes the source, makes invalid states unrepresentable, adds validation at boundaries, prevents similar bugs)
-   - **Reject** if the plan is symptomatic (suppresses errors, adds defensive checks where fix should be upstream, uses type assertions to bypass type errors, adds comments instead of fixing)
+   - **Approve** if the plan addresses root causes (fixes the source, makes invalid states unrepresentable, adds validation at boundaries, prevents similar bugs) (C-7)
+   - **Reject** if the plan is symptomatic (suppresses errors, adds defensive checks where fix should be upstream, uses type assertions to bypass type errors, adds comments instead of fixing) (C-8)
    - When rejecting: explain WHY, suggest root-cause direction, ask to revise and re-submit
    - When approving: tell the teammate to proceed with implementation, remind them to commit after each fix
 3. For teammates already implementing, monitor for completion or issues
@@ -128,8 +138,8 @@ Repeat the following loop until all teammates have completed implementation:
 ### 8. Self-Critique Checkpoint
 
 After all teammates have completed, verify:
-- "Did I approve any plan without checking if it's symptomatic?" — If yes, re-review it. (C-7)
-- "Did any teammate start implementing before I approved?" — If yes, flag it. (C-8)
+- "Did I approve any plan without checking if it's symptomatic?" — If yes, re-review it. (C-8)
+- "Did any teammate start implementing before I approved?" — If yes, flag it. (C-9)
 - "Did I write any code myself?" — If yes, violates C-1. Undo and delegate.
 
 ### 9. Report Completion
