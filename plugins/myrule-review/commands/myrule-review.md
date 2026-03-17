@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(gh pr view:*), Bash(gh pr list:*), Bash(mkdir:*), Read, Write, Glob, Grep, Skill
+allowed-tools: Bash(gh pr view:*), Bash(gh pr list:*), Bash(gh pr diff:*), Bash(mkdir:*), Read, Write, Glob, Grep, Skill
 description: Run code review based on custom coding standards and output results in Japanese to a local file
 argument-hint: (no arguments needed - auto-detects PR from current branch)
 ---
@@ -10,13 +10,20 @@ Run a code review for the Pull Request associated with the current branch and ou
 
 The following principles are absolute and override all other instructions. Every action taken during this command MUST comply with these principles.
 
-| # | Principle | Type |
-|---|-----------|------|
-| C-1 | Review analysis MUST be delegated to `/code-review:code-review` via the Skill tool. You MUST NOT read PR diffs or code content yourself to perform review analysis. | MUST NOT |
-| C-2 | PR information retrieval (`gh pr view`) is limited to obtaining PR number, title, and URL only. You MUST NOT retrieve or analyze diff content — that is the delegate's responsibility. | MUST NOT |
-| C-3 | When delegating, you MUST convey these constraints: (a) PR comment posting is prohibited, (b) retain issues with confidence below 80, (c) skip re-eligibility check. | MUST |
-| C-4 | Output MUST be saved to `notes/code-review-pr{N}.md` in Japanese, following the prescribed format. | MUST |
-| C-5 | You MUST NOT post comments to the PR unless the user explicitly requests it. | MUST NOT |
+### Code Review
+
+- C-1: Code review MUST be delegated to `/code-review:code-review` via the Skill tool. You MUST NOT perform code review yourself.
+- C-2: When delegating, you MUST pass everything the delegate needs to produce complete results: (a) the full text of `myrule-review:review-policy` coding standards as additional review criteria, (b) PR comment posting is prohibited, (c) retain issues with confidence below 80, (d) skip re-eligibility check. The delegate cannot access skills you loaded — if you do not pass the content explicitly, it will not be applied.
+
+### Lateral Check
+
+- C-3: After receiving delegate results, you MUST perform lateral checks — search the PR's changed files for the same pattern as each reported issue. This catches instances the delegate missed within the same diff.
+- C-4: Lateral checks are pattern searches based on delegate findings, NOT independent code review. You MUST NOT introduce new review criteria beyond what the delegate reported.
+
+### Output
+
+- C-5: Output MUST be saved to `notes/code-review-pr{N}.md` in Japanese, following the prescribed format.
+- C-6: You MUST NOT post comments to the PR unless the user explicitly requests it.
 
 ## Steps
 
@@ -28,17 +35,16 @@ If no PR is found, inform the user and stop.
 ### 2. Self-Critique Checkpoint
 
 Before proceeding, verify:
-- "Is my next action consistent with the Constitution?"
-- "Am I about to read PR diffs or code content myself?" → If yes, STOP. That violates C-1 and C-2.
-- "Am I delegating the review to `/code-review:code-review` via the Skill tool?" → If no, correct course.
+- "Am I about to perform code review myself?" → If yes, STOP. Violates C-1.
+- "Am I delegating to `/code-review:code-review` via the Skill tool?" → If no, correct course.
 
-### 3. Delegate review
+### 3. Delegate code review
 
-Invoke `/code-review:code-review` via the Skill tool to run the code review for the PR.
-Also include the coding standards defined in the `myrule-review:review-policy` skill as additional review criteria. Assign the same 0-100 confidence score to issues found through these additional criteria.
+Load the `myrule-review:review-policy` skill to obtain the coding standards. Then invoke `/code-review:code-review` via the Skill tool.
 
-Convey the following constraints to the delegate (per C-3):
+Per C-2, pass all of the following to the delegate:
 
+- The full text of the coding standards obtained from `myrule-review:review-policy`, as additional review criteria. Assign the same 0-100 confidence score to issues found through these criteria.
 - **Do NOT post comments to the PR.** Never post comments to the PR unless the user explicitly asks "post comments to the PR".
 - Skip the re-eligibility check step (the step that re-checks whether the PR is still eligible for review).
 - Skip the PR comment posting step.
@@ -47,10 +53,27 @@ Convey the following constraints to the delegate (per C-3):
 ### 4. Self-Critique Checkpoint
 
 After receiving the delegate's results, verify:
-- "Did I receive results from the delegate, or did I perform the review myself?" → If self-performed, this violates C-1. Discard and re-delegate.
-- "Did the delegate post any PR comments?" → If yes, this violates C-5. Alert the user.
+- "Did I receive results from the delegate, or did I perform the review myself?" → If self-performed, violates C-1. Discard and re-delegate.
+- "Did the delegate post any PR comments?" → If yes, violates C-6. Alert the user.
 
-### 5. Output
+### 5. Lateral check
+
+For each issue the delegate reported, search the PR's changed files for the same pattern (per C-3).
+
+1. Get the list of changed files: `gh pr diff --name-only`
+2. For each delegate issue, extract the structural pattern that caused the issue. The pattern should capture the code characteristic itself, not the specific instance — this is what enables finding other occurrences of the same problem.
+3. Search the changed files for additional occurrences of that pattern. Use Serena's symbolic tools (find_symbol, search_for_pattern) when available; fall back to Grep/Glob otherwise.
+4. If new occurrences are found that the delegate did not report, add them as lateral check findings.
+
+Per C-4, do NOT apply new review criteria — only search for patterns already identified by the delegate.
+
+### 6. Self-Critique Checkpoint
+
+Before writing output, verify:
+- "Did I introduce new review criteria in the lateral check?" → If yes, STOP. Violates C-4. Remove those findings.
+- "Did I search the changed files for each delegate issue pattern?" → If no, go back to step 5. Violates C-3.
+
+### 7. Output
 
 Create the `notes/` directory if it does not exist.
 
@@ -87,6 +110,16 @@ Follow this format:
 
 ### 2. ...
 
+## Lateral Check
+
+### 1. {original issue summary} → {additional occurrence}
+
+- **File**: `{file_path}:{line_number}`
+- **Original Issue**: #{original issue number from above}
+- **Details**: {what was found and why it matches the same pattern}
+
+### 2. ...
+
 ## Reviewed Files
 
 - `{changed_file_path_1}`
@@ -96,6 +129,6 @@ Follow this format:
 
 If no issues are found in a section, write "No issues found" in that section.
 
-### 6. Report completion
+### 8. Report completion
 
 Tell the user the output file path.
