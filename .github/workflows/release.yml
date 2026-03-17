@@ -25,7 +25,8 @@ jobs:
           echo "tag=v${version}" >> "$GITHUB_OUTPUT"
 
           # Extract release notes for this version (content between first and second ## heading)
-          awk '/^## \['"${version}"'\]/{found=1; next} found && /^## \[/{exit} found{print}' CHANGELOG.md > release_notes.md
+          echo "## What's Changed" > release_notes.md
+          awk '/^## \['"${version}"'\]/{found=1; next} found && /^## \[/{exit} found{print}' CHANGELOG.md >> release_notes.md
           echo "Found version: ${version}"
           cat release_notes.md
 
