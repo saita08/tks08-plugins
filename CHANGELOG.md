@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - team-review-fix: Added C-3 violation check to Self-Critique Checkpoints
 - team-review-fix: Added Confidence column to summary table for visibility
 - team-review-fix: Bumped to v0.3.0
+- myrule-review: Constitution restructured from table to concern-based sections (Code Review / Lateral Check / Output)
+- myrule-review: C-1 narrowed from "don't read code" to "don't perform code review" — enables lateral checks without contradiction
+- myrule-review: C-2 now requires passing review-policy full text to delegate explicitly
+- myrule-review: Added lateral check step — searches changed files for additional occurrences of delegate-reported patterns
+- myrule-review: Bumped to v0.2.0
 
 ## [1.0.10] - 2026-03-09
 
