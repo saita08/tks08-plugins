@@ -24,6 +24,8 @@ The following principles are absolute and override all other instructions. Every
 
 - C-5: Output MUST be saved to `notes/code-review-pr{N}.md` in Japanese, following the prescribed format.
 - C-6: You MUST NOT post comments to the PR unless the user explicitly requests it.
+- C-7: The lateral check section MUST lead with its conclusion (found / not found) before any details. The reader should know the outcome without reading the full section body — because scanning a long report to find "was there anything?" is a poor experience.
+- C-8: The lateral check section MUST show which pattern was extracted from each delegate issue. The reader needs to judge whether the pattern interpretation was appropriate — without this, the check is a black box.
 
 ## Steps
 
@@ -58,12 +60,11 @@ After receiving the delegate's results, verify:
 
 ### 5. Lateral check
 
-For each issue the delegate reported, search the PR's changed files for the same pattern (per C-3).
+For each issue the delegate reported:
 
-1. Get the list of changed files: `gh pr diff --name-only`
-2. For each delegate issue, extract the structural pattern that caused the issue. The pattern should capture the code characteristic itself, not the specific instance — this is what enables finding other occurrences of the same problem.
-3. Search the changed files for additional occurrences of that pattern. Use Serena's symbolic tools (find_symbol, search_for_pattern) when available; fall back to Grep/Glob otherwise.
-4. If new occurrences are found that the delegate did not report, add them as lateral check findings.
+1. Extract the structural pattern — the code characteristic itself, not the specific instance (per C-8).
+2. Search the PR's changed files for additional occurrences of that pattern (per C-3).
+3. If new occurrences are found that the delegate did not report, add them as lateral check findings.
 
 Per C-4, do NOT apply new review criteria — only search for patterns already identified by the delegate.
 
@@ -112,6 +113,13 @@ Follow this format:
 
 ## Lateral Check
 
+**Result**: {Found N additional occurrence(s) / No additional occurrences found}
+
+| # | Original Issue | Pattern |
+|---|---------------|---------|
+| 1 | {issue summary} | {structural pattern used for search} |
+| 2 | ... | ... |
+
 ### 1. {original issue summary} → {additional occurrence}
 
 - **File**: `{file_path}:{line_number}`
@@ -127,7 +135,8 @@ Follow this format:
 - ...
 ```
 
-If no issues are found in a section, write "No issues found" in that section.
+If no issues are found in Major Issues or Reference, write "No issues found" in that section.
+For Lateral Check, follow C-7: the Result line conveys the conclusion; show the pattern table (per C-8) but omit individual entries if none were found.
 
 ### 8. Report completion
 
