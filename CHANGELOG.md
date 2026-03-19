@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-03-19
+
 ### Changed
 - myrule-review: Added output principles C-7 (lateral check must lead with conclusion) and C-8 (must show extracted pattern per issue) to Constitution
 - myrule-review: Lateral check output template updated with Result line and pattern table
