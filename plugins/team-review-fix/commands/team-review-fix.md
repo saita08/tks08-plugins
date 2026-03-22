@@ -27,14 +27,19 @@ The following rules are absolute and override all other instructions. Each rule 
 
 ### Plan Review
 
-- C-7: You MUST review every teammate's fix plan before allowing them to implement.
-- C-8: You MUST reject any fix plan that is symptomatic (treats symptoms, not root cause) and request a revised plan.
+- C-7: You MUST review every teammate's fix plan before allowing them to implement. A plan MUST address the root cause — why the problem exists — not merely suppress or work around the symptom.
+- C-8: You MUST reject any plan where the proposed change does not eliminate the underlying cause of the problem. When rejecting, explain what the root cause is and why the plan fails to address it.
+
+### Verification
+
+- C-9: You MUST judge teammate work by its actual output (code diff, commit content), not by the teammate's self-reported description. Teammate reports are claims, not evidence.
+- C-10: The approved plan is a contract. If the actual implementation deviates from the approved plan, you MUST treat the deviation as an unapproved change — halt implementation and require a revised plan for the changed portion before it may proceed.
 
 ### Implementation Rules (enforce on teammates)
 
-- C-9: Teammates MUST NOT begin implementation until their plan is explicitly approved.
-- C-10: Teammates MUST commit after each individual fix with a descriptive message.
-- C-11: Teammates MUST NOT add Co-Authored-By trailer to commits.
+- C-11: Teammates MUST NOT begin implementation until their plan is explicitly approved. The approved plan defines the scope of what may be implemented.
+- C-12: Teammates MUST commit after each individual fix with a descriptive message.
+- C-13: Teammates MUST NOT add Co-Authored-By trailer to commits.
 
 ## Steps
 
@@ -81,11 +86,7 @@ Include confidence scores so the user can see what is being addressed — but pe
 
 ### 4. Identify Cross-Cutting Concerns
 
-Review all issues and determine if any require a consistent approach across files. Examples:
-- Error handling pattern changes
-- Naming convention updates
-- API design consistency
-- Shared type modifications
+Review all issues and determine if any require a consistent approach across files — any decision that, if made independently by each teammate, could result in inconsistent implementations.
 
 If cross-cutting concerns exist:
 - Decide the approach first
@@ -112,12 +113,7 @@ For each file group, create a task with TaskCreate and assign to a teammate via 
 
 1. The specific issues to investigate and fix for their assigned file(s)
 2. Cross-cutting design decisions (if any)
-3. Required rules:
-   - Investigate the issue first — verify it exists, understand the context
-   - Present a fix plan BEFORE implementing. The plan must include: what was found, what will change, and why it addresses the root cause
-   - Do NOT implement until the plan is approved
-   - Commit after each fix with a descriptive commit message
-   - Do NOT add Co-Authored-By trailer
+3. The teammate rules from the `team-fix-strategy` skill's Agent Instructions Template
 
 ### 7. Review Plans and Monitor Progress (continuous loop)
 
@@ -128,19 +124,22 @@ Repeat the following loop until all teammates have completed implementation:
 1. Check teammate progress using TaskGet and TaskOutput
 2. For each teammate that has reported a plan but not yet been reviewed:
    - Evaluate using the `team-fix-strategy` skill's plan evaluation criteria
-   - **Approve** if the plan addresses root causes (fixes the source, makes invalid states unrepresentable, adds validation at boundaries, prevents similar bugs) (C-7)
-   - **Reject** if the plan is symptomatic (suppresses errors, adds defensive checks where fix should be upstream, uses type assertions to bypass type errors, adds comments instead of fixing) (C-8)
-   - When rejecting: explain WHY, suggest root-cause direction, ask to revise and re-submit
-   - When approving: tell the teammate to proceed with implementation, remind them to commit after each fix
+   - Does the plan address the root cause — why the problem exists? (C-7)
+   - If not, reject: explain what the root cause is and what direction to pursue (C-8)
+   - If yes, approve and tell the teammate to proceed. Remind them to commit after each fix
 3. For teammates already implementing, monitor for completion or issues
 4. If a teammate encounters an unexpected issue: help them understand (you may read code for analysis), guide toward a solution, but do NOT write the fix yourself (C-1)
 
-### 8. Self-Critique Checkpoint
+### 8. Verify Outcomes
 
-After all teammates have completed, verify:
-- "Did I approve any plan without checking if it's symptomatic?" — If yes, re-review it. (C-8)
-- "Did any teammate start implementing before I approved?" — If yes, flag it. (C-9)
-- "Did I write any code myself?" — If yes, violates C-1. Undo and delegate.
+After each teammate reports completion, verify by examining the actual output — not the teammate's description (C-9):
+
+1. Read the git diff of the teammate's commits
+2. Confirm the changes match the approved plan. If they deviate, treat the deviation as unapproved and require a revised plan (C-10)
+3. Confirm each issue assigned to the teammate is actually resolved in the diff
+4. If any verification fails, send the teammate back to revise before accepting
+
+Do NOT proceed to the completion report until all teammates pass verification.
 
 ### 9. Report Completion
 
