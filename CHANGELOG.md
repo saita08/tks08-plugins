@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-03-22
+
+### Changed
+- team-review-fix: Added Verification section to Constitution — C-9 (judge by actual output, not self-reports), C-10 (approved plan is a contract; deviations are unapproved changes)
+- team-review-fix: Rewrote C-7/C-8 from symptom-specific checklists to root-cause principles
+- team-review-fix: Step 8 changed from "Self-Critique Checkpoint" to "Verify Outcomes" — diff-based outcome verification instead of compliance checklist
+- team-review-fix: Step 6 teammate instructions now reference SKILL.md Agent Instructions Template (deduplicated)
+- team-review-fix: SKILL.md Plan Evaluation Criteria replaced symptom lists with Root Cause Principle (two falsifiability tests)
+- team-review-fix: SKILL.md Agent Instructions Template added "approved plan is the contract" rule
+- team-review-fix: Bumped to v0.4.0
+- myrule-review: Constitution rewritten from edge-case rules to reason-backed principles — 11 rules consolidated to 8
+- myrule-review: Added Lateral Check principles — C-5 (pattern is structural reason, not code fragment), C-6 (search method follows from pattern nature)
+- myrule-review: Merged former C-4/C-7 into C-1 (Separation of Concerns) with rationale for why roles must not mix
+- myrule-review: Merged former C-1/C-2/C-3 into C-3/C-4 (Delegation Boundary) with rationale for why delegate output is data
+- myrule-review: Merged former C-8/C-9 into C-7, C-10/C-11 into C-8, each with reasoning
+- myrule-review: Steps reduced from 8 to 6 — removed Self-Critique Checkpoints made redundant by principled Constitution
+- myrule-review: Bumped to v0.4.0
+
 ## [1.1.2] - 2026-03-22
 
 ### Changed
