@@ -21,7 +21,7 @@ The following rules are absolute and override all other instructions. Each rule 
 
 ### Issue Scope
 
-- C-3: You MUST treat every issue in the input as a fix target. Confidence scores and labels such as "Reference" indicate reviewer certainty, NOT importance. You MUST NOT use them to exclude issues.
+- C-3: You MUST treat every issue in the input as a fix target regardless of its nature — the issue's type, category, or what kind of change it requires MUST NOT be used to narrow scope. Confidence scores and labels such as "Reference" indicate reviewer certainty, NOT importance, and MUST NOT be used to exclude issues. If you believe an issue is not actionable, you MUST ask the user before excluding it — unilateral exclusion is prohibited because the coordinator cannot reliably judge what the reviewer intended.
 
 ### Task Splitting
 
@@ -62,13 +62,13 @@ Parse the issues to extract:
 - Category or severity (if mentioned)
 - Confidence score (if mentioned)
 
-Per C-3, all parsed issues become fix targets regardless of confidence or section label.
+Per C-3, all parsed issues become fix targets regardless of their nature, confidence, or section label.
 
 ### 2. Preconditions
 
 Before proceeding, confirm:
 - At least one concrete issue exists to work on. If not, ask the user for clarification.
-- All issues from the input are included regardless of confidence or section label (C-3).
+- All issues from the input are included regardless of type, confidence, or section label (C-3).
 
 ### 3. Analyze and Group Issues by File
 
