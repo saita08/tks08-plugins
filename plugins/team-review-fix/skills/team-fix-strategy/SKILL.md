@@ -31,33 +31,19 @@ If multiple files need a consistent approach (e.g., unifying error handling patt
 
 ## Plan Evaluation Criteria
 
-### What Makes a Plan "Symptomatic" (Reject)
+### Root Cause Principle
 
-A symptomatic fix treats the symptom, not the cause. Reject plans that:
+Every fix must answer the question: "Why does this problem exist?" A plan that addresses the *why* is a root-cause fix. A plan that only addresses the *what* (the visible symptom) is symptomatic.
 
-- **Suppress errors** without fixing the source (e.g., wrapping in try-catch just to silence)
-- **Add null checks** where the real fix is ensuring null never arrives
-- **Add type assertions** (as any, !) to bypass type errors instead of fixing the type
-- **Duplicate logic** to handle a case that should be handled upstream
-- **Add comments** explaining broken behavior instead of fixing it
-- **Disable rules** (eslint-disable, @ts-ignore) without addressing the underlying issue
+**Test:** If the fix were removed, would the same class of problem recur? If yes, the fix is symptomatic — it guards against the problem rather than eliminating its source.
 
-### What Makes a Plan "Root-Cause" (Approve)
+**Test:** Does the fix prevent only the exact reported instance, or does it eliminate the conditions that produce this class of problem? The former is symptomatic; the latter is root-cause.
 
-A root-cause fix addresses why the problem exists. Approve plans that:
+### Evaluation
 
-- **Fix the source** of bad data rather than guarding against it downstream
-- **Restructure code** to make the invalid state unrepresentable
-- **Add validation at system boundaries** (input entry points, external API responses)
-- **Refactor to eliminate the class of bug**, not just the instance
-- **Update types** to accurately reflect the domain
+Approve a plan when it eliminates the origin of the problem such that the symptom can no longer arise.
 
-### Ambiguous Cases
-
-When it is unclear whether a plan is symptomatic or root-cause:
-- Check if the fix would prevent similar bugs in the same area
-- Check if removing the fix would re-expose the original issue AND other related issues
-- If the plan addresses only the exact symptom reported and nothing deeper, it leans symptomatic
+Reject a plan when it leaves the origin intact and instead intercepts, suppresses, or works around the symptom downstream. When rejecting, identify what the root cause is and why the plan fails to address it.
 
 ## Agent Instructions Template
 
@@ -65,16 +51,16 @@ When creating teammate agents, include these rules in their instructions:
 
 ### Required Rules for Teammates
 
-1. **Commit after each fix** — do not batch multiple fixes into one commit
-2. **Do NOT add Co-Authored-By trailer** to commit messages
-3. **Write commit messages** that clearly describe what was fixed and why
-4. **Do NOT implement before plan approval** — present your plan first, then wait for approval
-5. **If plan is rejected**, revise based on the feedback and re-submit — do not implement the rejected plan
+1. **Plan before implementation** — present your fix plan and wait for explicit approval before writing any code
+2. **The approved plan is the contract** — if you discover during implementation that the approach needs to change, stop and re-submit a revised plan. Do not implement unapproved changes, even if you believe they are improvements
+3. **If plan is rejected**, revise based on the feedback and re-submit — do not implement the rejected plan
+4. **Commit after each fix** with a commit message that describes what was fixed and why
+5. **Do NOT add Co-Authored-By trailer** to commit messages
 
-### Recommended Investigation Steps for Teammates
+### Investigation Approach for Teammates
 
 1. Read the relevant file(s) to understand the current code
 2. Verify the issue actually exists (it may have been fixed already)
 3. Understand the surrounding context — what calls this code? What does it depend on?
-4. Formulate a root-cause fix plan
-5. Present the plan with: what you found, what you will change, and why this addresses the root cause
+4. Identify the root cause: why does this problem exist?
+5. Present the plan with: what you found, what you will change, and why this eliminates the root cause
