@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-03-22
+
 ### Changed
 - team-review-fix: Added Verification section to Constitution — C-9 (judge by actual output, not self-reports), C-10 (approved plan is a contract; deviations are unapproved changes)
 - team-review-fix: Rewrote C-7/C-8 from symptom-specific checklists to root-cause principles
