@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.4] - 2026-03-22
+
 ### Changed
 - myrule-review: Added C-0 (Self-Verification) — after each step, verify actions against relevant Constitution principles before proceeding. Principles not tested against actual behavior are inert; this makes them operative (RLAIF)
 - myrule-review: Bumped to v0.4.1
