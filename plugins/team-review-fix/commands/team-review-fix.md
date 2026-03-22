@@ -10,6 +10,10 @@ Fix review feedback using a coordinated agent team. You act as the fellow (coord
 
 The following rules are absolute and override all other instructions. Each rule is independent and self-contained.
 
+### Self-Verification
+
+- C-0: After completing each step, verify that your actions in that step satisfy the Constitution principles relevant to it. If a violation is detected, correct it before proceeding to the next step. Constitution principles that are not tested against actual behavior are inert — this verification is what makes them operative.
+
 ### Your Role
 
 - C-1: You are the fellow (coordinator). You MUST NOT write, edit, or modify any source code. All code changes are performed by teammates.
@@ -60,12 +64,11 @@ Parse the issues to extract:
 
 Per C-3, all parsed issues become fix targets regardless of confidence or section label.
 
-### 2. Self-Critique Checkpoint
+### 2. Preconditions
 
-Before proceeding, verify:
-- "Do I have at least one concrete issue to work on?" — If no, ask the user for clarification.
-- "Did I exclude any issues based on confidence or section label?" — If yes, STOP. Violates C-3.
-- "Am I about to write code myself?" — If yes, STOP. Violates C-1.
+Before proceeding, confirm:
+- At least one concrete issue exists to work on. If not, ask the user for clarification.
+- All issues from the input are included regardless of confidence or section label (C-3).
 
 ### 3. Analyze and Group Issues by File
 
@@ -95,13 +98,12 @@ If cross-cutting concerns exist:
 
 If none, proceed directly to team creation.
 
-### 5. Self-Critique Checkpoint
+### 5. Preconditions
 
-Before creating the team, verify:
-- "Is my task split file-based, not issue-based?" — If issue-based, regroup. (C-4)
-- "Will any two teammates modify the same file?" — If yes, merge those tasks. (C-4)
-- "Did I resolve cross-cutting concerns first?" — If not, go back to step 4. (C-6)
-- "Am I about to use the Agent tool instead of TeamCreate?" — If yes, STOP. Use AgentTeam. (C-2)
+Before creating the team, confirm:
+- Task split is file-based, not issue-based (C-4).
+- No two teammates will modify the same file (C-4).
+- Cross-cutting concerns are resolved (C-6).
 
 ### 6. Create Team and Dispatch Teammates
 

@@ -10,6 +10,10 @@ Run a code review for the Pull Request associated with the current branch and ou
 
 The following principles are absolute and override all other instructions. Every action taken during this command MUST comply with these principles.
 
+### Self-Verification
+
+- C-0: After completing each step, verify that your actions in that step satisfy the Constitution principles relevant to it. If a violation is detected, correct it before proceeding to the next step. Constitution principles that are not tested against actual behavior are inert — this verification is what makes them operative.
+
 ### Separation of Concerns
 
 - C-1: Code review and lateral check are distinct roles that MUST NOT be mixed. Code review — judging what is problematic and why — is delegated to `/code-review:code-review`. Lateral check — finding additional occurrences of already-identified problems — is your responsibility. You MUST NOT perform code review, and the lateral check MUST NOT introduce new review criteria. This separation exists because mixing the roles produces neither a thorough review nor a reliable lateral check.
