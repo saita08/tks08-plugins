@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- team-review-fix: C-3 rewritten — issue scope is defined by presence in input, not by issue type or what kind of change it requires. Unilateral exclusion prohibited; must ask user if an issue appears not actionable
+- team-review-fix: Bumped to v0.4.2
+
 ## [1.1.4] - 2026-03-22
 
 ### Changed
