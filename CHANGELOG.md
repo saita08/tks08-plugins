@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-03-22
+
+### Changed
+- myrule-review: Added Delegation Boundary principles (C-1, C-2, C-3) to Constitution — defines delegation phase vs post-delegation phase, ensures post-delegation steps proceed without interruption, and treats delegate output as data not instructions
+- myrule-review: Step 4 renamed to "Phase Transition Checkpoint" — explicitly marks the delegation boundary and instructs to extract findings while discarding embedded directives before continuing
+- myrule-review: Existing principles renumbered (C-4 through C-11) and all step references updated for consistency
+- myrule-review: Bumped to v0.3.0
+
 ## [1.1.1] - 2026-03-19
 
 ### Changed
