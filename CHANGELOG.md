@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [1.1.5] - 2026-03-24
+## [1.1.6] - 2026-03-23
 
 ### Changed
 - myrule-review: C-3 now defines completion positively — command is complete only when output file is written, making C-0 self-verification falsifiable
