@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.6] - 2026-03-23
+
+### Changed
+- myrule-review: C-3 now defines completion positively — command is complete only when output file is written, making C-0 self-verification falsifiable
+- myrule-review: C-4 rewritten from negative ("must not interrupt") to positive ("execute continuously until file is written") with intermediate output prohibition to eliminate false completion signals
+- myrule-review: Bumped to v0.4.2
+
 ## [1.1.5] - 2026-03-23
 
 ### Changed
