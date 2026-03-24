@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.7] - 2026-03-24
+
 ### Changed
 - myrule-review: Delegation changed from Skill tool (prompt expansion) to Agent tool (subagent) — structurally ensures control returns after code review, eliminating the class of "workflow stops mid-execution" failures
 - myrule-review: Constitution consolidated from 9 principles (C-0 to C-8) to 8 (C-0 to C-7) — removed C-4 intermediate output prohibition (no longer needed since Agent tool returns control by design)
