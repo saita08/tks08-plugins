@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- myrule-review: C-5 rewritten from negative ("must not default to a single technique") to positive ("determine what evidence confirms the pattern, then choose the method capable of finding it") — guides the decision process rather than only prohibiting the wrong outcome
+- myrule-review: Step 4 lateral check now separates evidence determination from search execution as distinct substeps
+- myrule-review: Bumped to v0.5.1
+
 ## [1.1.7] - 2026-03-24
 
 ### Changed
