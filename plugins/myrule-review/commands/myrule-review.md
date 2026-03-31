@@ -52,7 +52,9 @@ The review-comments file `notes/pr{N}-review-comments.md` reorganizes findings b
 
 Each comment is a single flowing paragraph that contains three elements in order: what the code currently does, what problem this causes, and how to fix it. The problem description must be a concrete scenario that names a person, a circumstance, and a consequence. Abstract statements like "readability decreases" do not help the reader understand impact or urgency, because they do not describe an event that happens to a person.
 
-This file is produced alongside the review report, not instead of it. The report organizes by severity for prioritization; the comments file organizes by file for action.
+A comment that renders differently from what was written misleads the reader about what the code does or how to fix it. Since comments live inside Markdown table cells, an unescaped pipe character terminates the cell and an unescaped backslash begins an escape sequence, both silently truncating or altering the visible text. Characters that carry structural meaning in table syntax must be escaped so that what the reader sees matches what was meant.
+
+This file is produced alongside the review report, not instead of it. The report organizes by severity for prioritization; the comments file organizes by file for action. If the number of issues in this file does not match the number in the review report, one of the two renderings is wrong.
 
 ## Steps
 
