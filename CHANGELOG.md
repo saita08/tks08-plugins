@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- myrule-review: Constitution rewritten from numbered imperative rules (C-0~C-7) to prose style — each principle explains why before stating what, following the structure of anthropics/claude-constitution. Anchor IDs retained for cross-reference and RLAIF self-evaluation
+- myrule-review: Added C-8 (review comments) — new output file `notes/pr{N}-review-comments.md` organizes findings by file with three elements per comment: current state, concrete problem scenario, fix direction
+- myrule-review: Step 5 split into 5a (review report, unchanged) and 5b (review comments, new)
+- myrule-review: Bumped to v0.6.0
+
 ## [1.1.8] - 2026-03-25
 
 ### Changed
