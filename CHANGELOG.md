@@ -8,9 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
-- myrule-review: Constitution rewritten from numbered imperative rules (C-0~C-7) to prose style — each principle explains why before stating what, following the structure of anthropics/claude-constitution. Anchor IDs retained for cross-reference and RLAIF self-evaluation
-- myrule-review: Added C-8 (review comments) — new output file `notes/pr{N}-review-comments.md` organizes findings by file with three elements per comment: current state, concrete problem scenario, fix direction
-- myrule-review: Step 5 split into 5a (review report, unchanged) and 5b (review comments, new)
+- myrule-review: Constitution rewritten from numbered imperative rules to prose style. Each principle explains why before stating what. Anchor IDs retained in headings for cross-reference and RLAIF self-evaluation
+- myrule-review: Added C-8. New output file `notes/pr{N}-review-comments.md` organizes findings by file as a table of comment drafts. Each comment contains current state, concrete problem scenario, and fix direction as flowing prose
+- myrule-review: Step 5 split into 5a (review report) and 5b (review comments)
+- myrule-review: Delegation changed from Agent tool to AgentTeams. Teammate has access to plugins and skills, resolving the issue where subagents failed to load `code-review:code-review`
+- myrule-review: C-2 updated. Teammate has access to installed plugins but does not know which to use unless told
+- myrule-review: Step 2 restructured into Purpose, Method, Review criteria, Output constraints sections for the teammate prompt
+- myrule-review: "pattern" replaced with "structural reason" throughout to avoid biasing the lateral check toward text search
 - myrule-review: Bumped to v0.6.0
 
 ## [1.1.8] - 2026-03-25
