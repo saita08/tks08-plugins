@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.9] - 2026-04-01
+
+### Changed
+- myrule-review: Constitution rewritten from numbered imperative rules to prose style. Each principle explains why before stating what. Anchor IDs retained in headings for cross-reference and RLAIF self-evaluation
+- myrule-review: Added C-8. New output file `notes/pr{N}-review-comments.md` organizes findings by file as a table of comment drafts. Each comment contains current state, concrete problem scenario, and fix direction as flowing prose
+- myrule-review: Step 5 split into 5a (review report) and 5b (review comments)
+- myrule-review: Delegation changed from Agent tool to AgentTeams. Teammate has access to plugins and skills, resolving the issue where subagents failed to load `code-review:code-review`
+- myrule-review: C-2 updated. Teammate has access to installed plugins but does not know which to use unless told
+- myrule-review: Step 2 restructured into Purpose, Method, Review criteria, Output constraints sections for the teammate prompt
+- myrule-review: "pattern" replaced with "structural reason" throughout to avoid biasing the lateral check toward text search
+
+### Fixed
+- myrule-review: C-8 expanded to cover table cell rendering integrity. Explains why misrendered comments mislead readers, names pipe and backslash as the structural characters that silently truncate cell content
+- myrule-review: C-8 now includes a falsifiable check for C-0 self-verification. The number of issues in the review-comments file must match the review report, making omissions detectable
+
 ## [1.1.8] - 2026-03-25
 
 ### Changed
