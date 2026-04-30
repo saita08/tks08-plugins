@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- myrule-review: C-9 added — findings must be verifiable in the current PR HEAD diff. Issues whose evidence lies only in `git log -p`, `git blame`, or past PR comments can describe code already removed or rewritten in HEAD, and their cited line numbers can refer to a past state. Verification uses the problematic code fragment, not the line number, since line numbers shift between past states and HEAD
+- myrule-review: New Step 4 — verify each teammate finding against the current diff and discard those whose code fragment is absent. Lateral check shifted to Step 5; Output to Step 6; Report completion to Step 7
+- myrule-review: Review report now records the count of findings discarded as resolved in current HEAD, so the reader can tell that filtering occurred
+- team-review-fix: New Constitution chapter "Discipline at the staging boundary" (C-15) covering the shared-staging-index hazard, path-only `git add`, hunk staging, and `git diff --cached --stat` verification before commit. Derived from PR #55 incident lessons
+- team-review-fix: New Constitution chapter "The limits of cooperative messaging" (C-16) explaining that `SendMessage(to="*")` is a notification rather than an interrupt, and prescribing ACK-then-recover during incidents
+- team-review-fix: Verification axis (C-14) added — every commit must contain only files within its author's assigned scope, verified via `git show --stat <hash>` immediately on commit report
+- team-review-fix: Step 7.5 incident-recovery procedure added (broadcast stop, await ACKs, re-read `git log` before destructive steps, prefer soft-reset / reword-rebase by situation)
+- team-fix-strategy: Three teammate rules added to Required Rules — explicit-path staging, hunk staging for shared files, pre-commit `git diff --cached --stat` confirmation. Each carries a why clause
+
+### Changed
+- myrule-review: Bumped to v0.7.0
+- team-review-fix: Constitution renamed to Principles and rewritten from numbered MUST/SHOULD rules to prose style. Each anchor (C-0 through C-16) now occupies its own `### C-N: <summary>` section so that one anchor maps to exactly one passage, matching the myrule-review convention. This restores discrete reference for RLAIF self-critique while keeping the prose form
+- team-review-fix: Bumped to v0.5.0
+
 ## [1.1.9] - 2026-04-01
 
 ### Changed
