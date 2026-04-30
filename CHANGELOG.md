@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.10] - 2026-04-30
+
 ### Added
 - myrule-review: C-9 added — findings must be verifiable in the current PR HEAD diff. Issues whose evidence lies only in `git log -p`, `git blame`, or past PR comments can describe code already removed or rewritten in HEAD, and their cited line numbers can refer to a past state. Verification uses the problematic code fragment, not the line number, since line numbers shift between past states and HEAD
 - myrule-review: New Step 4 — verify each teammate finding against the current diff and discard those whose code fragment is absent. Lateral check shifted to Step 5; Output to Step 6; Report completion to Step 7
