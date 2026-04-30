@@ -1,40 +1,24 @@
 # CLAUDE.md
 
-Claude Code プラグインリポジトリ。
+このリポジトリの構造そのものは `ls` と各ファイルを読めば把握できる。ここに書くのは、コードを読んでも導けない**運用上の規律と、その理由**だけにする。
 
-## Structure
+## marketplace.json と実ディレクトリ名の一致
 
-- `plugins/` - 各プラグインを配置
-- `.claude-plugin/marketplace.json` - プラグイン登録
-- `docs/` - リポジトリ運用ルール
-- `CHANGELOG.md` - 変更履歴（[Keep a Changelog](https://keepachangelog.com/) 形式）
+`marketplace.json` の `source` フィールドは、`plugins/` 配下の実ディレクトリ名と完全に一致していなければならない。理由は単純で、不一致があれば marketplace 解決はそのエントリだけでなくマーケットプレイス全体の読み込みで失敗する。プラグインを追加・リネームしたとき、`source` の更新を忘れると壊れるのは「変更したプラグイン」ではなく「すべてのプラグイン」になる。
 
-## Plugin Types
+## allowed-tools は最小限に
 
-1. **MCP Plugin**: `.mcp.json` で MCP サーバーを定義
-2. **Skill Plugin**: `skills/<name>/SKILL.md` でスキルを定義
+Skill の `allowed-tools` は、その skill が実際に使うツールだけに絞る。「念のため Bash も入れておく」という発想は、誤動作したときのブラスト半径をツール数に比例して広げる行為で、後から事故が起きたときに何が起きうるかを再構成する作業を著しく難しくする。最小権限は、品質を上げるためではなく、失敗の上限を下げるための規律。
 
-## Adding New Plugin
+## 変更は 1 つの変更単位として完結させる
 
-1. `plugins/<name>/` を作成
-2. `.claude-plugin/plugin.json` を追加
-3. `marketplace.json` に登録
+プラグインの修正は、コード本体・`plugin.json` の `version`・`CHANGELOG.md` の 3 点が同時に揃って初めて完結とみなす。コード修正だけ先にコミットして version と CHANGELOG が後回しになると、リリースタグと実体の対応がそのコミット範囲で崩れ、後から「この CHANGELOG エントリはどの commit に対応するのか」を再構築できなくなる。タグとリリースは CI が自動生成するため、ローカルでこの三点を揃えなかった瞬間に履歴は不可逆に歪む。バージョニングの判断基準は `docs/versioning.md` に従う。
 
-## Updating a Plugin
+## 繰り返すミスは原則として定着させる
 
-1. `plugin.json` の `version` を更新する（semver に従う）
-2. `CHANGELOG.md` に変更内容を記録する（タグとリリースは CI が自動作成）
-
-## Rules
-
-- marketplace.json の source と実際のディレクトリ名を一致させる
-- Skill の allowed-tools は必要最小限に
-- バージョニングは `docs/versioning.md` のルールに従う
-- 変更時は `CHANGELOG.md` を更新する
-- プラグインの変更は、関連ファイル（plugin.json の version、CHANGELOG.md）の更新まで含めて1つの変更単位とする。コード修正だけコミットして version/CHANGELOG が後回しになると、リリースとの対応が崩れる
-- 繰り返し可能なミスや振る舞いの問題が発生した場合、CLAUDE.md への原則追加を提案する。ルールとして定着させないと同じ問題が再発する
-
+同じ種類のミスや振る舞いの逸脱が再発した場合、その都度の修正で済ませず、根本にある暗黙の前提を CLAUDE.md の原則として明文化する提案をする。ルール化されていないものは記憶や勘に依存するため、コンテキストが変われば再発する。原則として書き出されて初めて、未来のセッションで参照され、検証可能になる。
 
 ## Reference
 
 - [Plugin Marketplaces - Claude Code Docs](https://code.claude.com/docs/en/plugin-marketplaces)
+- バージョニングルール: `docs/versioning.md`

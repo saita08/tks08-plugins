@@ -56,6 +56,9 @@ When creating teammate agents, include these rules in their instructions:
 3. **If plan is rejected**, revise based on the feedback and re-submit — do not implement the rejected plan
 4. **Commit after each fix** with a commit message that describes what was fixed and why
 5. **Do NOT add Co-Authored-By trailer** to commit messages
+6. **Stage by explicit path only** — never `git add .`, `git add -A`, or `git commit -a`. Why: the staging index is shared across teammates in the same working tree, and wildcard staging will sweep up another teammate's in-progress edits into your commit
+7. **Use `git add -p` for files that other teammates may also touch** — stage by hunk so that only your changes enter the index. Why: file-level assignment is not a guarantee against cross-cutting edits to shared files (e.g., a common types module)
+8. **Run `git diff --cached --stat` immediately before every commit** — visually confirm that only files you own are staged. If anything foreign appears, run `git restore --staged <path>` to unstage it before committing. Why: a commit whose message and contents disagree is a permanent defect in history; the cost of one extra check is far smaller than the cost of recovering from a contaminated commit
 
 ### Investigation Approach for Teammates
 
