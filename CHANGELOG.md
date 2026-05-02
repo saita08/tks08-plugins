@@ -8,13 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
-- myrule-review: Step 2 reorganized so the teammate is spawned via the Agent tool with a self-contained prompt, instead of via SendMessage to a teammate that does not yet exist. The previous wording forced the team-lead to improvise an Agent spawn and then send the same instructions again as a kick message; the idle teammate interpreted the second arrival as a new request and re-ran the entire review, doubling token consumption
+- myrule-review: Duplicate teammate execution that wasted tokens. Step 2 was rewritten to spawn the teammate via the Agent tool with a self-contained prompt instead of via SendMessage, eliminating the second instruction channel that caused re-execution
 
 ### Changed
-- myrule-review: Step 3 rewritten to take findings from the Agent tool's return value. Reading the teammate's output through a task-output mechanism is now explicitly disallowed because the underlying file is the full subagent transcript and overflows the command's context
-- myrule-review: `allowed-tools` corrected — `Agent` and `TaskUpdate` added (previously missing and triggered runtime permission prompts), `SendMessage` and `TaskOutput` removed in line with the principle of minimum allowed tools
-- myrule-review: C-2 extended with the spawn-once invariant — a teammate's understanding is constituted by its spawn prompt, and any post-spawn instruction replaces rather than refines that understanding. Framed as a value, not a prohibition, so it generalizes to any future teammate-driven step
-- myrule-review: New principle C-10 added — a gap between command text and runtime reality is treated as a discovery to surface to the user, not a problem to bridge by inference. Targets the class of failure where the team-lead silently improvises around broken instructions
+- myrule-review: Step 3 now takes findings from the Agent tool's return value; reading the teammate output as a task-output file is disallowed
+- myrule-review: `allowed-tools` minimized — `Agent` and `TaskUpdate` added, `SendMessage` and `TaskOutput` removed
+- myrule-review: C-2 extended with the spawn-once invariant
+- myrule-review: New principle C-10 — gap between command text and runtime is surfaced, not bridged
 - myrule-review: Bumped to v0.7.1
 
 ## [1.1.10] - 2026-04-30
