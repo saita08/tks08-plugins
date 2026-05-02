@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- myrule-review: Bumped to v0.7.1
+
 ## [1.1.10] - 2026-04-30
 
 ### Added
