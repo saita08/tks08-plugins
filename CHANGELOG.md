@@ -8,13 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
-- myrule-review: Duplicate teammate execution that wasted tokens. Step 2 was rewritten to spawn the teammate via the Agent tool with a self-contained prompt instead of via SendMessage, eliminating the second instruction channel that caused re-execution
-
-### Changed
-- myrule-review: Step 3 now takes findings from the Agent tool's return value; reading the teammate output as a task-output file is disallowed
-- myrule-review: `allowed-tools` minimized — `Agent` and `TaskUpdate` added, `SendMessage` and `TaskOutput` removed
-- myrule-review: C-2 extended with the spawn-once invariant
-- myrule-review: New principle C-10 — gap between command text and runtime is surfaced, not bridged
 - myrule-review: Bumped to v0.7.1
 
 ## [1.1.10] - 2026-04-30
