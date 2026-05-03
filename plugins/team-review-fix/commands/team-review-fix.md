@@ -1,5 +1,5 @@
 ---
-allowed-tools: Read, Glob, Grep, Skill, TeamCreate, SendMessage, TaskCreate, TaskGet, TaskList, TaskOutput, TaskUpdate, AskUserQuestion
+allowed-tools: Read, Edit, Write, Glob, Grep, Bash, Skill, TeamCreate, TeamDelete, SendMessage, TaskCreate, TaskGet, TaskList, TaskOutput, TaskUpdate, AskUserQuestion
 description: Fix review feedback by delegating to an agent team. Splits issues by file, each agent investigates, plans, and implements.
 argument-hint: <review issues text or file path> (or omit to enter interactively)
 ---
@@ -96,6 +96,14 @@ C-9 establishes that a teammate's work is judged by artifact rather than self-re
 
 So a teammate reporting a commit reports the hash that `git rev-parse HEAD` returned immediately after the commit completed. If a recovery operation later moves history — a reset, a rebase, a reword — the hash a teammate previously reported may no longer exist, and the teammate must re-observe their position with `git log -1` before resuming. Teammates who treat the state at the time of their last action as still current will silently report completion against a commit that has been rewritten or discarded.
 
+### C-18: A simplification pass closes the work, and only there does the fellow write code
+
+Teammate fixes are correct against the issues they were assigned, but the resulting commits accumulate the small inefficiencies of independent work — duplicated helpers two teammates each invented, an existing utility neither knew about, a wrapped condition that an early return would flatten. These are not defects against any single issue, so no single teammate's plan is the place to address them. They surface only when the union of all fixes is read together.
+
+After all teammates have passed verification under C-9, C-10, and C-14, the fellow runs a simplification pass over the commit range produced by the team. The pass is delegated to the `simplify` skill, which reviews the diff for reuse, quality, and efficiency and applies any fixes it finds. Because the simplification pass operates on a committed range rather than the working tree, the fellow tells `simplify` the starting commit explicitly and instructs it to commit each fix on top of the existing history rather than amending. The earlier teammate commits are not rewritten; the simplification pass adds new commits.
+
+C-1 forbids the fellow from writing code during the teammate-coordination phase, because doing so destroys plan-review independence. That reasoning does not apply once teammates have finished and the team has been deleted: there are no further plans to review, and the simplification pass is itself the review. The fellow may therefore write code during the simplification pass. To make the boundary unambiguous, the team is deleted with TeamDelete before the pass begins, so that no teammate can be active while the fellow is editing.
+
 ## Steps
 
 ### 1. Receive Review Feedback
@@ -156,7 +164,11 @@ Before creating the team, confirm:
 - No two teammates will modify the same file (C-4).
 - Cross-cutting concerns are resolved (C-6).
 
-### 6. Create Team and Dispatch Teammates
+### 6. Record the Starting Commit
+
+Before any teammate writes to the repository, run `git rev-parse HEAD` and remember the hash. This becomes the lower bound of the commit range that the simplification pass in step 10 will review. Recording it here, rather than later, ensures that the range covers exactly the work the team produced — no earlier commits the user did not ask to revisit, no later commits made outside the team.
+
+### 7. Create Team and Dispatch Teammates
 
 Load the `team-review-fix:team-fix-strategy` skill to get teammate instruction rules.
 
@@ -168,7 +180,7 @@ For each file group, create a task with TaskCreate and assign to a teammate via 
 2. Cross-cutting design decisions (if any)
 3. The teammate rules from the `team-fix-strategy` skill's Agent Instructions Template
 
-### 7. Review Plans and Monitor Progress (continuous loop)
+### 8. Review Plans and Monitor Progress (continuous loop)
 
 Do NOT wait for all teammates to finish before reviewing. Process each teammate's output as soon as it arrives.
 
@@ -184,16 +196,16 @@ Repeat the following loop until all teammates have completed implementation:
 4. For teammates already implementing, monitor for completion or issues
 5. If a teammate encounters an unexpected issue: help them understand (you may read code for analysis), guide toward a solution, but do NOT write the fix yourself (C-1)
 
-### 7.5 If a staging incident occurs
+### 8.5 If a staging incident occurs
 
-A staging incident means a commit contains files outside its author's assigned scope, or a teammate's unstaged work was swept into another teammate's commit. Recovery requires care because cooperative messaging does not preempt teammates mid-step (C-16).
+A staging incident means a commit contains files outside its author's assigned scope, or a teammate's unstaged work was swept into another teammate's commit. Recovery requires care because cooperative messaging does not preempt teammates mid-step (C-16). The procedure below applies to incidents detected during the monitoring loop in step 8; the same procedure is used for incidents detected during verification in step 9.
 
 1. Send a stop instruction to each teammate individually by name, and require an explicit ACK from every teammate that includes their current `git status`. Do not begin recovery until all ACKs are in.
 2. Re-read `git log` immediately before any destructive step — a teammate who had not yet read the stop instruction may have committed in the interim.
 3. Choose the recovery method by what the history allows. If no commits have been built on top of the bad one, prefer `git reset --soft HEAD^` and re-commit with correct staging. If subsequent commits exist that cannot be cleanly recreated, use `git rebase -i <commit>^` with `reword` to make the message match the actual contents — this preserves history and carries no merge-conflict risk.
 4. After recovery, send the new `HEAD` to every teammate individually and instruct them to re-observe their position with `git log -1` before resuming, per C-17.
 
-### 8. Verify Outcomes
+### 9. Verify Outcomes
 
 After each teammate reports completion, verify by examining the actual output — not the teammate's description (C-9):
 
@@ -203,15 +215,28 @@ After each teammate reports completion, verify by examining the actual output �
 4. Confirm each issue assigned to the teammate is actually resolved in the diff
 5. If any verification fails, send the teammate back to revise before accepting
 
-Do NOT proceed to the completion report until all teammates pass verification.
+Do NOT proceed to the simplification pass until all teammates pass verification.
 
-### 9. Report Completion
+### 10. Delete the Team
 
-Once all teammates are done, summarize the results to the user:
+Once every teammate has passed verification, delete the team with TeamDelete. The team has no further work, and the simplification pass that follows is performed by the fellow directly. Deleting the team here makes that boundary structural rather than conventional: with no teammates active, there is no risk that a stray teammate writes to the index while the fellow is editing, and the C-1 prohibition on fellow-authored code is being relaxed for the simplification pass alone, never for any phase in which teammates are still running (C-18).
+
+### 11. Run the Simplification Pass
+
+Invoke the `simplify` skill with the starting commit recorded in step 6 so that it reviews the diff `<starting-commit>..HEAD` rather than its default of the working tree. The default would find nothing here, because every teammate fix has already been committed.
+
+The `simplify` skill, by default, applies fixes to the working tree and leaves committing to its caller. In this command the caller is the fellow, so the fellow commits each fix with a message describing what was simplified and why, using path-limited `git commit -- <path>` to stay consistent with C-15. Earlier teammate commits are not amended; the simplification fixes land as new commits on top.
+
+If the pass finds nothing to fix, no commit is added and the step completes silently. Report this state in step 12 so the user can see that the pass ran.
+
+### 12. Report Completion
+
+Once the simplification pass has finished, summarize the results to the user:
 
 - Total issues addressed
 - For each file: what was changed and why
-- List of commits made
+- List of commits made by teammates
+- What the simplification pass changed, or that it ran and found nothing
 - Any issues that could not be resolved (with explanation)
 
 Output this summary directly in the terminal (do not write to a file).
