@@ -40,6 +40,10 @@ The phases of fixing a file are not separable across agents. Splitting them forc
 
 If two files need a consistent approach — a shared error-handling pattern, a unified abort strategy — letting each teammate decide independently produces inconsistent code that has to be reconciled later. The fellow decides first, communicates the decision in every relevant teammate's instructions, and only then dispatches.
 
+A cross-cutting decision propagated to N teammates multiplies any error in it N-fold, so the fellow consults the primary source — the type definition, the API reference, the documented contract — before proposing the decision. General knowledge of how a library is "usually" used is not a substitute, because the decision will be applied verbatim by teammates who trust that the fellow has already confirmed it works.
+
+The fellow also names the verification command teammates will run. An instruction that names an outcome but not a command leaves the choice of command to the teammate, and the teammate's default may not exercise the code path the verification was meant to cover. Project-specific environments — TypeScript project references, monorepo build graphs, multi-target compilers — are exactly the cases where a generic command silently skips what needs checking, and the fellow is the one positioned to know this before dispatch.
+
 ### C-7: A plan must address the root cause, not the symptom
 
 The bar every teammate's plan must clear is that it eliminates the origin of the problem, not that it suppresses the visible symptom. A useful test: if the proposed fix were removed, would the same class of problem recur? If yes, the fix is symptomatic — it guards against the problem rather than removing its source. A second test: does the fix prevent only the exact reported instance, or does it eliminate the conditions that produce this class of problem? The former is symptomatic; the latter is root-cause.
@@ -72,17 +76,25 @@ Teammates do not add a Co-Authored-By trailer to commits. Attribution must refle
 
 In a shared working tree, the staging index is a single resource, and a careless `git add` from one teammate can scoop up another teammate's unstaged changes. So when a teammate reports a commit, examine `git show --stat <hash>` and confirm no foreign files appear. A commit that mixes work from multiple teammates produces a history where the message and the contents do not match — a defect that propagates to every future reader of `git blame`. This verification axis is independent of C-9 and C-10: a commit can match the approved plan in content yet still violate scope by including files belonging to another teammate.
 
-### C-15: Discipline at the staging boundary is non-negotiable
+### C-15: The staging boundary is closed by the commit, not by the teammate
 
-The shared staging index is responsible for the most damaging class of multi-agent accident: a teammate runs `git add .` or `git commit -a`, sweeps in another teammate's in-progress edits, and produces a commit whose message describes one thing while its contents describe another. Once such a commit lands, untangling it requires either rewriting history or living with a permanently misleading record.
+All teammates work on a single branch in a single working tree, which means the staging index is one shared resource that any teammate can write to at any moment. The most damaging class of multi-agent accident follows directly from this: a teammate stages their own file, and between that staging and the commit another teammate adds a different file to the same index. The commit then carries both files, and its message — which describes only the first — becomes a permanent misrepresentation of what landed.
 
-The remedy lives at the moment of staging. Teammates stage by explicit path — never `git add .`, `git add -A`, or `git commit -a`. When a file may be touched by more than one teammate, they stage by hunk with `git add -p` rather than wholesale. Before every commit, they run `git diff --cached --stat` and visually confirm that only the files they own are staged; anything foreign is removed with `git restore --staged <path>` before the commit goes in. These rules are propagated to teammates through the `team-fix-strategy` skill, and the fellow's verification under C-14 exists because rules at the teammate layer are not self-enforcing.
+Earlier versions of this principle relied on teammate discipline to close this gap: stage by explicit path, run `git diff --cached --stat` immediately before commit, never use `git add .`. That discipline is necessary but cannot be sufficient, because staging and committing are not atomic — another teammate can write to the index in the interval between the check and the commit, and the commit will still take everything in the index. The defect is structural, not behavioral.
+
+The structural remedy is to make the commit itself path-limited. `git commit -- <path> [<path>...]` commits only the named paths regardless of what else sits in the index, so a teammate's commit cannot scoop up a foreign file even if one was added to the index in the same instant. This converts the boundary from a discipline that can fail into a mechanism that cannot. The earlier rules — explicit-path staging, `git diff --cached --stat` before commit, no wildcard `git add` — remain in force as defense in depth, but the load-bearing rule is the path-limited commit. These rules are propagated to teammates through the `team-fix-strategy` skill, and the fellow's verification under C-14 exists because no rule at the teammate layer is self-enforcing.
 
 ### C-16: Cooperative messaging is not an interrupt
 
-`SendMessage(to="*")` is a notification, not an interrupt. A broadcast of "stop committing now" reaches teammates but does not preempt whatever they are currently doing, and a teammate's session may have its receive buffer compressed before the next reasoning step reads it. A stop broadcast cannot serve as a synchronous emergency brake.
+A stop instruction sent to a teammate is a notification, not an interrupt. The message reaches the teammate but does not preempt whatever they are currently doing, and a teammate's session may have its receive buffer compressed before the next reasoning step reads it. The team infrastructure no longer supports a single broadcast to every teammate, so a stop instruction must be sent individually to each teammate by name, and the absence of a single ACK means activity may still be in flight. A stop instruction cannot serve as a synchronous emergency brake.
 
 The implication for incident response is concrete. Before beginning any recovery operation — a rebase, a reset, a reword — the fellow waits for an explicit acknowledgement from every teammate confirming that they have stopped and reporting their current `git status`. Without that acknowledgement, the fellow may rebase against a `git log` that becomes stale the moment another teammate's commit lands. Re-read `git log` immediately before the destructive step, treat the absence of an ACK as ongoing activity, and assume that any teammate who has not responded may still be writing to the index.
+
+### C-17: A teammate's commit is reported as a hash, not as a claim
+
+C-9 establishes that a teammate's work is judged by artifact rather than self-report, and the artifact must be addressable for the rule to mean anything. A commit reported as "done" without its hash is a claim — to verify it, the fellow has to guess which entry in `git log` corresponds to the report, and that guess becomes unreliable the moment any other teammate has committed in the interval. The fellow's verification under C-14 (`git show --stat <hash>`) is meaningless if the hash is in dispute.
+
+So a teammate reporting a commit reports the hash that `git rev-parse HEAD` returned immediately after the commit completed. If a recovery operation later moves history — a reset, a rebase, a reword — the hash a teammate previously reported may no longer exist, and the teammate must re-observe their position with `git log -1` before resuming. Teammates who treat the state at the time of their last action as still current will silently report completion against a commit that has been rewritten or discarded.
 
 ## Steps
 
@@ -168,7 +180,7 @@ Repeat the following loop until all teammates have completed implementation:
    - Does the plan address the root cause — why the problem exists? (C-7)
    - If not, reject and name what the root cause actually is and what direction to pursue (C-8)
    - If yes, approve and tell the teammate to proceed. Remind them to commit after each fix
-3. For each teammate that has just reported a commit, immediately run `git show --stat <hash>` and confirm only files within that teammate's assigned scope appear. If foreign files have been swept in, halt that teammate and any teammate whose work was scooped up, and treat it as an incident under the procedure in step 7.5 (C-14)
+3. For each teammate that has just reported a commit, require the commit hash in the report (C-17) and immediately run `git show --stat <hash>` to confirm only files within that teammate's assigned scope appear. If foreign files have been swept in, halt that teammate and any teammate whose work was scooped up, and treat it as an incident under the procedure in step 7.5 (C-14)
 4. For teammates already implementing, monitor for completion or issues
 5. If a teammate encounters an unexpected issue: help them understand (you may read code for analysis), guide toward a solution, but do NOT write the fix yourself (C-1)
 
@@ -176,10 +188,10 @@ Repeat the following loop until all teammates have completed implementation:
 
 A staging incident means a commit contains files outside its author's assigned scope, or a teammate's unstaged work was swept into another teammate's commit. Recovery requires care because cooperative messaging does not preempt teammates mid-step (C-16).
 
-1. Broadcast a stop instruction with `SendMessage(to="*")` and require an explicit ACK from every teammate that includes their current `git status`. Do not begin recovery until all ACKs are in.
-2. Re-read `git log` immediately before any destructive step — a teammate who had not yet seen the broadcast may have committed in the interim.
+1. Send a stop instruction to each teammate individually by name, and require an explicit ACK from every teammate that includes their current `git status`. Do not begin recovery until all ACKs are in.
+2. Re-read `git log` immediately before any destructive step — a teammate who had not yet read the stop instruction may have committed in the interim.
 3. Choose the recovery method by what the history allows. If no commits have been built on top of the bad one, prefer `git reset --soft HEAD^` and re-commit with correct staging. If subsequent commits exist that cannot be cleanly recreated, use `git rebase -i <commit>^` with `reword` to make the message match the actual contents — this preserves history and carries no merge-conflict risk.
-4. After recovery, broadcast the new `HEAD` and instruct teammates to resume.
+4. After recovery, send the new `HEAD` to every teammate individually and instruct them to re-observe their position with `git log -1` before resuming, per C-17.
 
 ### 8. Verify Outcomes
 
