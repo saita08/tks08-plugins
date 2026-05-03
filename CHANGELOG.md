@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- myrule-review: Prevented duplicate teammate spawn that could occur when the command was re-entered during the wait for review findings
+
+### Changed
+- myrule-review: Bumped to v0.7.2
+
 ## [1.1.11] - 2026-05-02
 
 ### Fixed
