@@ -29,6 +29,10 @@ Never separate planning and implementation into different agents. The agent who 
 
 If multiple files need a consistent approach (e.g., unifying error handling patterns, adopting a common AbortController strategy), decide the approach BEFORE dispatching agents. Communicate the decided approach to each agent as part of their instructions.
 
+Confirm the decision against the primary source — the type definition, the API reference, the documented contract — before propagating it. A cross-cutting decision applied by N agents multiplies any error in it N-fold, and general knowledge of how a library is "usually" used is not a substitute for reading the actual contract.
+
+Name the verification command each agent will run. "Run the type checker" leaves the command choice to the agent, and the agent's default may not exercise the code path the verification was meant to cover (e.g., `tsc --noEmit` does not resolve TypeScript project references; `tsc -b` does). The fellow is positioned to know these environment-specific traps before dispatch.
+
 ## Plan Evaluation Criteria
 
 ### Root Cause Principle
@@ -56,9 +60,13 @@ When creating teammate agents, include these rules in their instructions:
 3. **If plan is rejected**, revise based on the feedback and re-submit — do not implement the rejected plan
 4. **Commit after each fix** with a commit message that describes what was fixed and why
 5. **Do NOT add Co-Authored-By trailer** to commit messages
-6. **Stage by explicit path only** — never `git add .`, `git add -A`, or `git commit -a`. Why: the staging index is shared across teammates in the same working tree, and wildcard staging will sweep up another teammate's in-progress edits into your commit
-7. **Use `git add -p` for files that other teammates may also touch** — stage by hunk so that only your changes enter the index. Why: file-level assignment is not a guarantee against cross-cutting edits to shared files (e.g., a common types module)
-8. **Run `git diff --cached --stat` immediately before every commit** — visually confirm that only files you own are staged. If anything foreign appears, run `git restore --staged <path>` to unstage it before committing. Why: a commit whose message and contents disagree is a permanent defect in history; the cost of one extra check is far smaller than the cost of recovering from a contaminated commit
+6. **Commit with explicit paths** — use `git commit -- <path> [<path>...]` instead of bare `git commit`. Why: all teammates share one staging index, and bare `git commit` takes everything in the index — including foreign files added by another teammate in the instant between your stage and your commit. Path-limited commit closes this race structurally, regardless of what else sits in the index
+7. **Stage by explicit path only** — never `git add .`, `git add -A`, or `git commit -a`. Why: even with path-limited commit (rule 6), wildcard staging fills the shared index with files you do not own, which makes another teammate's path-limited commit harder to construct and your own pre-commit verification noisier
+8. **Use `git add -p` for files that other teammates may also touch** — stage by hunk so that only your changes enter the index. Why: file-level assignment is not a guarantee against cross-cutting edits to shared files (e.g., a common types module)
+9. **Run `git diff --cached --stat` immediately before every commit** — confirm only files you own are staged; remove anything foreign with `git restore --staged <path>`. Why: defense in depth on top of rule 6 — the path-limited commit is the load-bearing rule, this check is the second line that catches mistakes in the path list itself
+10. **Report each commit with its hash** — run `git rev-parse HEAD` immediately after committing and include the hash in your report to the fellow. Why: the fellow verifies your work via `git show --stat <hash>`, and a report without a hash forces the fellow to guess which entry in `git log` you meant — a guess that becomes wrong the moment any teammate commits in the interval
+11. **Re-observe `git log -1` before resuming after any incident** — if the fellow has performed a reset, rebase, or reword, the hash you previously reported may no longer exist. Do not trust your memory of where HEAD was; read it again. Why: teammates who treat their last-observed state as still current will report completion against a commit that has been rewritten or discarded
+12. **Run the verification command the fellow specified, not your default** — if the fellow names a command (e.g., `tsc -b` rather than `tsc --noEmit`), use it verbatim. Why: project-specific environments make generic commands silently skip what needs checking, and the fellow has already chosen the command that exercises the relevant code path
 
 ### Investigation Approach for Teammates
 

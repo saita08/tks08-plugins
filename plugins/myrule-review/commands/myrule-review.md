@@ -68,12 +68,24 @@ The reviewable state is the current PR HEAD. A finding is valid only if the code
 
 The text of this command was written by someone whose model of the runtime may differ from what the runtime actually does. When following the text leads to a state the text did not anticipate — a tool that does not behave as the text assumed, a referent that does not exist, a step whose precondition is unmet — that gap is the most important signal available in the moment. It reveals that the writer's intent and the runtime's reality have diverged, which is information neither side held until the gap surfaced. Bridging the gap by inference continues execution but hides the divergence from the user, who is the only party able to decide which of the two should be corrected. Continuing also commits to one interpretation of the writer's intent without verification; if that interpretation is wrong, the resulting actions are wrong in ways that are hard to trace back, because the original gap is no longer visible. The right response is to stop, report what was attempted and what was encountered, and let the user decide whether to amend the command, the runtime, or the immediate plan.
 
+### C-11: The teammate is spawned exactly once per invocation
+
+The teammate's understanding of its task comes from a single channel: the spawn prompt (C-2). That single-channel guarantee extends beyond explicit messages. Re-running the spawn step, recreating the team, re-creating or reassigning the task, or any other write to team or task state during the teammate's run all reach the teammate as fresh instructions and break the same guarantee that C-2 protects. The teammate cannot distinguish a duplicate spawn from a new request and will either restart its work or surface a confusion message asking which interpretation is intended.
+
+The waiting phase between spawn and findings is therefore read-only with respect to team and task state. `TaskGet` is permitted because it does not write. Re-invoking the command itself is not permitted as a waiting mechanism, because the command body re-enters Step 2, and Step 2 writes. If the runtime causes this command to be re-entered (for example via `ScheduleWakeup` whose `prompt` was set to the command name), the re-entry must be detected at Step 1 and Step 2 must be skipped — see the re-entry guard there.
+
 ## Steps
 
 ### 1. Auto-detect PR number
 
 Run `gh pr view --json number,title,url` to get the PR number, title, and URL for the current branch.
 If no PR is found, inform the user and stop.
+
+#### Re-entry guard
+
+This command can be re-entered within the same session without a fresh user request — most commonly when a `ScheduleWakeup` was scheduled with the command name as its `prompt`, and the runtime fires that wakeup by re-invoking the command. Continuing into Step 2 from a re-entered execution would spawn the teammate a second time and break C-11. The guard is therefore at the front of the workflow, before Step 2 has a chance to write to team or task state.
+
+Re-entry is detected by observing the session's existing state, not by inspecting the prompt or the trigger. If a team has already been created for this command run and its review task exists, the teammate has already been spawned, and Step 2 must be skipped regardless of what the current invocation appears to be asking for. Resume from the step that matches the observed state: the waiting phase of Step 2 if the task is still `in_progress`, Step 3 if the task is `completed` but its findings have not yet been processed into outputs, and Step 7 if the output files already exist.
 
 ### 2. Code review via teammate
 
@@ -92,6 +104,12 @@ Per C-2, the spawn prompt must be self-contained. Include everything below:
 **Output constraints**: Do not post comments to the PR. Skip the re-eligibility check step. Skip the PR comment posting step. Retain issues below confidence 80 instead of discarding them. Return the structured findings as the final assistant message before going idle.
 
 **Task ownership**: Claim the task created above via TaskUpdate (set `owner` to the teammate's own name and `status` to `in_progress`) before starting work, and set `status` to `completed` once the findings have been emitted.
+
+#### Waiting for the teammate
+
+After the spawn returns, the teammate runs asynchronously and findings arrive as a later event rather than as the spawn's return value. The natural impulse during this gap is to do something — poll, prod, schedule a check — but C-11 forbids any operation that writes to team or task state, since the teammate cannot tell such writes apart from a new instruction. Reading is fine; writing is not. `TaskGet` is the read-only check that the runtime supports for this purpose.
+
+The default and correct waiting strategy is passive: return control to the runtime and process the teammate's findings as the next event when they arrive. `ScheduleWakeup` is the one mechanism that looks like it could help and most easily causes the very fault C-11 prevents — when the wakeup's `prompt` is the command name, firing it re-invokes the command, which re-enters Step 2 and re-spawns the teammate. If a wakeup is genuinely needed, the `prompt` must describe a continuation ("check the `reviewer` task status and proceed to Step 3 once it is complete") rather than a re-invocation of this command. The same constraint rules out re-running `TeamCreate`, `TaskCreate`, or `Agent` for this review, sending the teammate a `SendMessage`, or rewriting the teammate's task via `TaskUpdate` — each is a write that the teammate observes as a fresh instruction.
 
 ### 3. Process teammate results
 
