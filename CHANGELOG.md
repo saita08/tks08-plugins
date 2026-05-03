@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- team-review-fix: A simplification pass now runs after teammate fixes are verified, reviewing the team's commit range for reuse, quality, and efficiency and adding follow-up commits for anything it finds
+
+### Changed
+- team-review-fix: Bumped to v0.6.0
+
 ## [1.1.12] - 2026-05-03
 
 ### Fixed
