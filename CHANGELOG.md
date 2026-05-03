@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.12] - 2026-05-03
+
 ### Fixed
 - myrule-review: Prevented duplicate teammate spawn that could occur when the command was re-entered during the wait for review findings
 - team-review-fix: Hardened teammate coordination to eliminate the staging-index race that could produce commits whose message and contents disagreed
