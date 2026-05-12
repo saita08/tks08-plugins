@@ -1,11 +1,11 @@
 ---
-name: set-goal
-description: This skill should be used when the user asks to "set a goal", "create a /goal", "help me write a /goal condition", "what should my goal be", or otherwise needs help formulating a stopping condition for Claude Code's /goal command. Observes the project, confirms the user's intent in plain language, and produces a verifiable /goal condition string.
+name: propose-goal
+description: This skill should be used when the user asks to "propose a goal", "draft a /goal", "help me write a /goal condition", "what should my goal be", or otherwise needs help formulating a stopping condition for Claude Code's /goal command. Observes the project, confirms the user's intent in plain language, and proposes a verifiable /goal condition string for the user to run.
 argument-hint: [何を終わらせたいか（省略可）]
 allowed-tools: Read, Glob, Grep, Bash, WebSearch, WebFetch
 ---
 
-# Set a Goal
+# Propose a Goal
 
 Help the user formulate a `/goal` condition that the evaluator can judge from the transcript. Two reference files back this skill. `references/goal-spec.md` records what `/goal` actually does — its mechanism, the evaluator, the surface flags. `references/constitution.md` records the principles that guide the work. Read both before proposing a condition, and re-consult either when something feels off.
 
