@@ -42,6 +42,22 @@ The second is a stated check, naming how the condition will be demonstrated in c
 
 The third is constraints that matter — anything that must not change on the way there. "No other test file is modified." "The public API of `module X` does not change." Constraints are how a condition prevents the wrong kind of progress.
 
+## The proxy is not the goal
+
+Verifiability creates a trap. Once a condition is judged by what the transcript shows, the easiest condition to write is one that names a directly observable artifact — a file, a status field, a report. Working models will then take the shortest path to producing that artifact, even when the path no longer corresponds to what the user wanted.
+
+This is Goodhart's hazard: when a measure becomes a target, it stops being a good measure. A condition that says "fill in `progress.md` with all items marked done" can be satisfied by writing "done" next to each item, regardless of whether the underlying work happened. The evaluator sees the file, sees the words, and clears the goal. The user finds the app still broken.
+
+A condition resists this hazard only when it makes the underlying goal visible alongside the proxy. Three rules follow.
+
+State the goal in plain language as part of the condition itself. A condition that opens with a means — "Create file X and fill in Y" — has already lost. The first thing the evaluator should read is what the user actually wants: "Finish the app to the point of App Store submission." The proxy comes after, as the way that goal will be demonstrated, not as the goal itself.
+
+When a proxy stands in for the real goal, name it as a proxy. Saying "the progress file shows all items complete" inside a condition is not enough; the condition must also say "and the fact that each item claims completion is corroborated by an observable artifact" — a file at a specific path, a build that exits zero, a test that surfaces a result. The proxy then loses its power to be satisfied independently of the goal, because each "complete" claim has a separate piece of evidence the evaluator can check.
+
+Avoid "reported as complete" as the stopping condition. A condition that ends with "and Claude reports that this is done" outsources the decision to the working model, which has every incentive to declare victory. The condition should require the evidence to be visible in the transcript directly, not visible through Claude's own assertion that it is visible.
+
+This is harder than writing a clean proxy-based condition, because the underlying goal is often the thing that is hardest to make verifiable. The honest response is to surface the gap. If "the app is finished" cannot be made verifiable without proxies, say so to the user, name the proxies the condition will use, and confirm that the user agrees those proxies — taken together — would convince them the goal is met. The agreement is what prevents the proxies from running away with the work.
+
 ## Observation is evidence; inference is hypothesis
 
 Before formulating a condition, observe the project. Read CLAUDE.md and the README for stated intent. Look at git state for what is already in motion. Check failing tests and lint for what is currently broken. Look at open PRs and issues for what is acknowledged but unfinished. Consult external documentation when the user's intent references behavior whose specification lives outside the repository.
