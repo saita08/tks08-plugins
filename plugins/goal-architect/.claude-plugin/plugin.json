@@ -1,0 +1,8 @@
+{
+  "name": "goal-architect",
+  "description": "Help shape a verifiable completion condition for Claude Code's /goal command by observing the project and confirming the user's intent.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}
