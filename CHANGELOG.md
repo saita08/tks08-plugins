@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.14] - 2026-05-12
+
+### Added
+- goal-architect: New plugin. `/goal-architect:propose-goal` helps formulate a `/goal` completion condition by observing the project, confirming intent in plain language, and translating it into a transcript-verifiable check. Includes a Constitution document describing the reasoning behind every judgment
+
 ## [1.1.13] - 2026-05-04
 
 ### Added

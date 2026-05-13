@@ -33,6 +33,11 @@
       "name": "ai-company-studio",
       "source": "./plugins/ai-company-studio",
       "description": "Design and generate AI-only companies as repositories"
+    },
+    {
+      "name": "goal-architect",
+      "source": "./plugins/goal-architect",
+      "description": "Help shape a verifiable completion condition for Claude Code's /goal command"
     }
   ]
 }
