@@ -43,14 +43,26 @@ Do not propose a `/goal` condition during this phase. The user is being asked to
 
 ### 5. Formulate the condition
 
-Once intent is confirmed, translate it into a sentence the evaluator can judge from the transcript. The condition must be verifiable by reading the conversation alone, without running commands or reading files. Beyond that baseline, four properties make it hold up across many turns:
+Once intent is confirmed, translate it into a sentence the evaluator can judge from the transcript. The condition must be verifiable by reading the conversation alone, without running commands or reading files.
 
-- A single measurable end state — one thing that is either true or false (test result, exit code, file count, empty queue).
+Structure every condition as three layers, in this order:
+
+1. **The goal in plain language.** Open the condition with one sentence stating what the user actually wants, in their words. "Finish the app to App Store submission readiness." "Refactor the auth module so login works under the new API." Without this layer, the working model and the evaluator both lose sight of the underlying purpose, and the condition becomes a target for the proxy that follows.
+2. **The evidence that proves the goal.** Spell out what must be observable in the transcript for that goal to be considered met. When the evidence is a proxy — a status file, a checklist, a report — name the proxy and immediately pair each proxy item with an independent artifact the evaluator can see, such as a file at a specific path, a build exit code, or a test result. The proxy alone is never the stopping condition.
+3. **Constraints and a bound.** Anything that must not change on the way there. For open-ended work, a turn or time clause such as "or stop after 20 turns".
+
+Apply these four properties throughout:
+
+- A single measurable end state — one thing that is either true or false, such as a test result, an exit code, a file count, or an empty queue.
 - A stated check — how the condition will be demonstrated, in concrete terms.
 - Constraints that matter — anything that must not change along the way.
-- A bound — for open-ended work, a turn or time clause such as "or stop after 20 turns".
+- A bound — for open-ended work, a turn or time clause.
+
+Avoid two specific traps. First, never let a condition open with a means — sentences like "Create file X" or "Fill in checklist Y" describe how to demonstrate the goal, not the goal itself, and belong in the evidence layer rather than at the head. Second, never end a condition with "Claude reports that this is done" or "all items are marked complete in the transcript." Reporting is not evidence; the evidence must be visible to the evaluator without trusting Claude's own assertion that it exists.
 
 When more than one honest translation exists, present the alternatives briefly with what each catches and misses, and let the user choose. Do not list filler options to look thorough.
+
+When the goal genuinely cannot be made verifiable without proxies, say so to the user, name the proxies the condition will rely on, and confirm that those proxies together would convince them the goal is met. The agreement is what stops the proxies from running away with the work.
 
 ### 6. Present the condition for the user to run
 
@@ -62,7 +74,7 @@ Show the final condition as a single code block in this form, so the user can co
 
 Then stop. Do not register or run `/goal` on the user's behalf. Do not begin work toward the goal. Control returns to the user.
 
-If the user adjusts the condition, distinguish whether the adjustment changes *what they want* (return to step 4) or only *how it is phrased* (refine in place and re-present).
+If the user adjusts the condition, first decide which kind of adjustment it is. When the adjustment changes *what they want*, return to step 4 and re-confirm intent before re-translating. When it only changes *how the condition is phrased*, refine the wording in place and re-present.
 
 ## Constraints
 
