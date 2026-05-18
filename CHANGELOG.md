@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- myrule-review: A re-entered run no longer treats a half-written review report as finished, and the wait phase no longer waits for a findings message that the file-based delivery never sends — both could leave the command stalled or reporting an incomplete review as done
+
+### Changed
+- myrule-review: Bumped to v0.8.1
+
 ## [1.1.15] - 2026-05-19
 
 ### Fixed
