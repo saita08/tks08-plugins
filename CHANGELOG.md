@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- myrule-review: Review findings are now delivered through the review report file instead of a message, so a run no longer ends with the command holding only a completion notice and no findings
+
+### Changed
+- myrule-review: Bumped to v0.8.0
+
 ## [1.1.14] - 2026-05-12
 
 ### Added
