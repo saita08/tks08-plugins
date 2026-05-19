@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.16] - 2026-05-19
+
+### Fixed
+- myrule-review: A review run no longer stalls or reports an incomplete review as finished — completion is now determined from the review report file rather than a task-status check that could fail even after the review was done
+
+### Changed
+- myrule-review: Bumped to v0.8.1
+
 ## [1.1.15] - 2026-05-19
 
 ### Fixed
