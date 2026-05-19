@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
-- myrule-review: Completion is now decided by the review report file on disk, not by a task-status lookup that can fail when the command's session cannot resolve the task store — a run no longer stalls or reports an incomplete review as done when that lookup returns "Task not found", when a re-entered run finds a half-written report, or when the wait phase expects a findings message the file-based delivery never sends
+- myrule-review: A review run no longer stalls or reports an incomplete review as finished — completion is now determined from the review report file rather than a task-status check that could fail even after the review was done
 
 ### Changed
 - myrule-review: Bumped to v0.8.1
