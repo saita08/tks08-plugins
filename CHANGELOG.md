@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- myrule-review: Review delegation now reliably reaches the `code-review` plugin's skill rather than silently running Claude Code's new built-in `/code-review` command, by pinning the reference to the plugin-qualified skill name
+
+### Changed
+- myrule-review: Bumped to v0.8.2
+
 ## [1.1.16] - 2026-05-19
 
 ### Fixed
