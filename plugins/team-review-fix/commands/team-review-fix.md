@@ -1,5 +1,5 @@
 ---
-allowed-tools: Read, Edit, Write, Glob, Grep, Bash, Skill, TeamCreate, TeamDelete, SendMessage, TaskCreate, TaskGet, TaskList, TaskOutput, TaskUpdate, AskUserQuestion
+allowed-tools: Read, Edit, Write, Glob, Grep, Bash, Skill, Agent, TeamCreate, TeamDelete, SendMessage, TaskCreate, TaskGet, TaskList, TaskOutput, TaskUpdate, AskUserQuestion
 description: Fix review feedback by delegating to an agent team. Splits issues by file, each agent investigates, plans, and implements.
 argument-hint: <review issues text or file path> (or omit to enter interactively)
 ---
@@ -100,7 +100,9 @@ So a teammate reporting a commit reports the hash that `git rev-parse HEAD` retu
 
 Teammate fixes are correct against the issues they were assigned, but the resulting commits accumulate the small inefficiencies of independent work — duplicated helpers two teammates each invented, an existing utility neither knew about, a wrapped condition that an early return would flatten. These are not defects against any single issue, so no single teammate's plan is the place to address them. They surface only when the union of all fixes is read together.
 
-After all teammates have passed verification under C-9, C-10, and C-14, the fellow runs a simplification pass over the commit range produced by the team. The pass is delegated to the `simplify` skill, which reviews the diff for reuse, quality, and efficiency and applies any fixes it finds. Because the simplification pass operates on a committed range rather than the working tree, the fellow tells `simplify` the starting commit explicitly and instructs it to commit each fix on top of the existing history rather than amending. The earlier teammate commits are not rewritten; the simplification pass adds new commits.
+After all teammates have passed verification under C-9, C-10, and C-14, the fellow runs a simplification pass over the commit range produced by the team. The pass is delegated to the `code-simplifier:code-simplifier` agent provided by the official `code-simplifier` plugin. The agent reviews the diff for reuse, quality, and efficiency and applies any fixes it finds. Because the simplification pass operates on a committed range rather than the working tree, the fellow names the starting commit in the agent's instructions so that the range under review is `<starting-commit>..HEAD` rather than the agent's default of recently modified code. The agent applies its fixes to the working tree and does not commit; the fellow commits each fix on top of the existing history rather than amending, so that earlier teammate commits are not rewritten and the simplification fixes land as new commits.
+
+The `code-simplifier` plugin is an external dependency that the user may not have installed. When the agent is unavailable, the pass is skipped. No substitute mechanism is run in its place, because a substitute the fellow chose unilaterally would not carry the agent's contract and would be invisible to anyone reading the result later. A silent skip would mislead a future reader of the commit range into believing the team output had been simplified when it had not, so the skip and its reason are reported in the completion summary.
 
 C-1 forbids the fellow from writing code during the teammate-coordination phase, because doing so destroys plan-review independence. That reasoning does not apply once teammates have finished and the team has been deleted: there are no further plans to review, and the simplification pass is itself the review. The fellow may therefore write code during the simplification pass. To make the boundary unambiguous, the team is deleted with TeamDelete before the pass begins, so that no teammate can be active while the fellow is editing.
 
@@ -223,11 +225,19 @@ Once every teammate has passed verification, delete the team with TeamDelete. Th
 
 ### 11. Run the Simplification Pass
 
-Invoke the `simplify` skill with the starting commit recorded in step 6 so that it reviews the diff `<starting-commit>..HEAD` rather than its default of the working tree. The default would find nothing here, because every teammate fix has already been committed.
+The simplification pass is delegated to the `code-simplifier:code-simplifier` agent provided by the official `code-simplifier` plugin. Before invoking, confirm the agent is available by looking for `code-simplifier:code-simplifier` in the Agent tool's list of subagent types. If it is not listed, the plugin is not installed; skip this step, record the skip reason for step 12, and proceed.
 
-The `simplify` skill, by default, applies fixes to the working tree and leaves committing to its caller. In this command the caller is the fellow, so the fellow commits each fix with a message describing what was simplified and why, using path-limited `git commit -- <path>` to stay consistent with C-15. Earlier teammate commits are not amended; the simplification fixes land as new commits on top.
+If the agent is available, invoke it with Agent and `subagent_type: "code-simplifier:code-simplifier"`. The prompt must include:
 
-If the pass finds nothing to fix, no commit is added and the step completes silently. Report this state in step 12 so the user can see that the pass ran.
+- The starting commit recorded in step 6, with the instruction that the scope under review is the diff `<starting-commit>..HEAD` rather than the agent's default of recently modified code in the working tree
+- An explicit instruction to apply any fixes to the working tree but not to commit them, because committing is the fellow's responsibility under the path-limited rule in C-15
+- A request to report, on completion, what was changed and why, or that nothing was changed
+
+If the agent appeared available but the Agent invocation still fails, treat it as the unavailable case: skip the pass and record the failure reason for step 12. The availability check and the invocation can disagree when the plugin is listed but the agent cannot be loaded, and both paths must lead to the same skip behavior so that a partial-installation state does not produce a half-finished pass.
+
+After the agent returns, read the working tree diff. For each file the agent modified, commit it with `git commit -- <path>` and a message describing what was simplified and why, consistent with C-15. Earlier teammate commits are not amended; the simplification fixes land as new commits on top.
+
+If the agent reports no changes, no commit is added. Report this state in step 12 so the user can see that the pass ran and found nothing.
 
 ### 12. Report Completion
 
@@ -236,7 +246,7 @@ Once the simplification pass has finished, summarize the results to the user:
 - Total issues addressed
 - For each file: what was changed and why
 - List of commits made by teammates
-- What the simplification pass changed, or that it ran and found nothing
+- The simplification pass result: what it changed, that it ran and found nothing, or that it was skipped because the `code-simplifier` plugin was unavailable, with the reason stated
 - Any issues that could not be resolved (with explanation)
 
 Output this summary directly in the terminal (do not write to a file).
