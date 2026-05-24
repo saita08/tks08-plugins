@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - myrule-review: Bumped to v0.8.2
-- team-review-fix: The final simplification pass is now delegated to the `code-simplifier` agent from Anthropic's official `code-simplifier` plugin. If that plugin is not installed, the pass is skipped and the skip is reported in the completion summary
+- team-review-fix: The final simplification pass is now delegated to the `code-simplifier:code-simplifier` agent from the `code-simplifier` plugin distributed by Anthropic on the `claude-plugins-official` marketplace. If that plugin is not installed, the pass is skipped and the skip is reported in the completion summary with enough detail to distinguish a genuine missing-plugin outcome from an invocation-name mistake
 - team-review-fix: Bumped to v0.7.0
 
 ## [1.1.16] - 2026-05-19
