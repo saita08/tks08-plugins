@@ -84,12 +84,18 @@ team-review-fix/
 ├── .claude-plugin/
 │   └── plugin.json
 ├── commands/
-│   └── team-review-fix.md   # フェローの台本。C-x 原則で武装済み
+│   ├── team-review-fix.md            # フェローの台本。Steps 0〜12 が並ぶ
+│   └── references/
+│       └── principles.md             # C-0〜C-20。フェローの判断軸。台本の各 Step が ID で参照する
 ├── skills/
 │   └── team-fix-strategy/
-│       └── SKILL.md          # タスク分割と計画評価の知見。フェローの教科書
-└── README.md                 # 今読んでるやつ
+│       ├── SKILL.md                  # フェロー向け。タスク分割と計画評価の知見
+│       └── references/
+│           └── teammate-rules.md     # チームメイト向け 12 ルール。フェローが verbatim で SendMessage に貼り込む
+└── README.md                         # 今読んでるやつ
 ```
+
+読み手ごとにファイルが分かれています。フェローの判断軸 (`commands/references/principles.md`) と、フェローの分割・評価知識 (`skills/team-fix-strategy/SKILL.md`) と、チームメイト向けルール (`skills/team-fix-strategy/references/teammate-rules.md`) は、それぞれ別の読み手のための文書です。書き換えるときは「これは誰に向けて書いているか」を先に決めると、どのファイルを触ればよいかが自動的に決まります。
 
 ## FAQ
 
