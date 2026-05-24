@@ -106,7 +106,39 @@ The `code-simplifier` plugin is an external dependency that the user may not hav
 
 C-1 forbids the fellow from writing code during the teammate-coordination phase, because doing so destroys plan-review independence. That reasoning does not apply once teammates have finished and the team has been deleted: there are no further plans to review, and the simplification pass is itself the review. The fellow may therefore write code during the simplification pass. To make the boundary unambiguous, the team is deleted with TeamDelete before the pass begins, so that no teammate can be active while the fellow is editing.
 
+### C-19: The wait between teammate turns schedules no prompt that names this command
+
+Between dispatching a teammate and reading their next plan or commit, the fellow is waiting, and the natural impulse during a wait is to schedule something — a reminder to check progress, a poll for new output, a wake-up to return on a timer. Every such mechanism asks the runtime to enqueue a prompt that will be delivered as a fresh turn at a future moment, and the choice of what that prompt says decides what the future turn does. A prompt that describes a continuation ("read `TaskGet` for the dispatched teammates and resume at Step 8") simply restarts the read-and-review loop where it left off, which is harmless. A prompt that names this command, by contrast, re-enters Step 1 — and Step 1 leads to Step 7, where `TeamCreate` runs against the same input the prior run already dispatched. The teammates that result were never approved by the fellow for that moment, so they implement against no plan the fellow ever reviewed, which is the violation C-11 exists to prevent.
+
+The fellow therefore never schedules a future prompt that names this command, regardless of which mechanism would do the scheduling. The wait is passive in that specific sense: when no teammate has produced new output, control returns to the runtime and the next turn picks up `TaskGet` and `TaskOutput` for the dispatched teammates. Pacing tools that exist for `/loop`-style self-driving — where the same prompt is meant to fire on every iteration by design — are not appropriate here, because this command is not a loop and the prompt they would carry is exactly the prompt that violates the rule above. If the user has wrapped this command in `/loop`, the loop is the user's chosen pacer and the command body adds no second one on top; that way the only path to re-invocation is the one the user can see and stop.
+
+The rule is about the prompt, not about any particular API. A scheduling tool whose ID can be cancelled removes one failure mode (a forgotten wake-up after completion) but does not authorize scheduling the dangerous prompt in the first place, because cancellation depends on the fellow remembering to do it before the run ends, and a rule that depends on remembering is a rule that will eventually fail. Closing the question at the prompt is what removes the class of error; cancellation is at best defense in depth on top of it.
+
+### C-20: Re-entry is recognized at the front of the workflow from artifacts the session cannot fabricate
+
+A run can begin without a fresh user request — a wake-up from an earlier session fires, a `/loop` ticks, an external scheduler delivers a prompt — and when it does, the input the workflow sees is indistinguishable from a user invocation. The session has no record of having seen this input before, because the prior run that produced its output is either gone (a different session) or compressed (the same session's context has rolled forward). Continuing into Step 7 from such a re-entry creates a team against an input that already has a team, or did until recently, and the second team has no relationship to the work the user reviewed. The fault is not that re-entry happens; the fault is that the workflow cannot tell, from its own session state, that it is happening.
+
+What the session cannot fabricate is the filesystem. `TeamCreate` writes `~/.claude/teams/{team-name}/config.json` and `~/.claude/tasks/{team-name}/`, and these survive across sessions and across context compressions. The fellow knows the team name it would have chosen — it is the name this fellow passes to `TeamCreate` in Step 7 — so the check is not a search across the teams directory but a targeted read of the one path this run would write to if it proceeded. The presence of that path means a prior run reached Step 7 against this input; the contents of the task store under it describe how far that prior run got. Task-store reads are advisory here in the way C-17 makes commit hashes advisory after a history rewrite: a `TaskGet` that returns "not found" can mean the prior run is genuinely gone, or it can mean the task store is slow to resolve, and the workflow does not let the ambiguous reading authorize a re-spawn. Only the presence of the team file authorizes continuation; only its absence authorizes a fresh start.
+
+The routing follows from what the artifacts can and cannot say. When the team file is present and teammates still have outstanding work, the prior wait was interrupted; the workflow returns to that wait without re-issuing any dispatch. When the team file is present and teammates have all reported their final commits, verification may or may not have completed in the prior run — and since verification leaves no artifact the next session can read, the workflow re-runs Step 9 rather than trusting a memory it does not have. When the team file is present but its tasks describe nothing the workflow can act on, the residue is from a prior run whose simplification pass and report finished; the workflow calls `TeamDelete` to clean up and proceeds. When the team file is absent, the prior run either never reached Step 7 or already passed Step 10, and the workflow proceeds to Step 1 — the input is treated as new because the artifacts say nothing else.
+
+The asymmetry is deliberate. A false negative (treating a real re-entry as new) creates a duplicate team and a duplicate set of commits the user did not ask for; a false positive (treating a fresh run as re-entry) at worst defers to artifacts that decide the workflow exits or resumes harmlessly. The check is therefore tuned so that the presence of artifacts always wins over their absence, and the absence is read as "no prior run to honour" rather than "no prior run existed."
+
 ## Steps
+
+### 0. Re-entry Guard
+
+Before Step 1 reads input, check whether the team this run would create in Step 7 already exists from a prior run (C-20). The check is a targeted read of `~/.claude/teams/{team-name}/config.json` for the team name this fellow would pass to `TeamCreate`, not a search across the teams directory — the workflow only needs to know about its own prior runs, and the name is one the fellow knows.
+
+If that team file is absent, the prior run either never reached Step 7 or finished and was cleaned up by Step 10; proceed to Step 1 and treat the input as new.
+
+If the team file is present, the prior run reached Step 7 against this input. Read the task store under `~/.claude/tasks/{team-name}/` and route by what it says:
+
+- Any teammate still has outstanding work (a task that is not `completed`, or a `completed` task whose final commit hash has not been reported) → the prior wait was interrupted. Return to Step 8 and resume the review-and-monitor loop against the existing team. Do not call `TeamCreate`, `TaskCreate`, or `SendMessage` for any new work, since the team and its tasks already exist.
+- All teammates have reported their final commits → verification may or may not have completed in the prior run. Verification leaves no artifact this run can read, so resume from Step 9 rather than from Step 10; re-running Step 9 against an already-verified team is harmless because the diff inspection it performs is idempotent.
+- The task store under the team directory is empty or describes only completed work that has already been reported — the residue is from a run whose simplification pass and report finished but whose `TeamDelete` never ran. Call `TeamDelete` to remove the residue, then proceed to Step 1.
+
+The check intentionally does not look at the working tree. Whether the tree is clean or dirty is not evidence of re-entry — a fresh run against a dirty tree is the normal case for this command — so the routing rests on the team file alone.
 
 ### 1. Receive Review Feedback
 
@@ -185,6 +217,8 @@ For each file group, create a task with TaskCreate and assign to a teammate via 
 ### 8. Review Plans and Monitor Progress (continuous loop)
 
 Do NOT wait for all teammates to finish before reviewing. Process each teammate's output as soon as it arrives.
+
+The wait between iterations of this loop is passive (C-19). When no teammate has produced new output, control returns to the runtime rather than being held by a scheduled future prompt. Do not schedule a wake-up, a cron job, or any other future prompt whose body names this command — such a prompt, when it fires, re-enters Step 1 against the same input and produces a second team the fellow never approved.
 
 Repeat the following loop until all teammates have completed implementation:
 

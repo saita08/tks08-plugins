@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - myrule-review: Review delegation now reliably reaches the `code-review` plugin's skill rather than silently running Claude Code's new built-in `/code-review` command, by pinning the reference to the plugin-qualified skill name
+- team-review-fix: A completed run no longer re-runs itself on the same input after finishing — the wait between teammate turns no longer schedules a wake-up that re-invokes the command, and a re-invocation that still occurs is detected and exits without re-creating the team
 
 ### Changed
 - myrule-review: Bumped to v0.8.2
