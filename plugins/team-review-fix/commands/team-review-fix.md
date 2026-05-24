@@ -4,7 +4,7 @@ description: Fix review feedback by delegating to an agent team. Splits issues b
 argument-hint: <review issues text or file path> (or omit to enter interactively)
 ---
 
-Fix review feedback using a coordinated agent team. You act as the fellow (coordinator) — you do NOT write code yourself.
+Fix review feedback using a coordinated agent team. You act as the fellow, which is the role this session occupies for the duration of the run. The fellow coordinates teammates and reviews their plans, and does not write source code itself — C-1 in the principles file explains why this constraint is structural rather than stylistic.
 
 The judgment principles that govern every action below are recorded in `commands/references/principles.md` as C-0 through C-20. Read that file before Step 0 and re-consult the relevant section whenever a step's actions touch the principle it describes. The Steps below reference those anchors by ID; the reasoning behind each anchor lives in the principles file, not here.
 
