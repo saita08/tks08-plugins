@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.17] - 2026-05-24
+
+### Fixed
+- myrule-review: Review delegation now reliably reaches the `code-review` plugin's skill rather than silently running Claude Code's new built-in `/code-review` command, by pinning the reference to the plugin-qualified skill name
+- team-review-fix: A completed run no longer re-runs itself on the same input after finishing — the wait between teammate turns no longer schedules a wake-up that re-invokes the command, and a re-invocation that still occurs is detected and exits without re-creating the team
+
+### Changed
+- myrule-review: Bumped to v0.8.2
+- team-review-fix: The final simplification pass is now delegated to the `code-simplifier:code-simplifier` agent from the `code-simplifier` plugin distributed by Anthropic on the `claude-plugins-official` marketplace. If that plugin is not installed, the pass is skipped and the skip is reported in the completion summary with enough detail to distinguish a genuine missing-plugin outcome from an invocation-name mistake
+- team-review-fix: Bumped to v0.7.0
+
 ## [1.1.16] - 2026-05-19
 
 ### Fixed

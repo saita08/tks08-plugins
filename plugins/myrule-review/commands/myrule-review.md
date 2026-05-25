@@ -107,7 +107,7 @@ Per C-2, the spawn prompt must be self-contained. Include everything below:
 
 **Purpose**: Review the PR and write the structured findings to the review report file.
 
-**Method**: Invoke the skill `code-review:code-review` via the Skill tool. The short name `code-review` does not resolve; the plugin-qualified name is required. This skill is the sole means of performing the review. If it fails to load, report the failure and stop.
+**Method**: Invoke the skill `code-review:code-review` via the Skill tool. The plugin-qualified name is required because Claude Code now ships a built-in `/code-review` command whose name collides with the short form: the short name `code-review` resolves to that built-in command rather than to this skill, and a teammate that reaches for the short name will silently perform a different review than the one this command depends on. The colon-qualified form `code-review:code-review` is unambiguous — it names the skill `code-review` inside the plugin `code-review`, a shape the built-in command cannot take — and is the only form that reliably reaches the intended skill. This skill is the sole means of performing the review. If it fails to load, report the failure and stop.
 
 **Review criteria**: The PR number, title, and URL from Step 1. The full text of the coding standards obtained from `myrule-review:review-policy` as additional review criteria to apply alongside `code-review:code-review`'s own criteria, with the same 0-100 confidence scoring.
 
