@@ -75,6 +75,7 @@ myrule-review/
 
 ## 前提条件
 
+- Claude Code v2.1.172 以降であること（レビューを委譲されたサブエージェントが、さらに公式 `code-review` のレビューエージェント群を起動するため）
 - [code-review](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) プラグインがインストールされていること
 - `gh` CLI が認証済みであること
 - 現在のブランチにオープンなPRが存在すること
