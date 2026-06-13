@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.18] - 2026-06-13
+
 ### Changed
 - myrule-review: Review delegation now runs as a single synchronous subagent call instead of an agent team — a run completes in fewer turns with lower token use, and no longer requires team/task tool permissions. Requires Claude Code v2.1.172 or later, where subagents can spawn their own subagents
 - team-review-fix: The final simplification pass now runs through Claude Code's built-in `/simplify` instead of the `code-simplifier` plugin, so the `code-simplifier` plugin no longer needs to be installed. Requires Claude Code v2.1.154 or later
