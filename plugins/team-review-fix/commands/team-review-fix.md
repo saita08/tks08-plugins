@@ -1,5 +1,5 @@
 ---
-allowed-tools: Read, Edit, Write, Glob, Grep, Bash, Skill, Agent, TeamCreate, TeamDelete, SendMessage, TaskCreate, TaskGet, TaskList, TaskOutput, TaskUpdate, AskUserQuestion
+allowed-tools: Read, Edit, Write, Glob, Grep, Bash, Skill, TeamCreate, TeamDelete, SendMessage, TaskCreate, TaskGet, TaskList, TaskOutput, TaskUpdate, AskUserQuestion
 description: Fix review feedback by delegating to an agent team. Splits issues by file, each agent investigates, plans, and implements.
 argument-hint: <review issues text or file path> (or omit to enter interactively)
 ---
@@ -139,23 +139,23 @@ Do NOT proceed to the simplification pass until all teammates pass verification.
 
 ### 10. Delete the Team
 
-Once every teammate has passed verification, delete the team with TeamDelete. The team has no further work, and the simplification pass that follows is the fellow's responsibility: the fellow is the one writing to the index when commits land, whether the pass itself is delegated to an agent or run inline. Deleting the team here makes that boundary structural rather than conventional. With no teammates active, there is no risk that a stray teammate writes to the index while the fellow is committing, and the C-1 relaxation applies only to the simplification pass, never to any phase in which teammates are still running (C-18).
+Once every teammate has passed verification, delete the team with TeamDelete. The team has no further work, and the simplification pass that follows is the fellow's responsibility: the fellow is the one writing to the index when commits land, whether the pass itself is delegated to a skill or run inline. Deleting the team here makes that boundary structural rather than conventional. With no teammates active, there is no risk that a stray teammate writes to the index while the fellow is committing, and the C-1 relaxation applies only to the simplification pass, never to any phase in which teammates are still running (C-18).
 
 ### 11. Run the Simplification Pass
 
-The simplification pass is delegated to the `code-simplifier:code-simplifier` agent. The colon-qualified name resolves to the `code-simplifier` agent inside the `code-simplifier` plugin distributed by Anthropic on the `claude-plugins-official` marketplace. Before invoking, confirm the agent is available by looking for the exact string `code-simplifier:code-simplifier` in the Agent tool's list of `subagent_type` values. The lookup uses the colon-qualified form, never the short form `code-simplifier`, because the short form may match nothing or may match a different agent (C-18). If the colon-qualified entry is not listed, the plugin is not installed; skip this step, record the skip reason for step 12 as "plugin `code-simplifier:code-simplifier` not found in subagent list", and proceed.
+The simplification pass is delegated to Claude Code's built-in `/simplify`, invoked through the Skill tool with the skill name `simplify`. This is the cleanup-only review — it improves the quality of the changed code for reuse, simplification, efficiency, and altitude without hunting for correctness bugs (C-18). It is part of Claude Code itself, so there is no plugin to install and no availability check to perform; the requirement is only that Claude Code is recent enough to ship it (see the README).
 
-If the agent is available, invoke it with Agent and `subagent_type: "code-simplifier:code-simplifier"`. The colon-qualified form is required here for the same reason it was required in the availability check. The prompt must include:
+The pass must review the commit range the team produced, not its default target of the working tree or the upstream diff. Pass the range `<starting-commit>..HEAD` — built from the starting commit recorded in step 6 — to the skill as its argument. If the skill does not accept the range through its argument, state in the invocation that the scope under review is exactly the diff `<starting-commit>..HEAD` so the range is unambiguous either way.
 
-- The starting commit recorded in step 6, with the instruction that the scope under review is the diff `<starting-commit>..HEAD` rather than the agent's default of recently modified code in the working tree
-- An explicit instruction to apply any fixes to the working tree but not to commit them, because committing is the fellow's responsibility under the path-limited rule in C-15
-- A request to report, on completion, what was changed and why, or that nothing was changed
+`/simplify` applies its fixes to the working tree. It must not commit them: committing is the fellow's responsibility under the path-limited rule in C-15. State this in the invocation.
 
-If the agent appeared available but the Agent invocation still fails, treat it as the unavailable case: skip the pass and record the actual error message from the Agent invocation, verbatim, as the skip reason for step 12. Do not paraphrase the error. The availability check and the invocation can disagree when the plugin is listed but the agent cannot be loaded, and both paths must lead to the same skip behavior so that a partial-installation state does not produce a half-finished pass. Recording the verbatim error matters because a `subagent_type not recognised` message, which would be the symptom of accidentally invoking with the short form, looks superficially like a "plugin not installed" outcome but has a different remedy.
+After the pass returns, the fellow lands the result:
 
-After the agent returns, read the working tree diff. For each file the agent modified, commit it with `git commit -- <path>` and a message describing what was simplified and why, consistent with C-15. Earlier teammate commits are not amended; the simplification fixes land as new commits on top.
+- Read the working tree with `git status` and the diff. For each file the pass modified, commit it with `git commit -- <path>` and a message describing what was simplified and why, consistent with C-15. Earlier teammate commits are not amended; the simplification fixes land as new commits on top.
+- If the pass committed on its own despite the instruction, do not amend. Confirm with `git log` and `git show --stat <hash>` that each new commit contains only files within the team's commit range and does not sweep in foreign files; if a commit violates C-15, treat it as a staging incident and recover under the step 8.5 procedure.
+- If the pass reports no changes, no commit is added.
 
-If the agent reports no changes, no commit is added. Report this state in step 12 so the user can see that the pass ran and found nothing.
+Report the pass result in step 12 so the user can see that it ran, whether it changed anything or found nothing.
 
 ### 12. Report Completion
 
@@ -164,7 +164,7 @@ Once the simplification pass has finished, summarize the results to the user:
 - Total issues addressed
 - For each file: what was changed and why
 - List of commits made by teammates
-- The simplification pass result: what it changed, that it ran and found nothing, or that it was skipped. When skipped, the reason is stated in the exact form recorded in step 11, which is either the verbatim error message from the failed Agent invocation or the "plugin `code-simplifier:code-simplifier` not found in subagent list" notice. The user reads this line to decide whether to install the plugin, fix the invocation, or accept the skip
+- The simplification pass result: what it changed, or that it ran and found nothing
 - Any issues that could not be resolved (with explanation)
 
 Output this summary directly in the terminal (do not write to a file).
