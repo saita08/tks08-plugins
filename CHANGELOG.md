@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- myrule-review: Review delegation now runs as a single synchronous subagent call instead of an agent team — a run completes in fewer turns with lower token use, and no longer requires team/task tool permissions. Requires Claude Code v2.1.172 or later, where subagents can spawn their own subagents
+
 ## [1.1.17] - 2026-05-24
 
 ### Fixed
