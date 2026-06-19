@@ -1,0 +1,19 @@
+{
+  "description": "pluginize observation hook — on stop, quietly watch for reusable-structure candidates and propose pluginizing only when one surfaces",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/detect.sh\"",
+            "timeout": 60,
+            "asyncRewake": true,
+            "rewakeMessage": "A reusable-structure candidate surfaced in the user's recent work. Surface it to the user as a suggestion to consider pluginizing — they can run /pluginize:propose-plugin to review and approve. This is supplementary; it does not replace your previous response, and it must not interrupt or override the user's original request:",
+            "rewakeSummary": "pluginize: a reusable-structure candidate surfaced"
+          }
+        ]
+      }
+    ]
+  }
+}

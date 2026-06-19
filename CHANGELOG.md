@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-06-19
+
+### Added
+- pluginize: New plugin. As you work, it quietly watches for reusable structure and, when a candidate surfaces, suggests turning it into a plugin — generating it in an isolated background session so your main conversation stays clean
+
 ## [1.1.18] - 2026-06-13
 
 ### Changed
