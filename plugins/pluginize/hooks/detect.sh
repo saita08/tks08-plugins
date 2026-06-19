@@ -100,7 +100,7 @@ Decide whether the recent work below contains a CANDIDATE worth proposing to tur
 
 Do NOT raise a candidate for: a one-off solution, a standard practice documented elsewhere, a convention specific to this single project, or a rule a regex/validation could enforce.
 
-If there is a candidate, set candidate=true, write a one-sentence summary of the reusable work, and name the single strongest axis (repeatability, procedure, or tacit). If there is no clear candidate, set candidate=false. When unsure, prefer candidate=false; silence is cheap to correct, a bad interruption is not.
+If there is a candidate, set candidate=true, write a one-sentence summary of the reusable work, and name the single strongest axis (repeatability, procedure, or tacit). Cast a wide net: when the work plausibly touches any one axis, prefer candidate=true and let the user be the one to decline. Only set candidate=false when the work clearly falls into the do-not-raise list above (a one-off, a documented standard practice, a single-project convention, or a mechanically enforceable rule) or is plainly not substantive work at all (chitchat, a trivial edit).
 
 Recent work:
 $recent"
