@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- ai-company-studio: New `/migrate-company` command that updates an existing company repository's employee call procedure from the removed `TeamCreate`/`team_name` spawn to the current Agent teams API. The health check now flags companies still on the old API and points to it
+- ai-company-studio: New `/migrate-company` command that brings a company built before this release back to working order, rewriting its employee call procedure to match the current Claude Code and showing you the changes before applying them. `/company-health-check` now warns when a company needs this
 
 ### Changed
-- team-review-fix: Teammate coordination now uses Claude Code's current Agent teams API — teams form implicitly when the first teammate is spawned via the `Agent` tool, instead of the removed `TeamCreate`/`TeamDelete` tools. Requires Claude Code v2.1.178 or later with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` set
-- ai-company-studio: Generated companies now use Claude Code's current Agent teams API for the employee call procedure — teams form implicitly via the `Agent` tool instead of the removed `TeamCreate`/`team_name` spawn. Requires Claude Code v2.1.178 or later with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` set
+- team-review-fix: Now works on current Claude Code again, where agent teams stopped working. Needs Claude Code v2.1.178 or later with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` set
+- ai-company-studio: Companies you generate now run on current Claude Code again. Needs Claude Code v2.1.178 or later with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` set; existing companies can be updated with the new `/migrate-company` command
 - team-review-fix: Bumped to v0.9.0
 - ai-company-studio: Bumped to v0.4.0
 
