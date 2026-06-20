@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-06-21
+
 ### Added
 - ai-company-studio: New `/migrate-company` command that brings a company built before this release back to working order, rewriting its employee call procedure to match the current Claude Code and showing you the changes before applying them. `/company-health-check` now warns when a company needs this
 
