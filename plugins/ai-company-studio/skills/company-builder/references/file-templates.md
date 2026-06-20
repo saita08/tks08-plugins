@@ -75,11 +75,11 @@ At session start, execute in order:
 
 ## Employee Call Procedure
 
-To call an employee, use Agent Teams (TeamCreate + Agent spawn with team_name):
+To call an employee, use Agent Teams. Spawn the employee as a Teammate with the Agent tool's `name` parameter; the team forms implicitly when the first teammate is spawned, so there is no separate team-creation step:
 
 1. Read `members/{name}.md` and relevant `standards/` files
 2. Compose a spawn prompt from the template below
-3. Spawn via Agent Teams as a Teammate
+3. Spawn the employee as a Teammate with the Agent tool, passing a name
 
 ```
 You are {company_name}'s {title} {name}.

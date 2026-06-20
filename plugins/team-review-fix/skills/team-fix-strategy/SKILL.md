@@ -8,7 +8,7 @@ The fellow loads this skill from Step 7 of the `/team-review-fix` command, and r
 
 The first audience is the fellow itself. Two sections below speak to that audience: Task Splitting Principles records how the fellow groups issues into file-based tasks, and Plan Evaluation Criteria records how the fellow decides whether a teammate's plan addresses the root cause. The fellow consults both while preparing dispatch and while reviewing plans.
 
-The second audience is each teammate. The rules the teammate must follow during investigation, planning, and committing live in `references/teammate-rules.md`. The fellow reads that file and copies its contents verbatim into the SendMessage that dispatches each teammate. The teammate never sees this `SKILL.md`; the teammate only sees what the fellow forwards. Paraphrasing the rules during forwarding loses the "why" clauses that teach when each rule applies, so the fellow forwards them as written.
+The second audience is each teammate. The rules the teammate must follow during investigation, planning, and committing live in `references/teammate-rules.md`. The fellow reads that file and copies its contents verbatim into the spawn prompt that dispatches each teammate (the `Agent` prompt that launches it). The teammate never sees this `SKILL.md`; the teammate only sees what the fellow forwards. Paraphrasing the rules during forwarding loses the "why" clauses that teach when each rule applies, so the fellow forwards them as written.
 
 ## Task Splitting Principles
 
@@ -55,4 +55,4 @@ Reject a plan when it leaves the origin intact and instead intercepts, suppresse
 
 ## Teammate Rules to Forward at Dispatch
 
-Read `references/teammate-rules.md` and include its contents in every teammate's initial SendMessage, alongside the file-specific issues and any cross-cutting decisions the fellow has made. Forward the rules verbatim; do not paraphrase, summarise, or extract "just the gist" of them — the wording of each rule is what carries the discipline, and a summary loses the "why" clauses that decide when the rule applies.
+Read `references/teammate-rules.md` and include its contents in every teammate's spawn prompt (the `Agent` prompt that launches it), alongside the file-specific issues and any cross-cutting decisions the fellow has made. Forward the rules verbatim; do not paraphrase, summarise, or extract "just the gist" of them — the wording of each rule is what carries the discipline, and a summary loses the "why" clauses that decide when the rule applies.

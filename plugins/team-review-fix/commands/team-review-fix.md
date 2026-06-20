@@ -1,5 +1,5 @@
 ---
-allowed-tools: Read, Edit, Write, Glob, Grep, Bash, Skill, TeamCreate, TeamDelete, SendMessage, TaskCreate, TaskGet, TaskList, TaskOutput, TaskUpdate, AskUserQuestion
+allowed-tools: Read, Edit, Write, Glob, Grep, Bash, Skill, Agent, SendMessage, TaskCreate, TaskGet, TaskList, TaskUpdate, AskUserQuestion
 description: Fix review feedback by delegating to an agent team. Splits issues by file, each agent investigates, plans, and implements.
 argument-hint: <review issues text or file path> (or omit to enter interactively)
 ---
@@ -9,20 +9,6 @@ Fix review feedback using a coordinated agent team. You act as the fellow, which
 The judgment principles that govern every action below are recorded in `commands/references/principles.md` as C-0 through C-20. Read that file before Step 0 and re-consult the relevant section whenever a step's actions touch the principle it describes. The Steps below reference those anchors by ID; the reasoning behind each anchor lives in the principles file, not here.
 
 ## Steps
-
-### 0. Re-entry Guard
-
-Before Step 1 reads input, check whether the team this run would create in Step 7 already exists from a prior run (C-20). The check is a targeted read of `~/.claude/teams/{team-name}/config.json` for the team name this fellow would pass to `TeamCreate`, not a search across the teams directory — the workflow only needs to know about its own prior runs, and the name is one the fellow knows.
-
-If that team file is absent, the prior run either never reached Step 7 or finished and was cleaned up by Step 10; proceed to Step 1 and treat the input as new.
-
-If the team file is present, the prior run reached Step 7 against this input. Read the task store under `~/.claude/tasks/{team-name}/` and route by what it says:
-
-- Any teammate still has outstanding work (a task that is not `completed`, or a `completed` task whose final commit hash has not been reported) → the prior wait was interrupted. Return to Step 8 and resume the review-and-monitor loop against the existing team. Do not call `TeamCreate`, `TaskCreate`, or `SendMessage` for any new work, since the team and its tasks already exist.
-- All teammates have reported their final commits → verification may or may not have completed in the prior run. Verification leaves no artifact this run can read, so resume from Step 9 rather than from Step 10; re-running Step 9 against an already-verified team is harmless because the diff inspection it performs is idempotent.
-- The task store under the team directory is empty or describes only completed work that has already been reported — the residue is from a run whose simplification pass and report finished but whose `TeamDelete` never ran. Call `TeamDelete` to remove the residue, then proceed to Step 1.
-
-The check intentionally does not look at the working tree. Whether the tree is clean or dirty is not evidence of re-entry — a fresh run against a dirty tree is the normal case for this command — so the routing rests on the team file alone.
 
 ### 1. Receive Review Feedback
 
@@ -86,17 +72,24 @@ Before creating the team, confirm:
 
 Before any teammate writes to the repository, run `git rev-parse HEAD` and remember the hash. This becomes the lower bound of the commit range that the simplification pass in step 10 will review. Recording it here, rather than later, ensures that the range covers exactly the work the team produced — no earlier commits the user did not ask to revisit, no later commits made outside the team.
 
-### 7. Create Team and Dispatch Teammates
+### 7. Dispatch Teammates
 
 Load the `team-review-fix:team-fix-strategy` skill. The skill itself records the splitting and evaluation criteria the fellow uses; the teammate-facing rules that must be forwarded at dispatch live in `skills/team-fix-strategy/references/teammate-rules.md`, which the skill directs the fellow to read.
 
-Use TeamCreate to create the team.
+There is no explicit team-creation step. The team forms implicitly the moment the first teammate is spawned, with this session as the lead (C-2).
 
-For each file group, create a task with TaskCreate and assign to a teammate via SendMessage. Include in each teammate's instructions:
+For each file group:
+
+1. Create a task with TaskCreate describing the work for that file group, then assign it by setting its owner to the teammate's name with TaskUpdate.
+2. Spawn the teammate with the Agent tool, passing a stable `name` tied to the file group (for example `teammate-api` for `src/api.ts`) and `run_in_background: true` so the fellow can review partial output as it arrives rather than waiting for a one-shot return (C-2). The fellow refers to the teammate by this name for the rest of the run, so choose it at dispatch and remember it.
+
+The teammate's spawn prompt must include:
 
 1. The specific issues to investigate and fix for their assigned file(s)
 2. Cross-cutting design decisions (if any)
 3. The full contents of `skills/team-fix-strategy/references/teammate-rules.md`, forwarded verbatim. Do not paraphrase the rules; the "why" clauses on each rule are what teach the teammate when it applies, and a summary loses them
+
+Every subsequent instruction to a teammate — plan approvals, rejections, the stand-down at Step 10 — goes through `SendMessage` addressed to that teammate's name.
 
 ### 8. Review Plans and Monitor Progress (continuous loop)
 
@@ -106,7 +99,7 @@ The wait between iterations of this loop is passive (C-19). When no teammate has
 
 Repeat the following loop until all teammates have completed implementation:
 
-1. Check teammate progress using TaskGet and TaskOutput
+1. Check teammate progress: read each teammate's task state with TaskGet, and read the plans and commits they report through `SendMessage`. Teammate messages arrive automatically; the fellow does not poll for them
 2. For each teammate that has reported a plan but not yet been reviewed:
    - Evaluate using the `team-fix-strategy` skill's plan evaluation criteria
    - Does the plan address the root cause — why the problem exists? (C-7)
@@ -137,9 +130,13 @@ After each teammate reports completion, verify by examining the actual output �
 
 Do NOT proceed to the simplification pass until all teammates pass verification.
 
-### 10. Delete the Team
+### 10. Stand Down the Teammates
 
-Once every teammate has passed verification, delete the team with TeamDelete. The team has no further work, and the simplification pass that follows is the fellow's responsibility: the fellow is the one writing to the index when commits land, whether the pass itself is delegated to a skill or run inline. Deleting the team here makes that boundary structural rather than conventional. With no teammates active, there is no risk that a stray teammate writes to the index while the fellow is committing, and the C-1 relaxation applies only to the simplification pass, never to any phase in which teammates are still running (C-18).
+The new team infrastructure has no single-operation team deletion. What it has instead is per-teammate shutdown, and the boundary this step exists to draw — no teammate is active once the fellow starts writing to the index — is drawn by standing every teammate down explicitly.
+
+Once every teammate has passed verification, send each teammate a `shutdown_request` through `SendMessage`, individually by name (C-16). A teammate approves with a `shutdown_response` and its process exits. Do not treat the request as the stand-down: a cooperative message is not an interrupt (C-16), so the teammate is down only once it has approved. Confirm the whole team is down by reading the `members` array in `~/.claude/teams/{team-name}/config.json` and seeing that only the lead remains; that confirmation is the structural successor to the old single `TeamDelete` call.
+
+This stand-down is what reopens the fellow's permission to write code. The simplification pass that follows is the fellow's responsibility: the fellow is the one writing to the index when commits land, whether the pass itself is delegated to a skill or run inline. With no teammate active, there is no risk that a stray teammate writes to the index while the fellow is committing, and the C-1 relaxation applies only to the simplification pass, never to any phase in which teammates are still running (C-18).
 
 ### 11. Run the Simplification Pass
 

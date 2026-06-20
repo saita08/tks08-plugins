@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- ai-company-studio: New `/migrate-company` command that brings a company built before this release back to working order, rewriting its employee call procedure to match the current Claude Code and showing you the changes before applying them. `/company-health-check` now warns when a company needs this
+
+### Changed
+- team-review-fix: Now works on current Claude Code again, where agent teams stopped working. Needs Claude Code v2.1.178 or later with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` set
+- ai-company-studio: Companies you generate now run on current Claude Code again. Needs Claude Code v2.1.178 or later with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` set; existing companies can be updated with the new `/migrate-company` command
+- team-review-fix: Bumped to v0.9.0
+- ai-company-studio: Bumped to v0.4.0
+
 ## [1.2.0] - 2026-06-19
 
 ### Added
