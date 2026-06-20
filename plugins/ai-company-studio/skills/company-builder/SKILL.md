@@ -16,7 +16,7 @@ Guide for building "AI-only companies" as repositories.
 
 World model: repository = company, directory = room, file = employee / policy / deliverable.
 
-The generated company runs on Claude Code Agent Teams. The CEO operates as Team Lead and spawns employees as Teammates (TeamCreate + Agent spawn with team_name).
+The generated company runs on Claude Code Agent Teams. The CEO operates as Team Lead and spawns employees as Teammates with the Agent tool's `name` parameter — the team forms implicitly when the first teammate is spawned, so there is no separate team-creation step.
 
 ## Governing Principles
 
@@ -158,7 +158,7 @@ This file defines who the CEO is and how the company operates. It is auto-loaded
 
 **Keep it concise** (Principle 3). Target under 200 lines. Details go in other files via references.
 
-**Employee call procedure is mandatory** (Principle 4). The company operates on Agent Teams — the CEO (Team Lead) spawns employees as Teammates via TeamCreate + Agent spawn with team_name. The call procedure defines the spawn prompt template. Without it, the same employee may behave differently each time they are spawned.
+**Employee call procedure is mandatory** (Principle 4). The company operates on Agent Teams — the CEO (Team Lead) spawns employees as Teammates with the Agent tool's `name` parameter (the team forms implicitly when the first teammate is spawned). The call procedure defines the spawn prompt template. Without it, the same employee may behave differently each time they are spawned.
 
 #### 4c. COMPANY.md (Philosophy & Policies)
 
@@ -261,10 +261,10 @@ This file can be deleted after the test.
 Present the following to the Owner:
 
 1. The company has been generated at `{path}`
-2. To start the company, open a new Claude Code session with Agent Teams:
+2. To start the company, enable Agent Teams (set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `settings.json` or the environment, and use Claude Code v2.1.178 or later), then open a new Claude Code session at the company:
    ```
    cd {path}
-   claude --agent-teams
+   CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude
    ```
 3. Claude will read CLAUDE.md and wake up as the CEO
 4. The CEO will find `docs/first-task.md` during standup — a test task to confirm everything works

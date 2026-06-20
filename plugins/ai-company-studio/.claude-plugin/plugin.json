@@ -1,7 +1,7 @@
 {
   "name": "ai-company-studio",
-  "version": "0.3.1",
-  "description": "Build AI-only companies as repositories and keep them healthy. Design, generate, and diagnose AI company worlds.",
+  "version": "0.4.0",
+  "description": "Build AI-only companies as repositories and keep them healthy. Design, generate, diagnose, and migrate AI company worlds.",
   "author": {
     "name": "tks08"
   },
