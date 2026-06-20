@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- team-review-fix: Teammate coordination now uses Claude Code's current Agent teams API — teams form implicitly when the first teammate is spawned via the `Agent` tool, instead of the removed `TeamCreate`/`TeamDelete` tools. Requires Claude Code v2.1.178 or later with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` set
+- team-review-fix: Bumped to v0.9.0
+
 ## [1.2.0] - 2026-06-19
 
 ### Added
