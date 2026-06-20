@@ -54,14 +54,15 @@ Check that the company's file structure is consistent and complete.
 - ROOM.md exists in workspace directories (directories where work happens, not storage like `docs/` or `archive/`)
 
 **Agent Teams readiness checks:**
-- Employee call procedure in CLAUDE.md specifies Agent Teams (TeamCreate + Agent spawn with team_name) as the spawn mechanism
+- Employee call procedure in CLAUDE.md specifies Agent Teams (spawn a Teammate with the Agent tool's `name` parameter) as the spawn mechanism
+- The call procedure does NOT reference the removed Agent Teams API: `TeamCreate`, `TeamDelete`, `team_name`, or a `claude --agent-teams` startup flag. These were removed in Claude Code v2.1.178; a company that still names them was built against the old API and its employee call procedure will fail. If found, this is a Concern — recommend running `/migrate-company` to update the call procedure (per Principle 1, report it; do not edit the files here)
 - Each `members/*.md` file contains a Collaboration section (employees actively communicate with colleagues)
 - `standards/meeting-rules.md` describes direct inter-employee messaging via Agent Teams
 
 **Status criteria:**
-- Healthy: All checks pass, including Agent Teams readiness
+- Healthy: All checks pass, including Agent Teams readiness, and no removed-API references remain
 - Warning: Minor mismatches (e.g., 1 unlisted directory) or Agent Teams readiness partially met
-- Concern: Missing core files, major inconsistencies, or employee call procedure doesn't specify Agent Teams spawn
+- Concern: Missing core files, major inconsistencies, employee call procedure doesn't specify Agent Teams spawn, or the call procedure still references the removed Agent Teams API (`TeamCreate`/`team_name`/`claude --agent-teams`)
 
 ---
 
