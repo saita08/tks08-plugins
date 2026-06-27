@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-06-27
+
+### Changed
+- myrule-review, easter-egg, team-review-fix: Their knowledge skills (`review-policy`, `easter-egg-knowledge`, `team-fix-strategy`) no longer appear in the slash command menu, since they are background knowledge Claude draws on rather than commands you run directly. Use `/myrule-review`, `/easter-egg`, and `/team-review-fix` to invoke these plugins
+
 ## [1.3.0] - 2026-06-21
 
 ### Added

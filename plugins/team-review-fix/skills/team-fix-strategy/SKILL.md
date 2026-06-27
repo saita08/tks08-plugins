@@ -1,5 +1,6 @@
 ---
 description: "Use this skill when the user asks to fix review feedback with a team, split review issues into tasks, delegate review fixes, handle code review responses, or coordinate parallel fixes for review comments. Also triggers on phrases like 'review fix', 'fix review issues', 'team fix', or 'address review feedback'."
+user-invocable: false
 ---
 
 # Team Review Fix Strategy
