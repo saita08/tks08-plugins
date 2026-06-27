@@ -7,6 +7,7 @@ description: >-
   "add humor to the codebase", or discusses embedding hidden surprises,
   jokes, or delightful secrets in software products. Provides expert-level
   guidance on easter egg implementation patterns, psychology, and best practices.
+user-invocable: false
 ---
 
 # Easter Egg Knowledge
