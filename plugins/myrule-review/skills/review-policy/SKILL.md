@@ -1,6 +1,7 @@
 ---
 name: review-policy
 description: Coding standards and quality criteria applied during code review. Use this skill when asked about code review, review policy, coding standards, or quality criteria.
+user-invocable: false
 ---
 
 # Code Review Quality Criteria
