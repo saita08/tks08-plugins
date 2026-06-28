@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-06-27
+
+### Fixed
+- team-review-fix: No longer stalls at the end of a run waiting to tear the team down — it confirms teardown and continues into the simplification pass
+- team-review-fix: Stops narrating its internal teardown and commit-staging steps to you, so the run's messages stay about the results you act on
+
 ## [1.3.1] - 2026-06-27
 
 ### Changed
