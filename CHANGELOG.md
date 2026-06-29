@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.3] - 2026-06-30
+
 ### Changed
 - team-review-fix: During a run, its messages to you now stay focused on the results — the issues being addressed, what changed in each file, and the plan decisions — rather than reading out its own evaluation steps and principle checks
 
-## [1.3.2] - 2026-06-27
+## [1.3.2] - 2026-06-28
 
 ### Fixed
 - team-review-fix: No longer stalls at the end of a run waiting to tear the team down — it confirms teardown and continues into the simplification pass
