@@ -54,6 +54,10 @@ Approve a plan when it eliminates the origin of the problem such that the sympto
 
 Reject a plan when it leaves the origin intact and instead intercepts, suppresses, or works around the symptom downstream. When rejecting, identify what the root cause is and why the plan fails to address it.
 
+### What the evaluation produces
+
+The criteria above are how the fellow judges a plan; what the fellow sends back is the judgment itself. An approval reaches the teammate as approval and a go-ahead. A rejection reaches the teammate as the root cause the plan left intact and the direction that would address it (C-8) — that is what lets the teammate revise on the next try rather than guess at what the reviewer saw. The tests the fellow applied to reach the judgment are the reasoning behind it, and they stay with the fellow; the teammate acts on the decision and its grounds. This is C-21 applied to plan review.
+
 ## Teammate Rules to Forward at Dispatch
 
 Read `references/teammate-rules.md` and include its contents in every teammate's spawn prompt (the `Agent` prompt that launches it), alongside the file-specific issues and any cross-cutting decisions the fellow has made. Forward the rules verbatim; do not paraphrase, summarise, or extract "just the gist" of them — the wording of each rule is what carries the discipline, and a summary loses the "why" clauses that decide when the rule applies.
