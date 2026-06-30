@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- broad-review: Review output now follows your Claude language setting instead of always being written in Japanese. With Japanese configured the reports read the same as before; with another language configured they now come out in that language
 
 ## [1.4.0] - 2026-07-01
 
