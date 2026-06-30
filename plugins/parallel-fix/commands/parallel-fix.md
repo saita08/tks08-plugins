@@ -80,7 +80,7 @@ Before any teammate writes to the repository, run `git rev-parse HEAD` and remem
 
 ### 7. Dispatch Teammates
 
-Load the `team-review-fix:team-fix-strategy` skill. The skill itself records the splitting and evaluation criteria the fellow uses; the teammate-facing rules that must be forwarded at dispatch live in `skills/team-fix-strategy/references/teammate-rules.md`, which the skill directs the fellow to read.
+Load the `parallel-fix:team-fix-strategy` skill. The skill itself records the splitting and evaluation criteria the fellow uses; the teammate-facing rules that must be forwarded at dispatch live in `skills/team-fix-strategy/references/teammate-rules.md`, which the skill directs the fellow to read.
 
 There is no explicit team-creation step. The team forms implicitly the moment the first teammate is spawned, with this session as the lead (C-2).
 

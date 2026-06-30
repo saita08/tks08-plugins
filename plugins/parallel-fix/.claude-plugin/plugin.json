@@ -1,7 +1,7 @@
 {
-  "name": "team-review-fix",
+  "name": "parallel-fix",
   "description": "Delegate review feedback fixes to an agent team. Splits issues by file, each agent investigates, plans, and implements autonomously.",
-  "version": "0.9.3",
+  "version": "1.0.0",
   "author": {
     "name": "tks08"
   }

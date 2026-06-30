@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+
+## [1.4.0] - 2026-07-01
+
+### Changed
+- myrule-review is now `broad-review`, invoked as `/broad-review`. If you have it enabled, the marketplace carries the rename forward and your enabled-plugins setting moves to the new name the next time Claude Code starts; any reference you wrote to `/myrule-review` needs updating by hand
+- team-review-fix is now `parallel-fix`, invoked as `/parallel-fix`. If you have it enabled, the marketplace carries the rename forward and your enabled-plugins setting moves to the new name the next time Claude Code starts; any reference you wrote to `/team-review-fix` needs updating by hand
+
 ## [1.3.3] - 2026-06-30
 
 ### Changed
