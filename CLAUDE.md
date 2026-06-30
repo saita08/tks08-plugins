@@ -4,7 +4,7 @@ The shape of this repository can be discovered by reading its files. What cannot
 
 ## The marketplace index must mirror the filesystem
 
-The `source` field in `marketplace.json` must exactly match the directory name under `plugins/` that it points to. This is not a stylistic preference. When the index and the filesystem disagree, marketplace resolution does not fail gracefully on the offending entry; it fails for the entire marketplace. The blast radius of a single mismatched name is every plugin in the repository, not just the one that was renamed. Whenever a plugin is added or renamed, treat the index update as part of the same act, not as a follow-up.
+The `source` field in `marketplace.json` must exactly match the directory name under `plugins/` that it points to. This is not a stylistic preference. When the index and the filesystem disagree, marketplace resolution does not fail gracefully on the offending entry; it fails for the entire marketplace. The blast radius of a single mismatched name is every plugin in the repository, not just the one that was renamed. Whenever a plugin is added or renamed, treat the index update as part of the same act, not as a follow-up. A rename reaches further than the index; the full set of artifacts that move together, and how to carry users' enabled-plugins setting forward, live in `docs/renaming-plugins.md`.
 
 ## Permissions describe what a skill needs, not what it might want
 
@@ -44,3 +44,4 @@ When the same kind of mistake or the same drift in behavior happens more than on
 
 - [Plugin Marketplaces - Claude Code Docs](https://code.claude.com/docs/en/plugin-marketplaces)
 - Versioning rules: `docs/versioning.md`
+- Renaming a plugin: `docs/renaming-plugins.md`
