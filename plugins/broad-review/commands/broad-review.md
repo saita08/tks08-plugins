@@ -1,10 +1,10 @@
 ---
 allowed-tools: Bash(gh pr view:*), Bash(gh pr list:*), Bash(gh pr diff:*), Bash(mkdir:*), Read, Write, Edit, Glob, Grep, Skill, Agent
-description: Run code review based on custom coding standards and output results in Japanese to local files
+description: Run code review based on custom coding standards and output results to local files
 argument-hint: (no arguments needed - auto-detects PR from current branch)
 ---
 
-Run a code review for the Pull Request associated with the current branch and output results in Japanese to local files.
+Run a code review for the Pull Request associated with the current branch and output results to local files.
 
 ## Principles
 
@@ -40,7 +40,7 @@ Each flaw leaves a trace whose shape depends on the nature of the flaw, not on t
 
 ### C-6: Output is a local artifact for the reader to review at their own pace
 
-This command produces files in `notes/`, not PR comments. The user decides when and whether to post comments to the PR. Unsolicited PR comments bypass that decision. Output goes to `notes/code-review-pr{N}.md` and `notes/pr{N}-review-comments.md`, in Japanese. PR comments are posted only when the user explicitly requests it.
+This command produces files in `notes/`, not PR comments. The user decides when and whether to post comments to the PR. Unsolicited PR comments bypass that decision. Output goes to `notes/code-review-pr{N}.md` and `notes/pr{N}-review-comments.md`. PR comments are posted only when the user explicitly requests it.
 
 ### C-7: The lateral check section serves readers who need the conclusion first
 
@@ -138,7 +138,7 @@ Search only for structural reasons already identified by the subagent. Do not in
 
 #### 6a. Review report
 
-By the end of Step 5, `notes/code-review-pr{PR_NUMBER}.md` already holds the finished review report in Japanese (C-6): the subagent wrote it in this format, and Steps 4 and 5 refined it in place. This step writes nothing — regenerating the file would reproduce, with no change, content the in-place edits already produced. The format below is the contract the subagent writes to and the shape Steps 4 and 5 preserve while editing; it is documented here so a single place defines the report's structure.
+By the end of Step 5, `notes/code-review-pr{PR_NUMBER}.md` already holds the finished review report (C-6): the subagent wrote it in this format, and Steps 4 and 5 refined it in place. This step writes nothing — regenerating the file would reproduce, with no change, content the in-place edits already produced. The format below is the contract the subagent writes to and the shape Steps 4 and 5 preserve while editing; it is documented here so a single place defines the report's structure.
 
 ```markdown
 # Code Review: PR #{number} - {title}
@@ -201,7 +201,7 @@ For Lateral Check, per C-7: the Result line conveys the conclusion; show the str
 
 #### 6b. Review comments
 
-Write `notes/pr{PR_NUMBER}-review-comments.md` in Japanese (C-6, C-8). This is a genuinely new file with a structure the report does not have — findings grouped by file rather than by severity — so it is generated with Write, not derived by editing the report.
+Write `notes/pr{PR_NUMBER}-review-comments.md` (C-6, C-8). This is a genuinely new file with a structure the report does not have — findings grouped by file rather than by severity — so it is generated with Write, not derived by editing the report.
 
 It reorganizes by file the same findings now finalized in `notes/code-review-pr{PR_NUMBER}.md`. It is a second rendering of the same data, not a second review. Every issue in the report, including lateral check findings, appears here, grouped under the file it belongs to.
 
@@ -216,7 +216,7 @@ Follow this format:
 
 ## {file_path_1}
 
-| 行 | コメント |
+| Line | Comment |
 |---|---|
 | {line} | {comment text} |
 | {line} | {comment text} |
@@ -225,7 +225,7 @@ Follow this format:
 
 ## {file_path_2}
 
-| 行 | コメント |
+| Line | Comment |
 |---|---|
 | {line} | {comment text} |
 
