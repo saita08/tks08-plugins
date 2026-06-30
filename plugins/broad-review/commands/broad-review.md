@@ -87,7 +87,7 @@ The most complete artifact decides first: if `notes/pr{N}-review-comments.md` ex
 
 ### 2. Code review via subagent
 
-Load the `myrule-review:review-policy` skill to obtain the coding standards.
+Load the `broad-review:review-policy` skill to obtain the coding standards.
 
 Delegate the review with a single synchronous Agent tool call (`subagent_type: general-purpose`). The call blocks until the subagent finishes and returns its completion note; there is no team to create, no task to track, and no waiting phase. The Agent `prompt` is the only channel that carries instructions to the subagent (C-2), so it must be self-contained. Include everything below:
 
@@ -95,7 +95,7 @@ Delegate the review with a single synchronous Agent tool call (`subagent_type: g
 
 **Method**: Invoke the skill `code-review:code-review` via the Skill tool. The plugin-qualified name is required because Claude Code now ships a built-in `/code-review` command whose name collides with the short form: the short name `code-review` resolves to that built-in command rather than to this skill, and a subagent that reaches for the short name will silently perform a different review than the one this command depends on. The colon-qualified form `code-review:code-review` is unambiguous — it names the skill `code-review` inside the plugin `code-review`, a shape the built-in command cannot take — and is the only form that reliably reaches the intended skill. This skill is the sole means of performing the review. It fans out subagents of its own to perform the review; that is expected behavior, supported by nested subagents since Claude Code 2.1.172. If it fails to load, report the failure and stop.
 
-**Review criteria**: The PR number, title, and URL from Step 1. The full text of the coding standards obtained from `myrule-review:review-policy` as additional review criteria to apply alongside `code-review:code-review`'s own criteria, with the same 0-100 confidence scoring.
+**Review criteria**: The PR number, title, and URL from Step 1. The full text of the coding standards obtained from `broad-review:review-policy` as additional review criteria to apply alongside `code-review:code-review`'s own criteria, with the same 0-100 confidence scoring.
 
 **Output constraints**: Do not post comments to the PR. Skip the re-eligibility check step. Skip the PR comment posting step. Retain issues below confidence 80 instead of discarding them.
 

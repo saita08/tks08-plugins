@@ -15,8 +15,8 @@
       "description": "Google Apps Script deployment management with clasp"
     },
     {
-      "name": "myrule-review",
-      "source": "./plugins/myrule-review",
+      "name": "broad-review",
+      "source": "./plugins/broad-review",
       "description": "Custom coding standards code review with local Japanese output"
     },
     {
@@ -25,8 +25,8 @@
       "description": "Plant delightful easter eggs in your codebase"
     },
     {
-      "name": "team-review-fix",
-      "source": "./plugins/team-review-fix",
+      "name": "parallel-fix",
+      "source": "./plugins/parallel-fix",
       "description": "Delegate review feedback fixes to an agent team with file-based task splitting"
     },
     {
@@ -44,5 +44,9 @@
       "source": "./plugins/pluginize",
       "description": "Watch your work for reusable structure and suggest turning it into a plugin, generated in an isolated background session"
     }
-  ]
+  ],
+  "renames": {
+    "myrule-review": "broad-review",
+    "team-review-fix": "parallel-fix"
+  }
 }

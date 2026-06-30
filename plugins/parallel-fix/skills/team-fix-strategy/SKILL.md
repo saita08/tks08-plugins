@@ -5,7 +5,7 @@ user-invocable: false
 
 # Team Review Fix Strategy
 
-The fellow loads this skill from Step 7 of the `/team-review-fix` command, and reads it for two distinct purposes that point at different audiences.
+The fellow loads this skill from Step 7 of the `/parallel-fix` command, and reads it for two distinct purposes that point at different audiences.
 
 The first audience is the fellow itself. Two sections below speak to that audience: Task Splitting Principles records how the fellow groups issues into file-based tasks, and Plan Evaluation Criteria records how the fellow decides whether a teammate's plan addresses the root cause. The fellow consults both while preparing dispatch and while reviewing plans.
 

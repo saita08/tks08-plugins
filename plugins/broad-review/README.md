@@ -1,4 +1,4 @@
-# myrule-review
+# broad-review
 
 > 「PRにレビューコメント書いといて」「あっ、日本語で」「あとこの規約も見て」
 > 「...毎回言うのめんどくさいな」
@@ -7,13 +7,13 @@
 
 ## これは何？
 
-Anthropic公式の [`code-review`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) プラグインを、**私のルール**で武装させるラッパーです。
+Anthropic公式の [`code-review`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) プラグインに、**独自の規約を上乗せして観点を広げる**ラッパーです。
 
 公式プラグインの強力なレビューエンジン（並列エージェント、信頼度スコアリング）はそのままに、「毎回口頭で伝えていたあのこだわり」をスキルとして永続化しました。
 
 ## 何が違うの？
 
-|              | 公式 `code-review`               | `myrule-review`                          |
+|              | 公式 `code-review`               | `broad-review`                          |
 | ------------ | -------------------------------- | ---------------------------------------- |
 | 起動方法     | PR番号を指定                     | **引数不要。今いるブランチから自動検出** |
 | 出力先       | PRにコメント投稿                 | `notes/code-review-pr{N}.md` に保存      |
@@ -26,7 +26,7 @@ Anthropic公式の [`code-review`](https://github.com/anthropics/claude-plugins-
 ## 使い方
 
 ```
-/myrule-review
+/broad-review
 ```
 
 以上。ブランチを切り替えて、打つだけ。
@@ -62,11 +62,11 @@ Anthropic公式の [`code-review`](https://github.com/anthropics/claude-plugins-
 ## 構成
 
 ```
-myrule-review/
+broad-review/
 ├── .claude-plugin/
 │   └── plugin.json
 ├── commands/
-│   └── myrule-review.md    # 本体。公式を呼び出して独自ルールを重ねる
+│   └── broad-review.md    # 本体。公式を呼び出して独自ルールを重ねる
 ├── skills/
 │   └── review-policy/
 │       └── SKILL.md         # 私の規約。育てていくファイル
