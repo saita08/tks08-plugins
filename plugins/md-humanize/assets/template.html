@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}}</title>
+<style>
+/* ================================================================
+   md-humanize — 生成される読み物ページ。
+   配置 (左の章マップ / 入口 / 章区切り / 節カードの 2 列配置 /
+   深い階層の畳み込み / 長大ブロックの折りたたみ) は md-rebuilder の
+   viewer のレイアウト設計に従う。装飾と演出は持たず、白基調の
+   ニュートラルな意匠に徹する。テーマは OS 設定に追従する。
+   ================================================================ */
+
+:root {
+  --paper: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #20242a;
+  --ink-2: color-mix(in srgb, var(--ink) 78%, var(--paper));
+  --ink-faint: color-mix(in srgb, var(--ink) 55%, var(--paper));
+  --ink-mute: color-mix(in srgb, var(--ink) 36%, transparent);
+  --line: color-mix(in srgb, var(--paper) 80%, var(--ink));
+  --line-soft: color-mix(in srgb, var(--paper) 89%, var(--ink));
+  --accent: #2f6bdb;
+  --accent-deep: color-mix(in srgb, var(--accent) 82%, black);
+  --chip: color-mix(in srgb, var(--paper) 92%, var(--ink));
+
+  --code-bg: #23272e;
+  --code-ink: #e6e8eb;
+  --code-cmt: #8b949e;
+
+  --font-body: system-ui, -apple-system, 'Hiragino Kaku Gothic ProN', 'Segoe UI', 'Noto Sans JP', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+  --font-size: 16px;
+  --line-height: 1.8;
+
+  --map-w: 18rem;
+  --gutter: clamp(2.5rem, 6.2vw, 8.75rem);
+
+  --shadow-card: 0 1px 2px rgba(25, 30, 40, 0.05),
+    0 12px 32px -18px rgba(25, 30, 40, 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #15171b;
+    --surface: #1d2025;
+    --ink: #e3e6ea;
+    --accent: #6ea1ff;
+    --accent-deep: color-mix(in srgb, var(--accent) 88%, white);
+    --chip: color-mix(in srgb, var(--paper) 86%, var(--ink));
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3),
+      0 12px 32px -18px rgba(0, 0, 0, 0.5);
+  }
+}
+
+* { box-sizing: border-box; }
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+html.reduce { scroll-behavior: auto; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-feature-settings: 'palt';
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--ink);
+  background: var(--paper);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+::selection { background: color-mix(in srgb, var(--accent) 24%, transparent); }
+
+/* ── スクロール進捗バー ───────────────────────────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+  transform-origin: 0%;
+  transform: scaleX(0);
+  transition: transform 0.12s linear;
+  z-index: 100;
+}
+
+/* ── 章マップ — 左に常駐する目次。現在地を追従する ────────── */
+/* 並びは CSS ピクセルではなく物理幅相当 (outerWidth) で判定する。
+   data-physical-w-bucket は JS が書き込む (md-rebuilder ADR-0017)。 */
+.map { display: none; }
+:root[data-physical-w-bucket="wide"] .map,
+:root[data-physical-w-bucket="narrow"] .map.is-open {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--map-w);
+  padding: 2.6rem 1.7rem 2.2rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  background: var(--paper);
+  border-right: 1px solid var(--line);
+}
+:root[data-physical-w-bucket="narrow"] .map.is-open {
+  z-index: 50;
+  background: var(--surface);
+  padding-top: 4.6rem;
+}
+.map-head {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--ink-2);
+  line-height: 1.45;
+  margin-bottom: 1.6rem;
+  flex: none;
+  word-break: auto-phrase;
+}
+.map-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 -0.5rem;
+  padding: 0.25rem 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+  display: flex;
+  flex-direction: column;
+}
+.map-nav::-webkit-scrollbar { width: 5px; }
+.map-nav::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+/* h1 章行 */
+.map-chapter {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0.5rem 0.4rem;
+  line-height: 1.4;
+  word-break: auto-phrase;
+}
+.map-chapter:not(:first-child) {
+  margin-top: 1.2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line);
+}
+
+/* h2 / h3 行。現在地は左の細いバーと色で示す */
+.map-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  color: var(--ink-faint);
+  padding: 0.34rem 0.4rem 0.34rem 0.9rem;
+  position: relative;
+  line-height: 1.42;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+  font-family: inherit;
+  font-size: 0.88rem;
+  border-radius: 5px;
+  word-break: auto-phrase;
+}
+.map-link::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.45em; bottom: 0.45em;
+  width: 2px;
+  border-radius: 1px;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+.map-link.h3 {
+  padding-left: 2rem;
+  font-size: 0.8rem;
+}
+.map-link.h3::before { left: 1.1rem; }
+.map-link:hover { color: var(--ink); background: var(--line-soft); }
+.map-link.current { color: var(--accent-deep); font-weight: 600; }
+.map-link.current::before { background: var(--accent); }
+
+/* 狭い画面用の目次トリガー。三本線は擬似要素で描く */
+.map-toggle {
+  display: none;
+  position: fixed;
+  top: 1.1rem; left: 1.1rem;
+  z-index: 51;
+  width: 2.3rem; height: 2.3rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.18s ease;
+}
+:root[data-physical-w-bucket="narrow"] .map-toggle { display: block; }
+.map-toggle:hover { border-color: var(--accent); }
+.map-toggle .bars,
+.map-toggle .bars::before,
+.map-toggle .bars::after {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 1.05rem; height: 1.5px;
+  background: var(--ink);
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease;
+}
+.map-toggle .bars::before,
+.map-toggle .bars::after { content: ''; }
+.map-toggle .bars::before { transform: translate(-50%, calc(-50% - 0.34rem)); }
+.map-toggle .bars::after { transform: translate(-50%, calc(-50% + 0.34rem)); }
+.map-toggle.is-open .bars { background: transparent; }
+.map-toggle.is-open .bars::before { transform: translate(-50%, -50%) rotate(45deg); }
+.map-toggle.is-open .bars::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+/* ── 本文領域 ─────────────────────────────────────────────── */
+.stage { position: relative; min-width: 0; }
+:root[data-physical-w-bucket="wide"] .stage { margin-left: var(--map-w); }
+
+/* ── 入口 — 表題と前書き ──────────────────────────────────── */
+.hero { padding: 5.5rem var(--gutter) 1.5rem; }
+.hero-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(2.1rem, 4.2vw, 3.4rem);
+  line-height: 1.22;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  word-break: normal;
+  word-break: auto-phrase;
+}
+/* リード文の行長は画面幅に追従させる。上限は作らない */
+.hero-lede { margin-top: 1.9rem; }
+.hero-lede-body {
+  font-size: 1.12rem;
+  line-height: 1.95;
+  color: var(--ink-2);
+}
+.hero-lede-body p { margin: 0 0 1em; }
+.hero-lede-body p:last-child { margin-bottom: 0; }
+
+/* ── 章区切り — 2 つ目以降の h1 ──────────────────────────── */
+.threshold { padding: 4.5rem var(--gutter) 0; }
+.threshold-inner {
+  border-top: 2px solid var(--line);
+  padding-top: 2.4rem;
+}
+.threshold-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  word-break: normal;
+  word-break: auto-phrase;
+}
+.threshold-lede { margin-top: 1.3rem; }
+.threshold-lede-body {
+  font-size: 1.04rem;
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.threshold-lede-body p { margin: 0 0 1em; }
+.threshold-lede-body p:last-child { margin-bottom: 0; }
+
+/* ── gallery — h2 カードのグリッド。1 行最大 2 列 ─────────── */
+.gallery {
+  padding: 2.6rem var(--gutter) 3.4rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.4rem, 2.6vw, 2.2rem);
+}
+:root[data-physical-w-bucket="wide"] .gallery {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.gallery > .hall.wide-content { grid-column: 1 / -1; }
+
+/* ── hall — h2 = カード ──────────────────────────────────── */
+.hall {
+  position: relative;
+  padding: 2.3rem clamp(1.7rem, 2.6vw, 2.8rem) 2.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+}
+.hall-title {
+  margin: 0 0 1.2rem;
+  font-weight: 700;
+  font-size: clamp(1.22rem, 1.6vw, 1.55rem);
+  line-height: 1.32;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  word-break: auto-phrase;
+}
+/* 長いパス見出しは一段小さく */
+.hall.wide .hall-title { font-size: clamp(1.08rem, 1.35vw, 1.3rem); }
+
+.hall-lead {
+  margin: 0 0 1.1rem;
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--ink-2);
+}
+
+/* ── 本文の組版 ───────────────────────────────────────────── */
+.hall-body {
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--ink);
+  max-width: none;
+}
+.hall-body > *:first-child { margin-top: 0; }
+.hall-body > *:last-child { margin-bottom: 0; }
+.hall-body p { margin: 0 0 1.3em; }
+.hall-body p:last-child { margin-bottom: 0; }
+.hall-body a {
+  color: var(--accent-deep);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.18s ease, color 0.18s ease;
+}
+.hall-body a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+.hall-body ul, .hall-body ol { margin: 0 0 1.3em; padding-left: 1.4em; }
+.hall-body li { margin: 0.32em 0; }
+.hall-body li::marker { color: var(--ink-mute); }
+.hall-body strong { font-weight: 700; color: var(--ink); }
+.hall-body em { font-style: italic; color: var(--ink-2); }
+.hall-body :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: var(--chip);
+  color: var(--accent-deep);
+  padding: 0.06em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--line-soft);
+  overflow-wrap: anywhere;
+}
+
+/* 引用 */
+.hall-body blockquote {
+  margin: 1.3em 0;
+  padding: 4px 0 4px 22px;
+  border-left: 3px solid var(--line);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+.hall-body blockquote p:last-child { margin-bottom: 0; }
+
+.hall-body hr {
+  border: none;
+  height: 1px;
+  background: var(--line);
+  margin: 2em 0;
+}
+
+/* table — thead が無くても崩れない。罫線と padding は th/td 両方に */
+.hall-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.3em 0;
+  font-size: 0.92rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.hall-body th, .hall-body td {
+  padding: 0.6em 0.95em;
+  border-bottom: 1px solid var(--line-soft);
+  text-align: left;
+  vertical-align: top;
+}
+.hall-body thead th {
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+  background: var(--chip);
+  border-bottom: 1px solid var(--line);
+}
+.hall-body tr:last-child > th,
+.hall-body tr:last-child > td { border-bottom: none; }
+.hall-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* ── h3 — カードの中の入れ子。h2 と同列には出さない ──────── */
+.alcoves {
+  margin-top: 1.9rem;
+  border-left: 1px solid var(--line);
+  padding-left: 1.7rem;
+}
+.alcove { padding: 1.2rem 0; }
+.alcove:first-child { padding-top: 0.2rem; }
+.alcove:last-child { padding-bottom: 0; }
+.alcove + .alcove { border-top: 1px solid var(--line-soft); }
+.alcove-title {
+  margin: 0 0 0.5em;
+  font-weight: 700;
+  font-size: 1.04rem;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  word-break: normal;
+  word-break: auto-phrase;
+}
+.alcove-body {
+  color: var(--ink-2);
+  font-size: 0.96rem;
+  line-height: 1.8;
+}
+.alcove-body p { margin: 0 0 0.7em; }
+.alcove-body p:last-child { margin-bottom: 0; }
+.alcove-body > *:first-child { margin-top: 0; }
+
+/* ── コードブロック — 常に暗色パネル ─────────────────────── */
+.code-block {
+  margin: 1.4em 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--code-bg);
+}
+.code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.2rem;
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--code-cmt);
+  background: color-mix(in srgb, var(--code-bg) 84%, white);
+}
+.code-copy {
+  font: inherit;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #8ab4ff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2em 0.5em;
+  border-radius: 5px;
+  transition: background 0.18s ease;
+}
+.code-copy:hover { background: rgba(138, 180, 255, 0.16); }
+.code-block pre {
+  margin: 0;
+  padding: 1.4rem 1.6rem;
+  overflow-x: auto;
+  background: var(--code-bg);
+}
+.code-block code {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: var(--code-ink);
+}
+.code-block .hljs { background: transparent; color: var(--code-ink); }
+
+/* hljs トークン。暗色パネル用 (github-dark 相当) */
+.hljs-comment, .hljs-quote { color: #8b949e; }
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #ff7b72; }
+.hljs-string, .hljs-regexp, .hljs-attr, .hljs-addition { color: #a5d6ff; }
+.hljs-number, .hljs-literal, .hljs-symbol, .hljs-bullet, .hljs-link, .hljs-meta, .hljs-selector-id { color: #79c0f2; }
+.hljs-title, .hljs-name, .hljs-title.function_ { color: #d2a8ff; }
+.hljs-type, .hljs-class .hljs-title, .hljs-title.class_, .hljs-built_in,
+.hljs-variable, .hljs-template-variable, .hljs-attribute { color: #ffa657; }
+.hljs-section { color: #79c0f2; font-weight: 600; }
+.hljs-deletion { color: #ffa198; }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 600; }
+
+/* ── 折りたたみ — 1,100 字超のコード・引用の収納 ─────────── */
+.fold {
+  margin: 1.2em 0;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--chip);
+}
+.fold > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.8rem 1.1rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--accent-deep);
+  display: flex;
+  align-items: center;
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::before {
+  content: '＋';
+  font-weight: 700;
+  margin-right: 0.5rem;
+  color: var(--ink-faint);
+}
+.fold[open] > summary::before { content: '−'; }
+.fold[open] > summary { border-bottom: 1px dashed var(--line); }
+.fold > summary .fold-open { display: none; }
+.fold[open] > summary .fold-closed { display: none; }
+.fold[open] > summary .fold-open { display: inline; }
+.fold > .code-block { margin: 0; border-radius: 0; }
+.fold > blockquote { margin: 0.9em 1.25rem 1.1em; }
+
+/* ── 奥付 — 生成情報 ─────────────────────────────────────── */
+.colophon {
+  padding: 0 var(--gutter) 3rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+  text-align: center;
+}
+.colophon .src { font-family: var(--font-mono); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  .map, .map-toggle, .scroll-progress { display: none !important; }
+  .stage { margin-left: 0 !important; }
+}
+</style>
+</head>
+<body>
+<div class="scroll-progress" id="progress"></div>
+
+<button type="button" class="map-toggle" id="map-toggle" aria-label="目次を開く"><span class="bars"></span></button>
+
+<aside class="map" id="map" aria-label="目次">
+  <div class="map-head">{{TITLE}}</div>
+  <nav class="map-nav" id="map-nav"></nav>
+</aside>
+
+<main class="stage" id="stage">
+  <header class="hero">
+    <h1 class="hero-title">{{TITLE}}</h1>
+    <div class="hero-lede" id="hero-lede" hidden>
+      <div class="hero-lede-body" id="hero-lede-body"></div>
+    </div>
+  </header>
+  <div id="chapters"></div>
+  <footer class="colophon">
+    md-humanize が自動生成 ·
+    <span class="src">{{SOURCE_PATH}}</span> · {{GENERATED_AT}} · {{CHAR_COUNT}}
+  </footer>
+</main>
+
+<template id="source">{{CONTENT}}</template>
+
+<script>
+(function () {
+  "use strict";
+
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) document.documentElement.classList.add("reduce");
+
+  /* ── 物理幅バケツ (md-rebuilder ADR-0017) ──
+     outerWidth はブラウザ倍率の影響を受けない。倍率を下げて使う読者を
+     CSS ピクセル基準で 2 カラムに巻き込まないための判定軸。 */
+  var PHYSICAL_WIDE_PX = 1280;
+  function applyBucket() {
+    var w = window.outerWidth || window.innerWidth;
+    document.documentElement.dataset.physicalWBucket =
+      w >= PHYSICAL_WIDE_PX ? "wide" : "narrow";
+  }
+  applyBucket();
+  window.addEventListener("resize", applyBucket);
+
+  /* ── レイアウト構築層 (md-rebuilder reconstruct.ts の移植) ──
+     h1 = 章、h2 = カード (hall)、h3 以降 = 入れ子。h2 は中身で
+     prose / parallel / code / quote / figure に分類する。 */
+  var PARALLEL_MAX_WEIGHT = 360;
+  var PARALLEL_MIN_COUNT = 2;
+  var FIGURE_RATIO = 0.5;
+  var CODE_RATIO = 0.45;
+  var QUOTE_RATIO = 0.5;
+  var FOLD_WEIGHT = 1100;
+
+  function isHeading(el) { return /^H[1-6]$/.test(el.tagName); }
+  function headingLevel(el) { return Number(el.tagName[1]); }
+  function textWeight(nodes) {
+    return nodes.reduce(function (n, el) { return n + (el.textContent || "").length; }, 0);
+  }
+
+  /* 1,100 字超のコード・引用を details.fold へ包む (ADR-0020) */
+  function foldHeavyBlock(node) {
+    var isCode = node.classList && node.classList.contains("code-block");
+    var isQuote = node.tagName === "BLOCKQUOTE";
+    if (!isCode && !isQuote) return node;
+    if ((node.textContent || "").length <= FOLD_WEIGHT) return node;
+
+    var details = document.createElement("details");
+    details.className = "fold";
+    var summary = document.createElement("summary");
+    var closed = document.createElement("span");
+    closed.className = "fold-closed";
+    var opened = document.createElement("span");
+    opened.className = "fold-open";
+    if (isCode) {
+      var codeEl = node.querySelector("code");
+      var lines = ((codeEl ? codeEl.textContent : "") || "").replace(/\s+$/, "").split("\n").length;
+      closed.textContent = "長いコードを展開（" + lines + " 行）";
+      opened.textContent = "コードを畳む";
+    } else {
+      closed.textContent = "長い引用を展開";
+      opened.textContent = "引用を畳む";
+    }
+    summary.appendChild(closed);
+    summary.appendChild(opened);
+    details.appendChild(summary);
+    details.appendChild(node);
+    return details;
+  }
+
+  function extractLead(body) {
+    var first = null;
+    for (var i = 0; i < body.length; i++) {
+      if (body[i].tagName === "P") { first = body[i]; break; }
+    }
+    if (!first) return null;
+    var text = (first.textContent || "").trim();
+    if (text.length < 30 || text.length > 220) return null;
+    return text;
+  }
+
+  function countOf(nodes, pred) { return nodes.filter(pred).length; }
+
+  function decideLayout(children, body) {
+    var parallel = children.length >= PARALLEL_MIN_COUNT &&
+      children.every(function (c) {
+        return c.children.length === 0 && c.weight <= PARALLEL_MAX_WEIGHT;
+      });
+    if (parallel) return "parallel";
+    if (children.length > 0) return "prose";
+    if (body.length === 0) return "prose";
+
+    var imgs = countOf(body, function (n) {
+      return n.tagName === "IMG" || !!n.querySelector("img");
+    });
+    if (imgs / body.length >= FIGURE_RATIO) return "figure";
+
+    var codes = countOf(body, function (n) {
+      return (n.classList && n.classList.contains("code-block")) || !!n.querySelector(".code-block");
+    });
+    if (codes / body.length >= CODE_RATIO) return "code";
+
+    var quotes = countOf(body, function (n) {
+      return n.tagName === "BLOCKQUOTE" || !!n.querySelector("blockquote");
+    });
+    if (quotes / body.length >= QUOTE_RATIO) return "quote";
+
+    return "prose";
+  }
+
+  function buildSubtree(nodes, startIdx, parentLevel, idCounter) {
+    var pos = startIdx;
+    var sections = [];
+    while (pos < nodes.length) {
+      var node = nodes[pos];
+      if (!isHeading(node)) break;
+      var lv = headingLevel(node);
+      if (lv <= parentLevel || lv === 1) break;
+
+      var id = "h-" + idCounter.n++;
+      pos++;
+
+      var body = [];
+      while (pos < nodes.length && !isHeading(nodes[pos])) {
+        body.push(foldHeavyBlock(nodes[pos++]));
+      }
+
+      var sub = buildSubtree(nodes, pos, lv, idCounter);
+      pos = sub.nextIdx;
+
+      var layout = decideLayout(sub.sections, body);
+      sections.push({
+        level: lv,
+        heading: (node.textContent || "").trim(),
+        id: id,
+        layout: layout,
+        children: sub.sections,
+        body: body,
+        weight: textWeight(body),
+        lead: layout === "prose" ? extractLead(body) : null
+      });
+    }
+    return { sections: sections, nextIdx: pos };
+  }
+
+  function buildChapters(root) {
+    var nodes = Array.prototype.slice.call(root.children);
+    var idCounter = { n: 0 };
+    var chapters = [];
+    var pos = 0;
+
+    /* 先頭の前文 (h1 が出るまで) は無名の章として吸収 */
+    if (pos < nodes.length && !isHeading(nodes[pos])) {
+      var intro0 = [];
+      while (pos < nodes.length && !isHeading(nodes[pos])) {
+        intro0.push(foldHeavyBlock(nodes[pos++]));
+      }
+      var nextStart = pos;
+      var firstSubtree = [];
+      if (pos < nodes.length && headingLevel(nodes[pos]) >= 2) {
+        var sub0 = buildSubtree(nodes, pos, 1, idCounter);
+        firstSubtree = sub0.sections;
+        nextStart = sub0.nextIdx;
+      }
+      if (intro0.length > 0 || firstSubtree.length > 0) {
+        chapters.push({ id: null, heading: null, intro: intro0, sections: firstSubtree });
+      }
+      pos = nextStart;
+    }
+
+    while (pos < nodes.length) {
+      var node = nodes[pos];
+      if (!isHeading(node)) { pos++; continue; }
+      var lv = headingLevel(node);
+      if (lv !== 1) {
+        var subX = buildSubtree(nodes, pos, 1, idCounter);
+        pos = subX.nextIdx;
+        if (subX.sections.length > 0) {
+          chapters.push({ id: null, heading: null, intro: [], sections: subX.sections });
+        }
+        continue;
+      }
+      var id = "h-" + idCounter.n++;
+      var heading = (node.textContent || "").trim();
+      pos++;
+      var intro = [];
+      while (pos < nodes.length && !isHeading(nodes[pos])) {
+        intro.push(foldHeavyBlock(nodes[pos++]));
+      }
+      var sub = buildSubtree(nodes, pos, 1, idCounter);
+      pos = sub.nextIdx;
+      chapters.push({ id: id, heading: heading, intro: intro, sections: sub.sections });
+    }
+    return chapters;
+  }
+
+  /* ── 並びの計算 (md-rebuilder App.tsx の computeSoloRow /
+     computeRuntimeWide の移植)。広い内容の節は 1 行を占有し、余った
+     節と縦長ペアも全幅化して「置き忘れ」の見た目を作らない。 */
+  function isLayoutWide(s) {
+    return s.layout === "code" || s.layout === "quote" ||
+      s.layout === "figure" || s.layout === "parallel";
+  }
+  function computeSoloRow(sections) {
+    var solo = sections.map(function () { return false; });
+    var runStart = -1;
+    var flushRun = function (end) {
+      if (runStart < 0) return;
+      var len = end - runStart;
+      if (len > 0 && len % 2 === 1) solo[end - 1] = true;
+      runStart = -1;
+    };
+    for (var i = 0; i < sections.length; i++) {
+      if (isLayoutWide(sections[i])) flushRun(i);
+      else if (runStart < 0) runStart = i;
+    }
+    flushRun(sections.length);
+    return solo;
+  }
+  var TALL_HALL_PX = 1000;
+  function computeRuntimeWide(sections, soloFlags, heights) {
+    var out = sections.map(function () { return false; });
+    var pair = [];
+    var flushPair = function () {
+      if (pair.length === 2) {
+        var tall = pair.some(function (i) { return (heights[i] || 0) > TALL_HALL_PX; });
+        if (tall) pair.forEach(function (i) { out[i] = true; });
+      }
+      pair = [];
+    };
+    for (var i = 0; i < sections.length; i++) {
+      if (isLayoutWide(sections[i]) || soloFlags[i]) { flushPair(); continue; }
+      pair.push(i);
+      if (pair.length === 2) flushPair();
+    }
+    flushPair();
+    return out;
+  }
+
+  /* ── 本文の描画 ── */
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function bodyDiv(nodes, cls, dropLead) {
+    var list = nodes;
+    if (dropLead) {
+      var idx = list.findIndex(function (n) { return n.tagName === "P"; });
+      if (idx >= 0) list = list.slice(0, idx).concat(list.slice(idx + 1));
+    }
+    if (list.length === 0) return null;
+    var div = el("div", cls);
+    list.forEach(function (n) { div.appendChild(n); });
+    return div;
+  }
+  function renderAlcoves(children) {
+    if (children.length === 0) return null;
+    var wrap = el("div", "alcoves");
+    children.forEach(function (c) {
+      var alcove = el("div", "alcove");
+      if (c.id) alcove.id = c.id;
+      if (c.heading) alcove.appendChild(el("h3", "alcove-title", c.heading));
+      var b = bodyDiv(c.body, "alcove-body", false);
+      if (b) alcove.appendChild(b);
+      var nested = renderAlcoves(c.children);
+      if (nested) alcove.appendChild(nested);
+      wrap.appendChild(alcove);
+    });
+    return wrap;
+  }
+  function renderHall(section) {
+    var hall = el("section", "hall");
+    if ((section.heading || "").length > 24) hall.classList.add("wide");
+    if (section.id) hall.id = section.id;
+    if (section.heading) hall.appendChild(el("h2", "hall-title", section.heading));
+    if (section.lead) hall.appendChild(el("p", "hall-lead", section.lead));
+    var b = bodyDiv(section.body, "hall-body", !!section.lead);
+    if (b) hall.appendChild(b);
+    var alcoves = renderAlcoves(section.children);
+    if (alcoves) hall.appendChild(alcoves);
+    return hall;
+  }
+  function renderThreshold(chapter) {
+    var section = el("section", "threshold");
+    if (chapter.id) section.id = chapter.id;
+    var inner = el("div", "threshold-inner");
+    if (chapter.heading) inner.appendChild(el("h1", "threshold-title", chapter.heading));
+    if (chapter.intro.length > 0) {
+      var lede = el("div", "threshold-lede");
+      var b = bodyDiv(chapter.intro, "threshold-lede-body", false);
+      if (b) lede.appendChild(b);
+      inner.appendChild(lede);
+    }
+    section.appendChild(inner);
+    return section;
+  }
+
+  var source = document.getElementById("source");
+  var host = document.createElement("div");
+  host.appendChild(source.content.cloneNode(true));
+  var chapters = buildChapters(host);
+
+  /* 入口の前書きは先頭章の intro を流す */
+  var leadIntro = chapters.length > 0 ? chapters[0].intro : [];
+  if (leadIntro.length > 0) {
+    var ledeBody = document.getElementById("hero-lede-body");
+    leadIntro.forEach(function (n) { ledeBody.appendChild(n); });
+    document.getElementById("hero-lede").hidden = false;
+  }
+
+  var chaptersRoot = document.getElementById("chapters");
+  var hallEls = []; /* 章ごとの { sections, els } */
+  chapters.forEach(function (ch, ci) {
+    if (ci >= 1) chaptersRoot.appendChild(renderThreshold(ch));
+    if (ch.sections.length === 0) return;
+    var gallery = el("div", "gallery");
+    var els = [];
+    ch.sections.forEach(function (s) {
+      var hall = renderHall(s);
+      els.push(hall);
+      gallery.appendChild(hall);
+    });
+    chaptersRoot.appendChild(gallery);
+    hallEls.push({ sections: ch.sections, els: els });
+  });
+
+  /* 静的 wide + 実測 tall hall の全幅化。マウント時と resize 時のみ */
+  function applyWidth() {
+    hallEls.forEach(function (g) {
+      var solo = computeSoloRow(g.sections);
+      var heights = g.els.map(function (e) { return e.offsetHeight; });
+      var runtime = computeRuntimeWide(g.sections, solo, heights);
+      g.sections.forEach(function (s, i) {
+        g.els[i].classList.toggle(
+          "wide-content",
+          isLayoutWide(s) || solo[i] || runtime[i]
+        );
+      });
+    });
+  }
+  applyWidth();
+  window.addEventListener("resize", applyWidth);
+
+  /* ── 章マップ。先頭章の h1 行は表題と重なるため出さない ── */
+  var mapNav = document.getElementById("map-nav");
+  var mapEl = document.getElementById("map");
+  var mapToggle = document.getElementById("map-toggle");
+  var mapItems = [];
+  chapters.forEach(function (ch, ci) {
+    if (ci >= 1 && ch.id && ch.heading) {
+      mapItems.push({ id: ch.id, level: 1, heading: ch.heading });
+    }
+    ch.sections.forEach(function (s) {
+      if (s.id && s.heading) {
+        mapItems.push({ id: s.id, level: 2, heading: s.heading });
+      }
+      s.children.forEach(function (c) {
+        if (c.id && c.heading) mapItems.push({ id: c.id, level: 3, heading: c.heading });
+      });
+    });
+  });
+  function closeDrawer() {
+    mapEl.classList.remove("is-open");
+    mapToggle.classList.remove("is-open");
+  }
+  mapItems.forEach(function (item) {
+    var btn = el("button",
+      item.level === 1 ? "map-chapter" : "map-link h" + item.level,
+      item.heading);
+    btn.type = "button";
+    btn.dataset.mapId = item.id;
+    btn.addEventListener("click", function () {
+      var target = document.getElementById(item.id);
+      if (target) target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      closeDrawer();
+    });
+    mapNav.appendChild(btn);
+  });
+
+  /* 狭い画面のドロワー開閉 */
+  mapToggle.addEventListener("click", function (e) {
+    e.stopPropagation();
+    var open = mapEl.classList.toggle("is-open");
+    mapToggle.classList.toggle("is-open", open);
+  });
+  document.addEventListener("click", function (e) {
+    if (mapEl.classList.contains("is-open") && !mapEl.contains(e.target)) closeDrawer();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeDrawer();
+  });
+
+  /* ── 現在地追従。rootMargin は上 48px / 下 70% ── */
+  var activeId = "";
+  function setActive(id) {
+    if (id === activeId) return;
+    activeId = id;
+    var links = mapNav.querySelectorAll("[data-map-id]");
+    for (var i = 0; i < links.length; i++) {
+      links[i].classList.toggle("current", links[i].dataset.mapId === id);
+    }
+    /* 現在地がマップの外なら中央へ戻す */
+    var link = mapNav.querySelector('[data-map-id="' + id + '"]');
+    if (link) {
+      var nr = mapNav.getBoundingClientRect();
+      var lr = link.getBoundingClientRect();
+      if (lr.top < nr.top + 36 || lr.bottom > nr.bottom - 36) {
+        link.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+      }
+    }
+  }
+  if (mapItems.length > 0 && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) setActive(en.target.id);
+      });
+    }, { rootMargin: "-48px 0px -70% 0px", threshold: 0 });
+    mapItems.forEach(function (item) {
+      var t = document.getElementById(item.id);
+      if (t) io.observe(t);
+    });
+  }
+
+  /* ── 進捗バー ── */
+  var progress = document.getElementById("progress");
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      ticking = false;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.transform = "scaleX(" + (max > 0 ? window.scrollY / max : 0) + ")";
+    });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* ── コードコピー。stage への委譲クリックで処理 ── */
+  document.getElementById("stage").addEventListener("click", function (e) {
+    var btn = e.target.closest(".code-copy");
+    if (!btn) return;
+    var block = btn.closest(".code-block");
+    var code = block && block.querySelector("code");
+    if (!code) return;
+    navigator.clipboard.writeText(code.textContent || "").then(function () {
+      var original = btn.textContent;
+      btn.textContent = "コピーしました";
+      setTimeout(function () { btn.textContent = original; }, 1500);
+    });
+  });
+})();
+</script>
+</body>
+</html>
