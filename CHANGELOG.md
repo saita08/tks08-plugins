@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-07-03
+
 ### Fixed
 - broad-review: The delegated review now keeps every nested reviewer agent synchronous and anonymous, so a review no longer floods your conversation with completion notices and team messages that look like they came from another session
 - broad-review: Interrupting the review now stops any background agents the delegation had already spawned, instead of leaving them running and notifying you for minutes afterwards
