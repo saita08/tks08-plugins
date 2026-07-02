@@ -100,12 +100,12 @@ parallel-fix/
 ├── commands/
 │   ├── parallel-fix.md            # フェローの台本。Steps 1〜12 が並ぶ
 │   └── references/
-│       └── principles.md             # C-0〜C-20。フェローの判断軸。台本の各 Step が ID で参照する
+│       └── principles.md             # C-0〜C-22。フェローの判断軸。台本の各 Step が ID で参照する
 ├── skills/
 │   └── team-fix-strategy/
 │       ├── SKILL.md                  # フェロー向け。タスク分割と計画評価の知見
 │       └── references/
-│           └── teammate-rules.md     # チームメイト向け 12 ルール。フェローが召喚プロンプトに verbatim で貼り込む
+│           └── teammate-rules.md     # チームメイト向け 14 ルール。フェローが召喚プロンプトに verbatim で貼り込む
 └── README.md                         # 今読んでるやつ
 ```
 
