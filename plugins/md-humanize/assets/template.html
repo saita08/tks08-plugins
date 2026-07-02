@@ -7,6 +7,9 @@
 <style>
 /* ================================================================
    md-humanize — 生成される読み物ページ。
+   Markdown の解釈もこのファイル内の素の JavaScript が行う。行を
+   ブロック (見出し / コード / 引用 / リスト / 表 / 段落) に切って
+   HTML へ写す決定的な変換で、外部ライブラリは使わない。
    配置 (左の章マップ / 入口 / 章区切り / 節カードの 2 列配置 /
    深い階層の畳み込み / 長大ブロックの折りたたみ) は md-rebuilder の
    viewer のレイアウト設計に従う。装飾と演出は持たず、白基調の
@@ -480,21 +483,6 @@ body {
   line-height: 1.75;
   color: var(--code-ink);
 }
-.code-block .hljs { background: transparent; color: var(--code-ink); }
-
-/* hljs トークン。暗色パネル用 (github-dark 相当) */
-.hljs-comment, .hljs-quote { color: #8b949e; }
-.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #ff7b72; }
-.hljs-string, .hljs-regexp, .hljs-attr, .hljs-addition { color: #a5d6ff; }
-.hljs-number, .hljs-literal, .hljs-symbol, .hljs-bullet, .hljs-link, .hljs-meta, .hljs-selector-id { color: #79c0f2; }
-.hljs-title, .hljs-name, .hljs-title.function_ { color: #d2a8ff; }
-.hljs-type, .hljs-class .hljs-title, .hljs-title.class_, .hljs-built_in,
-.hljs-variable, .hljs-template-variable, .hljs-attribute { color: #ffa657; }
-.hljs-section { color: #79c0f2; font-weight: 600; }
-.hljs-deletion { color: #ffa198; }
-.hljs-emphasis { font-style: italic; }
-.hljs-strong { font-weight: 600; }
-
 /* ── 折りたたみ — 1,100 字超のコード・引用の収納 ─────────── */
 .fold {
   margin: 1.2em 0;
@@ -569,11 +557,13 @@ body {
   <div id="chapters"></div>
   <footer class="colophon">
     md-humanize が自動生成 ·
-    <span class="src">{{SOURCE_PATH}}</span> · {{GENERATED_AT}} · {{CHAR_COUNT}}
+    <span class="src">{{SOURCE_PATH}}</span> · {{GENERATED_AT}} · <span id="char-count"></span>
   </footer>
 </main>
 
-<template id="source">{{CONTENT}}</template>
+<script type="text/markdown" id="source">
+{{CONTENT_B64}}
+</script>
 
 <script>
 (function () {
@@ -593,6 +583,176 @@ body {
   }
   applyBucket();
   window.addEventListener("resize", applyBucket);
+
+  /* ── 変換層 — Markdown をブロックに切って HTML へ写す ──
+     行単位でブロック (コードフェンス / 見出し / 罫線 / 引用 / 表 /
+     リスト / 段落) を判定する決定的な変換。外部ライブラリは使わない。 */
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function inlineMd(src) {
+    /* コードスパンを先に退避し、他の記法の影響を受けさせない */
+    var codes = [];
+    var out = src.replace(/`([^`\n]+)`/g, function (_, c) {
+      codes.push(c);
+      return "\u0000" + (codes.length - 1) + "\u0000";
+    });
+    out = escapeHtml(out);
+    out = out.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+[^)]*)?\)/g, '<img alt="$1" src="$2">');
+    out = out.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+[^)]*)?\)/g, '<a href="$2">$1</a>');
+    out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    out = out.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+    out = out.replace(/(^|[^*\w])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+    out = out.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+    out = out.replace(/\u0000(\d+)\u0000/g, function (_, i) {
+      return "<code>" + escapeHtml(codes[+i]) + "</code>";
+    });
+    return out;
+  }
+
+  function codeBlockHtml(lang, code) {
+    var label = escapeHtml((lang || "text").toLowerCase());
+    return '<figure class="code-block" data-lang="' + label + '">' +
+      '<figcaption class="code-head"><span class="code-lang">' + label + "</span>" +
+      '<button type="button" class="code-copy">コピー</button></figcaption>' +
+      "<pre><code>" + escapeHtml(code) + "\n</code></pre></figure>";
+  }
+
+  var ITEM_RE = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/;
+
+  function looksLikeTable(lines, i) {
+    return lines[i].indexOf("|") >= 0 && i + 1 < lines.length &&
+      /^\s*\|?[\s:|-]+\|?\s*$/.test(lines[i + 1]) && /-{2,}/.test(lines[i + 1]);
+  }
+
+  function startsBlock(lines, i) {
+    var l = lines[i];
+    return /^#{1,6}\s/.test(l) || /^\s*(```|~~~)/.test(l) || /^\s*>/.test(l) ||
+      /^\s*([-*_])\s*(\1\s*){2,}$/.test(l) || ITEM_RE.test(l) || looksLikeTable(lines, i);
+  }
+
+  function splitRow(line) {
+    var t = line.trim().replace(/^\|/, "").replace(/\|$/, "");
+    return t.split("|").map(function (c) { return c.trim(); });
+  }
+
+  function parseList(lines, start) {
+    var i = start;
+    var base = lines[start].match(ITEM_RE)[1].length;
+    var ordered = /^\s*\d+[.)]/.test(lines[start]);
+    var items = [];
+    while (i < lines.length) {
+      var line = lines[i];
+      if (/^\s*$/.test(line)) {
+        var nx = i + 1;
+        if (nx < lines.length && ITEM_RE.test(lines[nx]) &&
+            lines[nx].match(ITEM_RE)[1].length >= base) { i++; continue; }
+        break;
+      }
+      var m = line.match(ITEM_RE);
+      if (m && m[1].length <= base) {
+        if (m[1].length < base) break;
+        items.push({ text: m[3], sub: "" });
+        i++;
+      } else if (m) {
+        var sub = parseList(lines, i);
+        if (items.length) items[items.length - 1].sub += sub.html;
+        i = sub.next;
+      } else if (/^\s+\S/.test(line) && items.length) {
+        items[items.length - 1].text += "\n" + line.trim();
+        i++;
+      } else {
+        break;
+      }
+    }
+    var html = items.map(function (it) {
+      return "<li>" + inlineMd(it.text) + it.sub + "</li>";
+    }).join("");
+    return {
+      html: (ordered ? "<ol>" : "<ul>") + html + (ordered ? "</ol>" : "</ul>"),
+      next: i
+    };
+  }
+
+  function parseMarkdown(md) {
+    var lines = md.replace(/\r\n?/g, "\n").split("\n");
+    var html = [];
+    var i = 0;
+    while (i < lines.length) {
+      var line = lines[i];
+      if (/^\s*$/.test(line)) { i++; continue; }
+      var m;
+
+      if ((m = line.match(/^\s*(```+|~~~+)\s*(\S+)?\s*$/))) {
+        var close = m[1][0] === "`" ? /^\s*```/ : /^\s*~~~/;
+        var lang = m[2] || "";
+        i++;
+        var buf = [];
+        while (i < lines.length && !close.test(lines[i])) buf.push(lines[i++]);
+        i++;
+        html.push(codeBlockHtml(lang, buf.join("\n")));
+        continue;
+      }
+
+      if ((m = line.match(/^(#{1,6})\s+(.*)$/))) {
+        var lv = m[1].length;
+        html.push("<h" + lv + ">" + inlineMd(m[2].replace(/\s+#+\s*$/, "")) + "</h" + lv + ">");
+        i++;
+        continue;
+      }
+
+      if (/^\s*([-*_])\s*(\1\s*){2,}$/.test(line)) { html.push("<hr>"); i++; continue; }
+
+      if (/^\s*>/.test(line)) {
+        var qb = [];
+        while (i < lines.length && (/^\s*>/.test(lines[i]) ||
+               (!/^\s*$/.test(lines[i]) && qb.length && !startsBlock(lines, i)))) {
+          qb.push(lines[i].replace(/^\s*>\s?/, ""));
+          i++;
+        }
+        html.push("<blockquote>" + parseMarkdown(qb.join("\n")) + "</blockquote>");
+        continue;
+      }
+
+      if (looksLikeTable(lines, i)) {
+        var header = splitRow(line);
+        i += 2;
+        var rows = [];
+        while (i < lines.length && lines[i].indexOf("|") >= 0 && !/^\s*$/.test(lines[i])) {
+          rows.push(splitRow(lines[i]));
+          i++;
+        }
+        var thead = "<thead><tr>" + header.map(function (c) {
+          return "<th>" + inlineMd(c) + "</th>";
+        }).join("") + "</tr></thead>";
+        var tbody = "<tbody>" + rows.map(function (r) {
+          return "<tr>" + r.map(function (c) {
+            return "<td>" + inlineMd(c) + "</td>";
+          }).join("") + "</tr>";
+        }).join("") + "</tbody>";
+        html.push("<table>" + thead + tbody + "</table>");
+        continue;
+      }
+
+      if (ITEM_RE.test(line)) {
+        var list = parseList(lines, i);
+        html.push(list.html);
+        i = list.next;
+        continue;
+      }
+
+      var pb = [line];
+      i++;
+      while (i < lines.length && !/^\s*$/.test(lines[i]) && !startsBlock(lines, i)) {
+        pb.push(lines[i]);
+        i++;
+      }
+      html.push("<p>" + inlineMd(pb.join("\n")) + "</p>");
+    }
+    return html.join("\n");
+  }
 
   /* ── レイアウト構築層 (md-rebuilder reconstruct.ts の移植) ──
      h1 = 章、h2 = カード (hall)、h3 以降 = 入れ子。h2 は中身で
@@ -869,9 +1029,23 @@ body {
     return section;
   }
 
+  /* 本文は base64 で埋め込まれている。デコードして自前の変換器へ */
   var source = document.getElementById("source");
+  var b64 = (source.textContent || "").replace(/\s+/g, "");
+  var md = "";
+  try {
+    var bin = atob(b64);
+    var bytes = new Uint8Array(bin.length);
+    for (var bi = 0; bi < bin.length; bi++) bytes[bi] = bin.charCodeAt(bi);
+    md = new TextDecoder("utf-8").decode(bytes);
+  } catch (e) { md = ""; }
+
+  var charCount = md.replace(/\s/g, "").length;
+  document.getElementById("char-count").textContent =
+    charCount.toLocaleString("en-US") + " 字";
+
   var host = document.createElement("div");
-  host.appendChild(source.content.cloneNode(true));
+  host.innerHTML = parseMarkdown(md);
   var chapters = buildChapters(host);
 
   /* 入口の前書きは先頭章の intro を流す */

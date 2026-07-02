@@ -41,19 +41,16 @@ Claude が `.md` ファイルを作成・編集すると、隣に `<名前>.prev
 
 ## 必要なもの
 
-- Node.js(無い環境では何もせず静かに終わります)
+ありません。フックは bash と OS 標準のコマンド(grep / sed / awk / base64)だけで動き、Node.js にも外部ライブラリにも依存しません。
 
 ## 中身
 
 ```
-hooks/hooks.json         Write / Edit 後の生成と、生成物への Read / Edit / Write の却下
-scripts/run.sh           node の有無を確認して generate.mjs へ
-scripts/generate.mjs     対象の判定 → Markdown を HTML に変換 → 隣に保存
-scripts/deny-preview.sh  node の有無を確認して deny-preview.mjs へ
-scripts/deny-preview.mjs 生成物への Read / Edit / Write を却下
-assets/template.html     ページの見た目とレイアウト構築(CSS / JS 同梱、1 ファイル完結)
-vendor/                  変換ライブラリ本体と各ライセンス全文
-                         (marked v12: MIT / highlight.js v11: BSD-3-Clause)
+hooks/hooks.json         Write / Edit 後の生成と、生成物の読み取りの却下
+scripts/run.sh           対象の判定 → 本文をテンプレートに埋めて隣に保存
+scripts/deny-preview.sh  生成物への読み取りにあたる操作を却下
+assets/template.html     ページ本体。Markdown の解釈もこの中の素の
+                         JavaScript が行う(CSS / JS 同梱、1 ファイル完結)
 ```
 
-変換はいつ実行しても同じ結果になる機械的な処理で、失敗してもセッションの進行は妨げません。
+Markdown の解釈は「行をブロック(見出し・コード・引用・リスト・表・段落)に切って HTML へ写す」だけの決定的な処理で、生成のたびに同じ結果になります。失敗してもセッションの進行は妨げません。
