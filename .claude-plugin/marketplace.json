@@ -43,6 +43,11 @@
       "name": "pluginize",
       "source": "./plugins/pluginize",
       "description": "Watch your work for reusable structure and suggest turning it into a plugin, generated in an isolated background session"
+    },
+    {
+      "name": "md-humanize",
+      "source": "./plugins/md-humanize",
+      "description": "Turn Markdown files Claude writes into human-readable, self-contained HTML pages next to the source"
     }
   ],
   "renames": {

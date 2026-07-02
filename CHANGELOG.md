@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- md-humanize: New plugin. When Claude writes or edits a Markdown file, a human-readable, self-contained HTML page is generated next to it — a chapter map that tracks your position, section cards laid out in two columns on wide screens, long code and quotes folded behind a click, copy buttons, and automatic light/dark — all offline with zero token cost. Boilerplate files (CLAUDE.md, README.md, etc.) are skipped, `*.preview.html` is added to the repository's `.gitignore` on first generation so previews stay out of commits, and Claude itself is blocked from reading the generated files so they never consume context
+
 ## [1.4.1] - 2026-07-01
 
 ### Changed

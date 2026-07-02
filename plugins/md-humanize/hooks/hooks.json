@@ -1,0 +1,29 @@
+{
+  "description": "md-humanize — after Claude writes or edits a Markdown file, deterministically generate a human-readable, self-contained HTML page next to it (no LLM, no network). Generated previews are for humans: attempts to Read/Edit/Write them are denied to keep them out of Claude's context.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "^(Write|Edit|MultiEdit)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/run.sh\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "^(Read|Write|Edit|MultiEdit|Bash|Grep)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/deny-preview.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
