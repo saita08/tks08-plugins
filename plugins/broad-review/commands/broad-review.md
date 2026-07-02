@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(gh pr view:*), Bash(gh pr list:*), Bash(gh pr diff:*), Bash(mkdir:*), Read, Write, Edit, Glob, Grep, Skill, Agent
+allowed-tools: Bash(gh pr view:*), Bash(gh pr list:*), Bash(gh pr diff:*), Bash(mkdir:*), Read, Write, Edit, Glob, Grep, Skill, Agent, TaskList, TaskStop
 description: Run code review based on custom coding standards and output results to local files
 argument-hint: (no arguments needed - auto-detects PR from current branch)
 ---
@@ -72,6 +72,12 @@ The report file is itself the final artifact: the subagent writes it in the Step
 
 Completion needs no separate signal. The Agent call is synchronous; when it returns, the subagent has finished. What the return does not guarantee is that the work was done as instructed: if the call returns and the report file is missing, or holds a placeholder rather than a structured report, the subagent did not deliver what the prompt asked for. That is a gap between instruction and reality, handled per C-10 — stop and report, rather than retrying the spawn or improvising a review.
 
+### C-12: Delegated work must stay reachable from the delegation that created it
+
+The Agent call in Step 2 is this command's single window onto the review: the work begins when the call starts and is over when the call returns or is stopped. That containment holds only if every agent beneath the delegation stays attached to it, and two spawn options detach an agent from its creator. A background agent survives its creator's return or interruption, and its completion notices are delivered to this conversation, which has no record of dispatching it. A named agent joins the session's single team, whose lead is this conversation, so its messages arrive here directly no matter how deep in the delegation it was spawned. Either way the user is confronted with reports from workers whose origin they cannot see, and stopping the delegation no longer stops the work.
+
+Containment is therefore part of the delegation prompt: every agent beneath the delegation runs synchronously and anonymously, and every prompt that spawns a further agent carries the same requirement forward, because a constraint binds only the agents whose prompts state it. And because forwarding can fail inside an agent this command never sees, an interrupted delegation is followed by a check for surviving descendants rather than an assumption that none exist.
+
 ## Steps
 
 ### 1. Auto-detect PR number
@@ -93,7 +99,9 @@ Delegate the review with a single synchronous Agent tool call (`subagent_type: g
 
 **Purpose**: Review the PR and write the structured findings to the review report file.
 
-**Method**: Invoke the skill `code-review:code-review` via the Skill tool. The plugin-qualified name is required because Claude Code now ships a built-in `/code-review` command whose name collides with the short form: the short name `code-review` resolves to that built-in command rather than to this skill, and a subagent that reaches for the short name will silently perform a different review than the one this command depends on. The colon-qualified form `code-review:code-review` is unambiguous — it names the skill `code-review` inside the plugin `code-review`, a shape the built-in command cannot take — and is the only form that reliably reaches the intended skill. This skill is the sole means of performing the review. It fans out subagents of its own to perform the review; that is expected behavior, supported by nested subagents since Claude Code 2.1.172. If it fails to load, report the failure and stop.
+**Method**: Invoke the skill `code-review:code-review` via the Skill tool. The plugin-qualified name is required because Claude Code now ships a built-in `/code-review` command whose name collides with the short form: the short name `code-review` resolves to that built-in command rather than to this skill, and a subagent that reaches for the short name will silently perform a different review than the one this command depends on. The colon-qualified form `code-review:code-review` is unambiguous — it names the skill `code-review` inside the plugin `code-review`, a shape the built-in command cannot take — and is the only form that reliably reaches the intended skill. This skill is the sole means of performing the review. It fans out subagents of its own to perform the review; that is expected behavior, supported by nested subagents since Claude Code 2.1.172, and the containment constraints below govern how that fan-out runs. If it fails to load, report the failure and stop.
+
+**Containment constraints**: Every agent spawned beneath this delegation, at any depth, must run synchronously and anonymously — never pass `run_in_background` and never pass `name` to the Agent tool. Do not add layers of delegation beyond the ones `code-review:code-review` itself instructs. Include this containment paragraph verbatim in the prompt of every subagent spawned, so the constraint travels with the work (C-12).
 
 **Review criteria**: The PR number, title, and URL from Step 1. The full text of the coding standards obtained from `broad-review:review-policy` as additional review criteria to apply alongside `code-review:code-review`'s own criteria, with the same 0-100 confidence scoring.
 
@@ -102,6 +110,8 @@ Delegate the review with a single synchronous Agent tool call (`subagent_type: g
 **Findings delivery**: Write the complete structured findings into `notes/code-review-pr{N}.md` using the Step 6a review-report format (create the `notes/` directory if it does not exist). This file is the only place the findings are delivered; the command reads them from there, never from the return value (C-11). The `Discarded as resolved in current HEAD` count is decided by the command in Step 4, not by the subagent — write it as `TBD` and leave it for the command to finalize. The final response must not contain the findings body: return only the report file path and the counts of Major and Reference issues.
 
 If the Agent call returns an error, or returns normally but `notes/code-review-pr{N}.md` is missing or holds a placeholder rather than a structured report, the delegation failed. Per C-1 there are then no findings to process, and per C-10 the right response is to stop and report what was attempted and what came back — not to retry the spawn and not to perform the review directly.
+
+If the user interrupts or denies the Agent call, treat containment as unverified: an agent spawned before the interrupt may not have carried the constraint forward, and any descendant started in the background survives the interrupt (C-12). Before anything else, list this session's background tasks with TaskList and stop each one belonging to this run with TaskStop. Completion notices that still arrive afterwards are residue of the stopped run — report them to the user as such, not as work arriving from elsewhere.
 
 ### 3. Process subagent results
 

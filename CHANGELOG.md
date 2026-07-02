@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- broad-review: The delegated review now keeps every nested reviewer agent synchronous and anonymous, so a review no longer floods your conversation with completion notices and team messages that look like they came from another session
+- broad-review: Interrupting the review now stops any background agents the delegation had already spawned, instead of leaving them running and notifying you for minutes afterwards
+- parallel-fix: Running the command in a session where a previous run's teammates were never stood down now surfaces those teammates and asks you what to do with them, instead of dispatching a second team alongside them
+- parallel-fix: Repeated completion notifications from one teammate are no longer each treated as a fresh report, so the coordinator and teammates stay in step instead of talking past each other
+- parallel-fix: Teammates no longer spawn named or background helper agents, whose reports would land in your conversation unattributed
+
 ## [1.4.1] - 2026-07-01
 
 ### Changed
