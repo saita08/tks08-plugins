@@ -6,7 +6,7 @@ argument-hint: <review issues text or file path> (or omit to enter interactively
 
 Fix review feedback using a coordinated agent team. You act as the fellow, which is the role this session occupies for the duration of the run. The fellow coordinates teammates and reviews their plans, and does not write source code itself — C-1 in the principles file explains why this constraint is structural rather than stylistic.
 
-The judgment principles that govern every action below are recorded in `commands/references/principles.md` as C-0 through C-21. Read that file before Step 0 and re-consult the relevant section whenever a step's actions touch the principle it describes. The steps reference those anchors by ID; each ID is the fellow's internal reference to the reasoning the principles file holds, consulted to decide the action and informing it the way a source informs what one says.
+The judgment principles that govern every action below are recorded in `commands/references/principles.md` as C-0 through C-22. Read that file before Step 0 and re-consult the relevant section whenever a step's actions touch the principle it describes. The steps reference those anchors by ID; each ID is the fellow's internal reference to the reasoning the principles file holds, consulted to decide the action and informing it the way a source informs what one says.
 
 Each step that produces something for the user ends with a `Deliverable:` line. The deliverable is what reaches the user from that step, and the fellow's output across the run is composed of these deliverables (C-21). The work a step directs the fellow through to reach its deliverable — consulting the principles by ID, evaluating a plan against the root-cause test, confirming a state by reading an artifact — is how the fellow gets there, and it stays with the fellow the way reasoning stays with a person who reports only the conclusion.
 
@@ -73,6 +73,7 @@ Before creating the team, confirm:
 - Task split is file-based, not issue-based (C-4).
 - No two teammates will modify the same file (C-4).
 - Cross-cutting concerns are resolved (C-6).
+- No teammate from an earlier run is still standing (C-20): read `~/.claude/teams/session-{first segment of $CLAUDE_CODE_SESSION_ID}/config.json` and confirm its `members` array holds only the lead. If it lists anyone else, an earlier run in this session ended without its stand-down — surface those teammates to the user and ask whether to stand them down under the Step 10 procedure or to abort. Dispatch nothing until only the lead remains.
 
 ### 6. Record the Starting Commit
 
@@ -106,14 +107,15 @@ The wait between iterations of this loop is passive (C-19). When no teammate has
 Repeat the following loop until all teammates have completed implementation:
 
 1. Check teammate progress: read each teammate's task state with TaskGet, and read the plans and commits they report through `SendMessage`. Teammate messages arrive automatically; the fellow does not poll for them
-2. For each teammate that has reported a plan but not yet been reviewed:
+2. Before acting on any teammate message or task notification, read the task's state (C-22). A task notification can fire more than once for the same completion; if the state already records the event, drop the arrival as a duplicate. Whenever the fellow does act — approving, rejecting, accepting a commit — it advances the task's state with TaskUpdate in the same turn, so the record stays ahead of the next arrival
+3. For each teammate that has reported a plan but not yet been reviewed:
    - Evaluate using the `team-fix-strategy` skill's plan evaluation criteria
    - Does the plan address the root cause — why the problem exists? (C-7)
    - If not, reject and name what the root cause actually is and what direction to pursue (C-8)
    - If yes, approve and tell the teammate to proceed. Remind them to commit after each fix
-3. For each teammate that has just reported a commit, require the commit hash in the report (C-17) and immediately run `git show --stat <hash>` to confirm only files within that teammate's assigned scope appear. If foreign files have been swept in, halt that teammate and any teammate whose work was scooped up, and treat it as an incident under the procedure in step 7.5 (C-14)
-4. For teammates already implementing, monitor for completion or issues
-5. If a teammate encounters an unexpected issue: help them understand (you may read code for analysis), guide toward a solution, but do NOT write the fix yourself (C-1)
+4. For each teammate that has just reported a commit, require the commit hash in the report (C-17) and immediately run `git show --stat <hash>` to confirm only files within that teammate's assigned scope appear. If foreign files have been swept in, halt that teammate and any teammate whose work was scooped up, and treat it as an incident under the procedure in step 8.5 (C-14)
+5. For teammates already implementing, monitor for completion or issues
+6. If a teammate encounters an unexpected issue: help them understand (you may read code for analysis), guide toward a solution, but do NOT write the fix yourself (C-1)
 
 Deliverable: for each plan, the decision — approval with a go-ahead, or rejection with the root cause and the direction to pursue (C-8). The decision is what the teammate and the user act on; the criteria the fellow checked to reach it are the reasoning behind the decision (C-21).
 
@@ -146,7 +148,7 @@ The new team infrastructure has no single-operation team deletion. What it has i
 
 Once every teammate has passed verification, send each teammate a `shutdown_request` through `SendMessage`, individually by name (C-16). A teammate approves with a `shutdown_response` and its process exits. Do not treat the request as the stand-down: a cooperative message is not an interrupt (C-16), so the teammate is down only once it has actually exited.
 
-Confirm the whole team is down by reading the `members` array in `~/.claude/teams/{team-name}/config.json` and seeing that only the lead remains; that artifact, not the arrival of `shutdown_response` messages, is the authoritative signal that teardown is complete (C-9). Do not end the turn to wait for those acknowledgements to arrive — the passive-wait discipline of Step 8 (C-19) governs waiting on teammate *work*, not this teardown, and treating it as a wait is what stalls the run. If a teammate still appears in `members`, read the file again after a short interval until only the lead remains. This reading is the fellow's own machinery. That confirmation is the structural successor to the old single `TeamDelete` call.
+Confirm the whole team is down by reading the `members` array in `~/.claude/teams/session-{first segment of $CLAUDE_CODE_SESSION_ID}/config.json` — the same artifact the Step 5 precondition reads (C-20) — and seeing that only the lead remains; that artifact, not the arrival of `shutdown_response` messages, is the authoritative signal that teardown is complete (C-9). Do not end the turn to wait for those acknowledgements to arrive — the passive-wait discipline of Step 8 (C-19) governs waiting on teammate *work*, not this teardown, and treating it as a wait is what stalls the run. If a teammate still appears in `members`, read the file again after a short interval until only the lead remains. This reading is the fellow's own machinery. That confirmation is the structural successor to the old single `TeamDelete` call.
 
 Deliverable: the completed stand-down — the team is down, only the lead remains. The reading of `members` that established it is how the fellow confirmed the result it reports (C-21).
 
