@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- pluginize: Suggestions now actually reach your session. The observation hook had been detecting candidates all along but reported them in a form the harness discards, so no suggestion had ever been delivered
+
+### Changed
+- pluginize: Suggestions are fewer and quieter — the hook now requires evidence of reuse visible in the work itself, no longer proposes work that an existing command, skill, or plugin already drove, and raises at most one suggestion per session
+
 ## [1.4.3] - 2026-07-04
 
 ### Fixed

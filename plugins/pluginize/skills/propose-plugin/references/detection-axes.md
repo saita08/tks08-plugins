@@ -10,6 +10,8 @@ The cost structure of this work is asymmetric. A candidate that is surfaced and 
 
 This is why the axes below are joined by "any one of," not "all of." A fragment of work that scores on a single axis is already worth a glance. Demanding that it score on all of them would push the filter back into detection, which is exactly where it does not belong.
 
+The asymmetry has a boundary, and the boundary is the credibility of the channel itself. A declined candidate costs "a moment of attention" only while proposals are rare enough to be read; a detector that speaks at every other break trains the user to stop reading it, and once the channel is ignored, every future true positive is lost as surely as if it had never been raised. Two disciplines keep the net wide without crossing that line. First, a candidate is raised on evidence visible in the work — an axis must have actually shown itself, not merely be conceivable — because almost any substantive work is *plausibly* reusable, and a filter that passes almost everything is not a filter. Second, a session gets at most one proposal: a candidate the user has let pass does not return at the next break wearing the same clothes.
+
 ## The three axes (the recurring signals)
 
 Three properties of a piece of work tend to mark it as reusable. Any one of them is enough to make it a candidate.
@@ -33,6 +35,7 @@ Lean toward capturing when:
 
 Lean away from capturing when:
 
+- It was carried out by running an existing command, skill, or plugin. This is the most seductive false positive, because such work displays every mark of reusable structure — it is procedural, it recurs, it was designed to. But the structure is already encoded; what the observation is seeing is a plugin that exists, not one that is missing.
 - It was a one-off solution to a problem that will not recur.
 - It is a standard practice already well documented elsewhere; pointing to that documentation serves better than re-encoding it.
 - It is a convention specific to this one project. That belongs in the project's own instructions file (`CLAUDE.md`), not in a distributable plugin.
