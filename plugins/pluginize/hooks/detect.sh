@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 # pluginize observation hook.
 #
-# Runs on Stop. Reads the transcript, asks a lightweight claude -p call whether
-# the recent work contains a reusable-structure candidate, and stays silent
-# unless it does. When it finds one, it emits a Stop-hook block decision so the
-# main session is gently rewoken with the candidate.
+# Runs on Stop as an asyncRewake hook. Reads the transcript, asks a lightweight
+# claude -p call whether the recent work contains a reusable-structure
+# candidate, and stays silent unless it does. When it finds one, it prints the
+# proposal to stderr and exits with code 2 — that is the asyncRewake contract
+# (verified against the harness end to end): the model is woken only when an
+# async hook exits with code 2, and what it is shown is the hook's stderr.
+# Exit code 0 means silence. A JSON block decision on stdout is the
+# synchronous Stop-hook protocol and is discarded for async hooks.
 #
 # The judgment criteria live in the skill's references/detection-axes.md; this
 # script only carries the question's essence inline so it can run without
@@ -24,23 +28,39 @@ fi
 # --- Read hook input -------------------------------------------------------
 input="$(cat)"
 
-transcript_path="$(
+parsed="$(
   printf '%s' "$input" | python3 -c 'import sys,json
 try:
     d=json.load(sys.stdin)
     print(d.get("transcript_path",""))
+    print(d.get("session_id",""))
 except Exception:
-    print("")'
+    pass'
 )"
+transcript_path="$(printf '%s\n' "$parsed" | sed -n 1p)"
+session_id="$(printf '%s\n' "$parsed" | sed -n 2p)"
 
 # Nothing to look at -> stay silent.
 [ -n "$transcript_path" ] || exit 0
 [ -f "$transcript_path" ] || exit 0
 
+# --- One proposal per session ----------------------------------------------
+# A proposal the user let pass must not return at the next stop. Repeats teach
+# the user to ignore the channel, and an ignored channel loses the true
+# positives too. The marker is written only when a proposal actually fires,
+# so silent stops do not consume the session's one slot.
+state_dir="${TMPDIR:-/tmp}/pluginize-state-$(id -u)"
+marker="$state_dir/proposed-${session_id:-unknown}"
+if [ -n "$session_id" ] && [ -e "$marker" ]; then
+  exit 0
+fi
+
 # --- Build a compact summary of recent work --------------------------------
-# Pull the text of the most recent user/assistant turns, dropping the giant
-# slash-command/system blocks that would blow the budget and tell us nothing
-# about what work actually happened.
+# Pull the text of the most recent user/assistant turns. Injected payloads —
+# slash-command expansions and skill bodies arrive as user turns flagged
+# isMeta — are dropped: they describe instructions, not work that happened,
+# and they would both blow the budget and read as reusable structure when they
+# are the output of structure that already exists.
 recent="$(
   python3 - "$transcript_path" <<'PY'
 import sys, json
@@ -59,6 +79,9 @@ try:
                 continue
             if d.get("type") not in ("user", "assistant"):
                 continue
+            # Injected command/skill payloads, not something anyone did.
+            if d.get("isMeta"):
+                continue
             msg = d.get("message", {}) or {}
             content = msg.get("content")
             text = ""
@@ -71,7 +94,7 @@ try:
             text = " ".join(text.split())
             if not text:
                 continue
-            # Skip the bulky command/system payloads injected as user turns.
+            # Skip the command-invocation wrappers injected as user turns.
             if text.startswith("<command-") or "# Plugin Creation Workflow" in text:
                 continue
             if len(text) > 1500:
@@ -93,14 +116,20 @@ schema='{"type":"object","properties":{"candidate":{"type":"boolean"},"summary":
 
 prompt="You are watching a Claude Code session for reusable structure that could become a plugin.
 
-Decide whether the recent work below contains a CANDIDATE worth proposing to turn into a plugin. Cast a wide net: any ONE of these axes is enough to make it a candidate.
-- Repeatability: the same shape of work has recurred or plainly will recur across sessions/projects.
-- Crystallized procedure: a sequence of steps has settled into a definite order that matters.
-- Tacit knowledge: the work relied on something non-obvious and not written down where others would find it.
+Decide whether the recent work below contains a CANDIDATE worth proposing to turn into a plugin. A candidate must show CONCRETE EVIDENCE in the work itself on at least one of these axes:
+- Repeatability: the same shape of work visibly recurred, or the user said it recurs across sessions/projects.
+- Crystallized procedure: a sequence of steps settled during this work into a definite order that matters.
+- Tacit knowledge: the work relied on something non-obvious that is not written down where others would find it.
 
-Do NOT raise a candidate for: a one-off solution, a standard practice documented elsewhere, a convention specific to this single project, or a rule a regex/validation could enforce.
+Do NOT raise a candidate for:
+- Work that was carried out by running an existing slash command, skill, or plugin. That structure is already encoded; proposing it again offers nothing, however procedural the work looks.
+- Work whose subject is itself building, testing, or debugging a plugin or skill.
+- A one-off solution, a standard practice documented elsewhere, a convention specific to this single project, or a rule a regex/validation could enforce.
+- Ordinary implementation work (a feature, a bugfix, a refactor) whose steps follow from the task at hand rather than from a reusable procedure.
 
-If there is a candidate, set candidate=true, write a one-sentence summary of the reusable work, and name the single strongest axis (repeatability, procedure, or tacit). Cast a wide net: when the work plausibly touches any one axis, prefer candidate=true and let the user be the one to decline. Only set candidate=false when the work clearly falls into the do-not-raise list above (a one-off, a documented standard practice, a single-project convention, or a mechanically enforceable rule) or is plainly not substantive work at all (chitchat, a trivial edit).
+Judge from evidence, not plausibility. If an axis is merely conceivable rather than visible in the work, or you are uncertain, set candidate=false.
+
+If there is a candidate, set candidate=true, write a one-sentence summary of the reusable work, and name the single strongest axis (repeatability, procedure, or tacit).
 
 Recent work:
 $recent"
@@ -139,19 +168,15 @@ axis="$(printf '%s' "$verdict" | python3 -c 'import sys,json; print(json.load(sy
 [ -n "$summary" ] || exit 0
 
 # --- Surface the candidate -------------------------------------------------
-# Human-readable body goes to stderr; the Stop-hook decision goes to stdout.
-reason="A reusable-structure candidate surfaced in your recent work (axis: ${axis}): ${summary}
+# Record the marker first, so this session never proposes twice even if the
+# rewake itself is lost.
+if [ -n "$session_id" ]; then
+  mkdir -p "$state_dir" 2>/dev/null || true
+  : > "$marker" 2>/dev/null || true
+fi
 
-If this looks worth turning into a plugin, run /pluginize:propose-plugin to review and approve it. The plugin will be generated in an isolated background session, so this conversation stays clean. If it is not worth it, ignore this and continue."
+printf '%s\n' "A reusable-structure candidate surfaced in your recent work (axis: ${axis}): ${summary}
 
-printf '%s\n' "$reason" >&2
+If this looks worth turning into a plugin, run /pluginize:propose-plugin to review and approve it. The plugin will be generated in an isolated background session, so this conversation stays clean. If it is not worth it, ignore this and continue." >&2
 
-printf '%s\n' "$(
-  python3 -c 'import sys,json; print(json.dumps({
-    "decision":"block",
-    "reason":sys.argv[1],
-    "rewakeSummary":"pluginize: a reusable-structure candidate surfaced"
-  }))' "$reason"
-)"
-
-exit 0
+exit 2
