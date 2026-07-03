@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.4] - 2026-07-04
+
 ### Fixed
 - pluginize: Suggestions now actually reach your session. The observation hook had been detecting candidates all along but reported them in a form the harness discards, so no suggestion had ever been delivered
 
