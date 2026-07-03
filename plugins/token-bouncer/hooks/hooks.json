@@ -1,0 +1,27 @@
+{
+  "description": "token-bouncer waste watchers — count agent spawns and repeated file reads per session, warn Claude at thresholds without ever blocking",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/count.sh\" agent",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/count.sh\" read",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
