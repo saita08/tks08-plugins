@@ -1,0 +1,8 @@
+{
+  "name": "new-toys",
+  "description": "Scout Claude Code's latest release notes and translate each new feature into a concrete suggestion for your own setup and plugins.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}
