@@ -43,6 +43,101 @@
       "name": "pluginize",
       "source": "./plugins/pluginize",
       "description": "Watch your work for reusable structure and suggest turning it into a plugin, generated in an isolated background session"
+    },
+    {
+      "name": "handoff-bottle",
+      "source": "./plugins/handoff-bottle",
+      "description": "Bottle up your session state, decisions, and next step so the next session picks up where you left off — a human-readable handoff, not a machine's internal state."
+    },
+    {
+      "name": "lexicon",
+      "source": "./plugins/lexicon",
+      "description": "Capture the terms you and Claude agree on into a project glossary and replay them into every future session, so a correction made once never has to be made again."
+    },
+    {
+      "name": "sensei-notebook",
+      "source": "./plugins/sensei-notebook",
+      "description": "Turn the conceptual explanations you were satisfied with into a Q&A notebook, so the next question in that area builds on the answer that already landed instead of starting over."
+    },
+    {
+      "name": "veto-ledger",
+      "source": "./plugins/veto-ledger",
+      "description": "Record the directions the user has rejected, and the principle behind each rejection, then replay them into every future session so a declined idea does not return in new clothes."
+    },
+    {
+      "name": "constitution-gardener",
+      "source": "./plugins/constitution-gardener",
+      "description": "Mine session transcripts for corrections you keep repeating and draft them into principles for your CLAUDE.md — you judge and ratify, the gardener only proposes."
+    },
+    {
+      "name": "token-bouncer",
+      "source": "./plugins/token-bouncer",
+      "description": "Watch a session for waste-correlated behavior — repeated agent spawns and the same file read again and again — and quietly warn Claude before the tokens are gone."
+    },
+    {
+      "name": "dogfood-lab",
+      "source": "./plugins/dogfood-lab",
+      "description": "Log which of your own skills and slash commands actually fire, then report what never did — so the plugin you built but that never triggers stops hiding."
+    },
+    {
+      "name": "baton",
+      "source": "./plugins/baton",
+      "description": "When Claude's work is done but a human still has to verify it on real hardware or in production, emit a copy-pasteable handoff sheet so the baton pass never gets dropped."
+    },
+    {
+      "name": "mission-control",
+      "source": "./plugins/mission-control",
+      "description": "Post a session's actual outcome to Slack on stop, and brief you on stalled PRs, failing CI, and pending reviews across your repositories."
+    },
+    {
+      "name": "claude-rpg",
+      "source": "./plugins/claude-rpg",
+      "description": "Turn your real Claude Code usage stats into an adventurer's log — unlock achievements from your actual sessions, tool calls, and late-night runs."
+    },
+    {
+      "name": "paste-tube",
+      "source": "./plugins/paste-tube",
+      "description": "Capsule pasted content — reports, reviews, error logs from another session — with its source and date, so it survives the conversation and can be carried between sessions."
+    },
+    {
+      "name": "sketch-first",
+      "source": "./plugins/sketch-first",
+      "description": "Before offering concrete proposals for a vague goal, interview the user to draw out the picture in their head and agree on a one-page sketch of what to build."
+    },
+    {
+      "name": "fleet-sync",
+      "source": "./plugins/fleet-sync",
+      "description": "Distribute shared conventions, hooks, and settings fragments from an origin repository to a fleet of projects, and detect drift before it silently accumulates."
+    },
+    {
+      "name": "embassy",
+      "source": "./plugins/embassy",
+      "description": "Translate an institutional document like your CLAUDE.md into the format and length limits of other AI services, so the same values carry across ChatGPT, Gemini, and generic system prompts."
+    },
+    {
+      "name": "release-butler",
+      "source": "./plugins/release-butler",
+      "description": "Before a release, inspect whether the code change, the version bump, and the CHANGELOG entry are in sync across the repo and its packages, and report the mismatches — it checks, it does not fix."
+    },
+    {
+      "name": "adr-keeper",
+      "source": "./plugins/adr-keeper",
+      "description": "Catch the directional decisions made mid-conversation and record them as Architecture Decision Records, so future sessions read the reasoning instead of quietly reversing it."
+    },
+    {
+      "name": "omikuji",
+      "source": "./plugins/omikuji",
+      "description": "Draw a daily fortune for your Claude Code work — divined not from randomness but from your own recent usage data, once per day."
+    },
+    {
+      "name": "idea-forge",
+      "source": "./plugins/idea-forge",
+      "description": "Dig your accumulated Claude usage history — command frequency, prompt shapes, usage rhythm, recurring manual work — and propose plugin candidates ranked by evidence, deduped against what you already have installed."
+    },
+    {
+      "name": "new-toys",
+      "source": "./plugins/new-toys",
+      "description": "Scout Claude Code's latest release notes and translate each new feature into a concrete suggestion for your own setup and plugins."
     }
   ],
   "renames": {
