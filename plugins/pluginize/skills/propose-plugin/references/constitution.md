@@ -10,7 +10,7 @@ Every layer of this work — watching, proposing, getting approval, generating i
 
 ## Watch widely, but never interrupt
 
-Observation should be generous. The asymmetry that governs detection is spelled out in `detection-axes.md`: a missed candidate is invisible and costs the user the whole benefit, while a surfaced-and-declined candidate costs only a moment. So the watching errs toward noticing.
+Observation should be generous. The asymmetry that governs detection is spelled out in `detection-axes.md`: a missed candidate is invisible and costs the user the whole benefit, while a surfaced-and-declined candidate costs only a moment. So the watching errs toward noticing. That file also records the asymmetry's boundary: the moment stays cheap only while proposals are rare enough to be read, so generosity is paired with an evidence standard and a one-proposal-per-session discipline that keep the channel worth reading.
 
 But generosity in *what* is noticed must be paired with restraint in *when* it is raised. A proposal that lands in the middle of the user's train of thought is a cost even when the candidate is good, because it taxes attention the user had committed elsewhere. The right moment is not a clock tick but an event — the natural close of a unit of work, when the user is between things rather than inside one. The observation runs quietly in the background and stays completely silent when it finds nothing. Silence is the default and the common case; a proposal is the exception, reserved for when there is genuinely something worth the interruption.
 
