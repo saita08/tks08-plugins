@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- broad-review: A nested reviewer agent could misread the forwarded containment note as an instruction to run the whole review again, multiplying one review into dozens of agents across repeated recipes; the forwarded text no longer names the review skill, and each agent now performs only its assigned slice
+- broad-review: Agents beneath the review are now spawned with the synchronous flag stated explicitly — on current Claude Code an omitted flag means background, which had let completion notices flood the conversation again despite the containment rule
+- broad-review: When Claude Code moves the long-running review delegation to the background, the command now waits for that agent's completion notification and continues the run, noting the conversion in the final report, instead of treating it as an unexpected deviation
+- parallel-fix: Teammate helper agents are likewise spawned with the synchronous flag stated explicitly, closing the same omitted-flag path to background execution
+
 ## [1.4.2] - 2026-07-03
 
 ### Fixed
