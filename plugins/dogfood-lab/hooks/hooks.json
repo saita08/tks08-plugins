@@ -1,0 +1,28 @@
+{
+  "description": "dogfood-lab liveness loggers — record slash-command and skill firings as one JSONL line each, then exit silently",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/log.sh\" prompt",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/log.sh\" skill",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
