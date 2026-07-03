@@ -1,0 +1,8 @@
+{
+  "name": "idea-forge",
+  "description": "Dig your accumulated Claude usage history — command frequency, prompt shapes, usage rhythm, recurring manual work — and propose plugin candidates ranked by evidence, deduped against what you already have installed.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}
