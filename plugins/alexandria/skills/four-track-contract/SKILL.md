@@ -10,8 +10,9 @@ A repository's written knowledge is split into four tracks plus one entrance. Ea
 
 - `references/doctrine.md` — the contract itself: what each track holds, why the split exists, and the operational discipline that keeps it alive. Read before auditing, reorganizing, or explaining the structure.
 - `references/placement-guide.md` — the placement procedure: how to classify a given document or piece of content, the common misplacements and their fixes, and what must not be moved. Read when deciding where something belongs.
+- `references/content-inspection.md` — the verification procedure: how to check a document's claims against the repository, per track, with the standard of evidence. Read when judging whether a document is still true rather than where it lives.
 - `references/templates.md` — skeletons for every entry-point file the structure needs. Read when creating missing pieces or bootstrapping a project.
 
 The one rule that outranks all others: when knowledge is written into two tracks, both copies become untrustworthy, because a reader can no longer tell which one moved with reality. Every placement decision serves that rule.
 
-Two commands drive this skill's knowledge: `/librarian:audit` diagnoses and reorganizes an existing project, `/librarian:setup` bootstraps the structure in a project that has none. When the user asks placement questions in passing, answer from the references directly without invoking a command.
+Three commands drive this skill's knowledge: `/alexandria:audit` diagnoses placement and reorganizes an existing project, `/alexandria:inspect` verifies each document's content against the repository as it exists today, and `/alexandria:setup` bootstraps the structure in a project that has none. When the user asks placement questions in passing, answer from the references directly without invoking a command.

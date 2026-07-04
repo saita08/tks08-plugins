@@ -4,9 +4,9 @@ argument-hint: "[監査対象のパス（省略時はカレントプロジェク
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# Librarian Audit
+# Alexandria Audit
 
-Diagnose how well the project's written knowledge matches the four-track contract, report with evidence, and reorganize only after the user approves the shelving plan. Diagnosis and reorganization are separate acts: the report never assumes its own approval.
+Diagnose how well the project's written knowledge matches the four-track contract, report with evidence, and reorganize only after the user approves the shelving plan. Diagnosis and reorganization are separate acts: the report never assumes its own approval. The audit judges where documents live, not whether their content is still true — that is `/alexandria:inspect`'s job, and a placement audit that strays into content review does both badly.
 
 Read `${CLAUDE_PLUGIN_ROOT}/skills/four-track-contract/references/doctrine.md` before classifying anything, and `${CLAUDE_PLUGIN_ROOT}/skills/four-track-contract/references/placement-guide.md` before judging where content belongs. The placement guide's classification questions and misplacement table are the rubric; do not improvise a different one.
 

@@ -2,24 +2,26 @@
 
 Skeletons for the entry-point files the four-track structure needs. Fill placeholders from what the repository actually shows; do not invent facts to complete a template. A template section that has nothing true to hold is deleted, not padded.
 
-The skeleton prose below is written in Japanese as the reference form. Render every generated file in the project's own documentation language — judge it from the existing README and docs, not from the user's conversation language. The structure is the template; the words are not.
+The skeletons are written in English. Render every generated file in the project's own documentation language — judge it from the existing README and docs, not from the user's conversation language. The structure is the template; the words are not.
 
 ## Root README.md — the documentation map section
 
 Append to an existing README (or include in a new one). The prose around it stays the project's own.
 
 ```markdown
-## ドキュメント
+## Documentation
 
-このリポジトリは知識を四層で管理する。同じ内容を複数に書かない。取り決めは
-[ADR-0002](adr/0002-adopt-four-track-documentation.md)。
+Knowledge in this repository lives in four tracks. The same content is never
+written into more than one of them. The contract is recorded in
+[ADR-0002](adr/0002-adopt-four-track-documentation.md).
 
-- **[CLAUDE.md](CLAUDE.md)** — このプロジェクトの価値観・判断基準
-- **[docs/](docs/README.md)** — 今どうなっているか。構成・手順・データ契約
-- **[adr/](adr/README.md)** — なぜそう決めたか。設計判断の記録
-- **[references/](references/)** — 開発時に参照する生データ。実機に当たれない環境で形を確認するためだけに使う
+- **[CLAUDE.md](CLAUDE.md)** — the project's values and judgment criteria
+- **[docs/](docs/README.md)** — what is true now: structure, procedures, contracts
+- **[adr/](adr/README.md)** — why each choice was made: the decision records
+- **[references/](references/)** — raw reference data used during development,
+  kept to verify shapes when the live system is out of reach
 
-実装を始める前に [docs/README.md](docs/README.md) を入り口として読む。
+Before implementing, start from [docs/README.md](docs/README.md).
 ```
 
 Omit the `references/` line when the project has no raw reference data.
@@ -54,25 +56,26 @@ the implementation lands.
 ## docs/README.md
 
 ```markdown
-# <project> ドキュメント
+# <project> documentation
 
 <One paragraph: what the project is, from the docs/ reader's point of view.>
 
-## このディレクトリの役割
+## The role of this directory
 
-`docs/` は「今この瞬間に何があるか」を記述する。なぜそう決めたかは
-[adr/](../adr/README.md) に、価値観はルートの [CLAUDE.md](../CLAUDE.md) にある。
-同じ内容を複数箇所には書かない。各ドキュメントは関連する判断の ADR へリンクする。
+`docs/` describes what exists right now. Why each choice was made lives in
+[adr/](../adr/README.md); the project's values live in the root
+[CLAUDE.md](../CLAUDE.md). The same content is never written in more than one
+place, and each page links to the ADRs behind its subject.
 
-## ドキュメント一覧
+## Pages
 
-| ファイル | 目的 |
+| File | Purpose |
 |---|---|
 | <file>.md | <purpose> |
 
-## 関連する設計判断
+## Related decisions
 
-- [ADR-0002](../adr/0002-adopt-four-track-documentation.md) — 知識を四層に分けるという取り決め
+- [ADR-0002](../adr/0002-adopt-four-track-documentation.md) — the four-track split of written knowledge
 ```
 
 ## adr/README.md
@@ -80,29 +83,31 @@ the implementation lands.
 ```markdown
 # Architecture Decision Records
 
-このディレクトリは、<project> の設計判断を時系列で記録する。各レコードは
-「なぜそう決めたか」を後から辿れるようにするためのものであり、「今どうなっているか」は
-`docs/` 側に記述する。同じ内容を両方には書かない。
+This directory records <project>'s design decisions in order. Each record
+preserves why a choice was made; what exists right now is described in `docs/`.
+The same content is never written in both.
 
-## 書くタイミング
+## When to write one
 
-後から見て判断理由がわからなくなりそうな選択をしたとき。「なぜこの道を選び、どの道を
-捨てたか」が論点になるものを書く。小さな実装詳細は対象外。設計判断をしたら ADR を先に書き、
-`docs/` と相互リンクを張ってから実装する。
+When a choice is made that a future reader could not reconstruct: stack
+selection, data formats, structural patterns. Small implementation details do
+not qualify. Write the ADR before the implementation lands, and cross-link it
+with `docs/` — a record written after the fact has already lost the
+alternatives that were live at the moment of choosing.
 
-## ステータス遷移
+## Status values
 
-- `Proposed` — 提案中。議論の対象
-- `Accepted` — 採用。実装の前提となる
-- `Superseded by ADR-XXXX` — 後続の ADR に置き換えられた。本文は履歴として残す
-- `Deprecated` — 廃止。置き換え先はない
+- `Proposed` — under discussion
+- `Accepted` — adopted; implementation builds on it
+- `Superseded by ADR-XXXX` — replaced by a later record; the body remains as history
+- `Deprecated` — retired without a successor
 
-採用済みの ADR は書き換えない。判断が変わったら新しい ADR を起こし、古い方のステータスを
-更新して相互にリンクする。
+An accepted record is never rewritten. When a decision changes, write a new
+record, mark the old one superseded, and link the two.
 
-## 一覧
+## Index
 
-| # | タイトル | Status |
+| # | Title | Status |
 |---|---|---|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
 | [0002](0002-adopt-four-track-documentation.md) | Adopt the four-track documentation contract | Accepted |

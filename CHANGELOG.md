@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- librarian: New plugin. `/librarian:audit` maps every document to its proper track — CLAUDE.md, README, docs/, adr/, references/ — reports misplacements with evidence, and reorganizes only what you approve; `/librarian:setup` bootstraps the four-track structure in a project that has none
+- alexandria: New plugin. `/alexandria:audit` maps every document to its proper track — CLAUDE.md, README, docs/, adr/, references/ — reports misplacements with evidence, and reorganizes only what you approve; `/alexandria:inspect` verifies each document's content against the repository and reports what can no longer be trusted; `/alexandria:setup` bootstraps the four-track structure in a project that has none
 
 ### Changed
 - adr-keeper: New ADRs now default to `adr/` at the repository root instead of `docs/adr/` — decisions are a first-class track of knowledge, not a subfolder of current-state documentation. Projects with an existing ADR convention are still detected and followed

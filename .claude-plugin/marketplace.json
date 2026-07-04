@@ -140,9 +140,9 @@
       "description": "Scout Claude Code's latest release notes and translate each new feature into a concrete suggestion for your own setup and plugins."
     },
     {
-      "name": "librarian",
-      "source": "./plugins/librarian",
-      "description": "Analyze a project's documents, assign each to its proper track — CLAUDE.md, README, docs/, adr/, references/ — then reorganize on approval or bootstrap the whole structure in a new project."
+      "name": "alexandria",
+      "source": "./plugins/alexandria",
+      "description": "Shelve every document into its proper track — CLAUDE.md, README, docs/, adr/, references/ — inspect each one's content against reality, and reorganize on approval or bootstrap the structure in a new project."
     }
   ],
   "renames": {

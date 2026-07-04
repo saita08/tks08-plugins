@@ -4,15 +4,15 @@ argument-hint: "[セットアップ対象のパス（省略時はカレントプ
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# Librarian Setup
+# Alexandria Setup
 
-Stand up the four-track structure in a project that lacks it. Setup is for shelves that do not exist yet; if the project already has a substantial documentation tree, stop and recommend `/librarian:audit` instead — reorganizing existing knowledge without a diagnosis loses it.
+Stand up the four-track structure in a project that lacks it. Setup is for shelves that do not exist yet; if the project already has a substantial documentation tree, stop and recommend `/alexandria:audit` instead — reorganizing existing knowledge without a diagnosis loses it.
 
 Read `${CLAUDE_PLUGIN_ROOT}/skills/four-track-contract/references/doctrine.md` for what each track holds and `${CLAUDE_PLUGIN_ROOT}/skills/four-track-contract/references/templates.md` for the skeletons. Fill every template from what the repository actually shows — its code, its configs, its git history. Do not invent facts to make a template look complete, and delete template sections that have nothing true to hold.
 
 ## Step 1 — Survey before building
 
-Read the repository: what it is, what stack it runs, what documentation already exists, and what language its documentation speaks — every file setup creates is written in that language, with the templates' Japanese serving as reference form only. An existing README is inherited, not replaced — the documentation map is appended to it. An existing CLAUDE.md is likewise inherited; if it mixes values with structure or history, disentangling it is an audit's job, not a setup's. A handful of existing documents can be adopted into the new structure as part of setup; report where each will live. More than a handful means this is an audit, not a setup.
+Read the repository: what it is, what stack it runs, what documentation already exists, and what language its documentation speaks — every file setup creates is written in that language, with the English templates serving as reference form only. An existing README is inherited, not replaced — the documentation map is appended to it. An existing CLAUDE.md is likewise inherited; if it mixes values with structure or history, disentangling it is an audit's job, not a setup's. A handful of existing documents can be adopted into the new structure as part of setup; report where each will live. More than a handful means this is an audit, not a setup.
 
 ## Step 2 — Erect the tracks
 
