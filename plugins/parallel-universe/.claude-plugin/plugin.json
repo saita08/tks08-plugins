@@ -1,0 +1,8 @@
+{
+  "name": "parallel-universe",
+  "description": "Spin up several independent attempts at one task in parallel, judge them through different lenses, and graft the winner with the best of the rest.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}
