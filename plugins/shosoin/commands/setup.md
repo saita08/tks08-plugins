@@ -4,9 +4,9 @@ argument-hint: "[セットアップ対象のパス（省略時はカレントプ
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
 
-# Alexandria Setup
+# Shosoin Setup
 
-Stand up the four-track structure in a project that lacks it. Setup is for shelves that do not exist yet; if the project already has a substantial documentation tree, stop and recommend `/alexandria:audit` instead — reorganizing existing knowledge without a diagnosis loses it.
+Stand up the four-track structure in a project that lacks it. Setup is for shelves that do not exist yet; if the project already has a substantial documentation tree, stop and recommend `/shosoin:audit` instead — reorganizing existing knowledge without a diagnosis loses it.
 
 Read `${CLAUDE_PLUGIN_ROOT}/skills/four-track-contract/references/doctrine.md` for what each track holds and `${CLAUDE_PLUGIN_ROOT}/skills/four-track-contract/references/templates.md` for the skeletons. Fill every template from what the repository actually shows — its code, its configs, its git history. Do not invent facts to make a template look complete, and delete template sections that have nothing true to hold.
 

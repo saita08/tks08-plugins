@@ -4,7 +4,7 @@ argument-hint: "[点検対象のパス（省略時は全文書）]"
 allowed-tools: Read, Glob, Grep, Bash, Edit
 ---
 
-# Alexandria Inspect
+# Shosoin Inspect
 
 Verify that the collection still tells the truth. Where the audit asks whether every book is on the right shelf, the inspection opens the books and checks their claims against the repository as it exists today. The two are deliberately separate: a perfectly shelved library can still be full of lies.
 

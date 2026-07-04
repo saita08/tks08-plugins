@@ -15,4 +15,4 @@ A repository's written knowledge is split into four tracks plus one entrance. Ea
 
 The one rule that outranks all others: when knowledge is written into two tracks, both copies become untrustworthy, because a reader can no longer tell which one moved with reality. Every placement decision serves that rule.
 
-Three commands drive this skill's knowledge: `/alexandria:audit` diagnoses placement and reorganizes an existing project, `/alexandria:inspect` verifies each document's content against the repository as it exists today, and `/alexandria:setup` bootstraps the structure in a project that has none. When the user asks placement questions in passing, answer from the references directly without invoking a command.
+Three commands drive this skill's knowledge: `/shosoin:audit` diagnoses placement and reorganizes an existing project, `/shosoin:inspect` verifies each document's content against the repository as it exists today, and `/shosoin:setup` bootstraps the structure in a project that has none. When the user asks placement questions in passing, answer from the references directly without invoking a command.
