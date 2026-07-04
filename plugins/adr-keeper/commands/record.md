@@ -1,5 +1,5 @@
 ---
-description: Record a directional decision made in this session as an Architecture Decision Record under docs/adr/, following the project's existing ADR conventions if any.
+description: Record a directional decision made in this session as an Architecture Decision Record under adr/ at the repository root, following the project's existing ADR conventions if any.
 argument-hint: <one-line summary of the decision (optional; inferred from context if omitted)>
 allowed-tools: Read, Glob, Grep, Write, Bash
 ---
@@ -16,15 +16,15 @@ Before writing, read `${CLAUDE_PLUGIN_ROOT}/skills/adr-guardian/references/adr-f
 
 ### 1. Find where ADRs live and how they are numbered
 
-Do not assume `docs/adr/`. Discover the project's actual convention first:
+Do not assume `adr/`. Discover the project's actual convention first:
 
 ```
-ls -d docs/adr docs/adrs doc/adr adr .adr 2>/dev/null
+ls -d adr docs/adr docs/adrs doc/adr .adr 2>/dev/null
 ```
 
 Also glance for existing records with `Glob` (`**/adr/**/*.md`, `**/*decision*.md`). If the project already keeps ADRs, adopt whatever it already does: its directory, its filename pattern, its numbering width, its section headings, its status vocabulary. A project's established form outranks this plugin's defaults — matching it is the whole point, because a record that does not match the others will not be found where the team looks.
 
-If the project has no ADRs yet, use the default convention: `docs/adr/NNNN-<kebab-slug>.md`, four-digit zero-padded numbers starting at `0001`.
+If the project has no ADRs yet, use the default convention: `adr/NNNN-<kebab-slug>.md` at the repository root. Decisions are a first-class track of knowledge, not a subfolder of current-state documentation, so they live beside docs/ rather than inside it. Use four-digit zero-padded numbers starting at `0001`.
 
 ### 2. Determine the next number
 

@@ -1,7 +1,7 @@
 {
   "name": "adr-keeper",
   "description": "Catch the directional decisions made mid-conversation and record them as Architecture Decision Records, so future sessions read the reasoning instead of quietly reversing it.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "tks08"
   }
