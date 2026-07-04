@@ -1,0 +1,8 @@
+{
+  "name": "paste-tube",
+  "description": "Capsule pasted content — reports, reviews, error logs from another session — with its source and date, so it survives the conversation and can be carried between sessions.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

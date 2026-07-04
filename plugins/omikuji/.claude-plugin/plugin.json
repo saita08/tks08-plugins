@@ -1,0 +1,8 @@
+{
+  "name": "omikuji",
+  "description": "Draw a daily fortune for your Claude Code work — divined not from randomness but from your own recent usage data, once per day.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

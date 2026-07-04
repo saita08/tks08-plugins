@@ -1,0 +1,8 @@
+{
+  "name": "veto-ledger",
+  "description": "Record the directions the user has rejected, and the principle behind each rejection, then replay them into every future session so a declined idea does not return in new clothes.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

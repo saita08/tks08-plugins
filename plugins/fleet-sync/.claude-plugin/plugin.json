@@ -1,0 +1,8 @@
+{
+  "name": "fleet-sync",
+  "description": "Distribute shared conventions, hooks, and settings fragments from an origin repository to a fleet of projects, and detect drift before it silently accumulates.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

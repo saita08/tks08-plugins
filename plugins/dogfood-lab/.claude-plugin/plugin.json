@@ -1,0 +1,8 @@
+{
+  "name": "dogfood-lab",
+  "description": "Log which of your own skills and slash commands actually fire, then report what never did — so the plugin you built but that never triggers stops hiding.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

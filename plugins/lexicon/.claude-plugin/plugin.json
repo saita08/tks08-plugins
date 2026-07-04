@@ -1,0 +1,8 @@
+{
+  "name": "lexicon",
+  "description": "Capture the terms you and Claude agree on into a project glossary and replay them into every future session, so a correction made once never has to be made again.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

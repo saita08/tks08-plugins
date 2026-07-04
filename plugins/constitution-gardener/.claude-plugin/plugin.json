@@ -1,0 +1,8 @@
+{
+  "name": "constitution-gardener",
+  "description": "Mine session transcripts for corrections you keep repeating and draft them into principles for your CLAUDE.md — you judge and ratify, the gardener only proposes.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

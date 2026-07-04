@@ -1,0 +1,17 @@
+{
+  "description": "lexicon injection hook — on session start, if a project glossary exists, inject the agreed terms so this session speaks the same language as the last",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/inject.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

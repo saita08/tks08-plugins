@@ -1,0 +1,16 @@
+{
+  "description": "claude-rpg SessionStart hook — quietly re-judge achievements at session start and, only when something newly unlocked, offer a one-line congratulation. Silent otherwise.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-greet.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

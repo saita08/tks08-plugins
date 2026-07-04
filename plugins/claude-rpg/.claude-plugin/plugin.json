@@ -1,0 +1,8 @@
+{
+  "name": "claude-rpg",
+  "description": "Turn your real Claude Code usage stats into an adventurer's log — unlock achievements from your actual sessions, tool calls, and late-night runs.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

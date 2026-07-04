@@ -1,0 +1,16 @@
+{
+  "description": "mission-control notify hook — on stop, post the session's actual outcome to Slack, but only when a webhook is configured; otherwise stay completely silent",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/notify.sh\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}
