@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.6] - 2026-07-04
+
 ### Added
 - shosoin: New plugin. `/shosoin:audit` maps every document to its proper track — CLAUDE.md, README, docs/, adr/, references/ — reports misplacements with evidence, and reorganizes only what you approve; `/shosoin:inspect` verifies each document's content against the repository and reports what can no longer be trusted; `/shosoin:setup` bootstraps the four-track structure in a project that has none
 
