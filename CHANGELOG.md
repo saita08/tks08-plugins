@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.5] - 2026-07-04
+
 ### Added
 - handoff-bottle: New plugin. `/handoff-bottle:write` bottles up the session's state, decisions, and next step into a human-readable file, and the next session picks it up automatically on start
 - baton: New plugin. When Claude's work is done but a human still has to verify it, `/baton:write` emits a copy-pasteable handoff sheet — prerequisites, steps, what success looks like, and how to roll back
