@@ -1,0 +1,8 @@
+{
+  "name": "embassy",
+  "description": "Translate an institutional document like your CLAUDE.md into the format and length limits of other AI services, so the same values carry across ChatGPT, Gemini, and generic system prompts.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

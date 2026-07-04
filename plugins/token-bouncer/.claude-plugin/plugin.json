@@ -1,0 +1,8 @@
+{
+  "name": "token-bouncer",
+  "description": "Watch a session for waste-correlated behavior — repeated agent spawns and the same file read again and again — and quietly warn Claude before the tokens are gone.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

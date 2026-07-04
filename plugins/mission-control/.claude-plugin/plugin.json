@@ -1,0 +1,8 @@
+{
+  "name": "mission-control",
+  "description": "Post a session's actual outcome to Slack on stop, and brief you on stalled PRs, failing CI, and pending reviews across your repositories.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "baton",
+  "description": "When Claude's work is done but a human still has to verify it on real hardware or in production, emit a copy-pasteable handoff sheet so the baton pass never gets dropped.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

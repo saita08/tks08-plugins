@@ -1,0 +1,16 @@
+{
+  "description": "handoff-bottle SessionStart hook — if a handoff bottle exists in the project, inject the most recent one as context so the new session picks up where the last left off",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/inject.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

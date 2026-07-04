@@ -1,0 +1,17 @@
+{
+  "description": "veto-ledger injection hook — on session start, if a ledger of rejected directions exists, inject it so this session does not re-propose what was already declined",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/inject.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

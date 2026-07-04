@@ -1,0 +1,8 @@
+{
+  "name": "handoff-bottle",
+  "description": "Bottle up your session state, decisions, and next step so the next session picks up where you left off — a human-readable handoff, not a machine's internal state.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

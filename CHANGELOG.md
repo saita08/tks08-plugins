@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- handoff-bottle: New plugin. `/handoff-bottle:write` bottles up the session's state, decisions, and next step into a human-readable file, and the next session picks it up automatically on start
+- baton: New plugin. When Claude's work is done but a human still has to verify it, `/baton:write` emits a copy-pasteable handoff sheet — prerequisites, steps, what success looks like, and how to roll back
+- paste-tube: New plugin. `/paste-tube:send` and `/paste-tube:receive` carry pasted content — reports, reviews, error logs — between sessions as capsules stamped with their source and date
+- lexicon: New plugin. Captures the terms you and Claude agree on into a project glossary and replays them into every future session, so a correction made once never has to be made again
+- veto-ledger: New plugin. Records rejected directions and the principle behind each rejection, then replays them into future sessions so a declined idea does not return in new clothes
+- sensei-notebook: New plugin. Accumulates the conceptual Q&As you found convincing into a notebook Claude consults before re-explaining, with `/sensei-notebook:quiz` for playful review
+- constitution-gardener: New plugin. `/constitution-gardener:harvest` mines session transcripts for corrections you keep repeating and drafts them into principles for your CLAUDE.md — you judge and ratify, the gardener only proposes
+- idea-forge: New plugin. `/idea-forge:dig` digs your accumulated usage history for recurring manual work and proposes plugin candidates ranked by evidence, deduped against what you already have installed
+- dogfood-lab: New plugin. Logs which of your own skills and slash commands actually fire, and `/dogfood-lab:report` reports what never did — so the plugin you built but that never triggers stops hiding
+- token-bouncer: New plugin. Watches a session for waste-correlated behavior — repeated agent spawns, the same file read again and again — and quietly warns Claude before the tokens are gone
+- mission-control: New plugin. A Stop hook posts the session's actual outcome to Slack (strictly opt-in), and `/mission-control:brief` gathers stalled PRs, failing CI, and pending reviews across repositories into one report
+- new-toys: New plugin. `/new-toys:scout` reads Claude Code's latest release notes and translates each new feature into a concrete suggestion for your own setup and plugins
+- sketch-first: New plugin. `/sketch-first` interviews you before proposing anything, drawing out the picture in your head and agreeing on a one-page sketch of what to build
+- adr-keeper: New plugin. Catches directional decisions made mid-conversation and records them as Architecture Decision Records via `/adr-keeper:record`, so future sessions read the reasoning instead of quietly reversing it
+- release-butler: New plugin. `/release-butler:check` inspects whether the code change, the version bump, and the CHANGELOG entry are in sync, and reports mismatches — it checks, it does not fix
+- fleet-sync: New plugin. Distributes shared conventions, hooks, and settings fragments from an origin repository to your other projects, and detects drift before it silently accumulates
+- embassy: New plugin. `/embassy:draft` translates an institutional document like your CLAUDE.md into the format and length limits of other AI services, so the same values carry across ChatGPT, Gemini, and generic system prompts
+- claude-rpg: New plugin. Turns your real usage stats into an adventurer's log — `/claude-rpg:status` unlocks achievements from your actual sessions, and new unlocks earn a quiet word on session start
+- omikuji: New plugin. `/omikuji:draw` draws a daily fortune divined not from randomness but from your own recent usage data, once per day
+
 ## [1.4.4] - 2026-07-04
 
 ### Fixed

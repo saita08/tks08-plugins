@@ -1,0 +1,8 @@
+{
+  "name": "release-butler",
+  "description": "Before a release, inspect whether the code change, the version bump, and the CHANGELOG entry are in sync across the repo and its packages, and report the mismatches — it checks, it does not fix.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}
