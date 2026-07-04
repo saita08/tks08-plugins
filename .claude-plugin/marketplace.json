@@ -138,6 +138,11 @@
       "name": "new-toys",
       "source": "./plugins/new-toys",
       "description": "Scout Claude Code's latest release notes and translate each new feature into a concrete suggestion for your own setup and plugins."
+    },
+    {
+      "name": "librarian",
+      "source": "./plugins/librarian",
+      "description": "Analyze a project's documents, assign each to its proper track — CLAUDE.md, README, docs/, adr/, references/ — then reorganize on approval or bootstrap the whole structure in a new project."
     }
   ],
   "renames": {
