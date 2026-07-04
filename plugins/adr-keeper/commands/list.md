@@ -15,7 +15,7 @@ Show the user the Architecture Decision Records the project already holds, so th
 Find where records live without assuming a fixed path:
 
 ```
-ls -d docs/adr docs/adrs doc/adr adr .adr 2>/dev/null
+ls -d adr docs/adr docs/adrs doc/adr .adr 2>/dev/null
 ```
 
 Also sweep with `Glob` for `**/adr/**/*.md` and any `**/*decision-record*.md`. If no ADRs exist anywhere, say so plainly and mention that `/adr-keeper:record` can start the first one. Do not create anything here — listing is read-only.

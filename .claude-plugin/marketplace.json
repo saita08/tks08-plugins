@@ -138,6 +138,11 @@
       "name": "new-toys",
       "source": "./plugins/new-toys",
       "description": "Scout Claude Code's latest release notes and translate each new feature into a concrete suggestion for your own setup and plugins."
+    },
+    {
+      "name": "shosoin",
+      "source": "./plugins/shosoin",
+      "description": "Shelve every document into its proper track — CLAUDE.md, README, docs/, adr/, references/ — inspect each one's content against reality, and reorganize on approval or bootstrap the structure in a new project."
     }
   ],
   "renames": {
