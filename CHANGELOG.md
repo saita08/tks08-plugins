@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.7] - 2026-07-05
+
 ### Added
 - parallel-universe: New plugin. `/parallel-universe <task>` spins up several independent attempts in isolated worktrees, judges them through different lenses, and grafts the winner with the best of the rest — divergence and selection as one command
 - grimoire: New plugin. A spellbook of battle-tested Workflow scripts: `/grimoire:cast` runs a spell against a target, `/grimoire:inscribe` distills your own workflow into a new spell, `/grimoire:index` lists the collection
