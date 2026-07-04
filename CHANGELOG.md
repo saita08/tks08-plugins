@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- parallel-universe: New plugin. `/parallel-universe <task>` spins up several independent attempts in isolated worktrees, judges them through different lenses, and grafts the winner with the best of the rest — divergence and selection as one command
+- grimoire: New plugin. A spellbook of battle-tested Workflow scripts: `/grimoire:cast` runs a spell against a target, `/grimoire:inscribe` distills your own workflow into a new spell, `/grimoire:index` lists the collection
+- shikigami: New plugin. `/shikigami:summon` conjures a fenced autonomous routine that runs on a schedule while you are away — bound by discipline to report back, stay within budget, propose rather than act irreversibly, and accept dismissal
+- tsushinbo: New plugin. A report card for your Claude setup: `/tsushinbo:register` turns tasks into graded subjects, `/tsushinbo:exam` has a cold student solve them and fixed graders score them, `/tsushinbo:report` shows how scores moved when your configuration changed
+- tengan: New plugin. `/tengan:open` maps a project's visual surfaces — simulators, web apps, video frames, extensions, images — and `/tengan:look` captures screenshots that Claude itself reads and judges against intent
+
 ## [1.4.6] - 2026-07-04
 
 ### Added
