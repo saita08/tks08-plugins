@@ -24,12 +24,13 @@ Content that answers none of these is usually not documentation: scratch notes, 
 | README carries full setup procedures, troubleshooting, API details | The entrance trying to be the building | Keep quickstart; move the rest to `docs/setup.md` and link |
 | An ADR keeps getting edited to match reality | It is describing the present, so it is not a decision record | Its stable decision core stays as the ADR; the moving parts belong in `docs/` |
 | The same explanation appears in two tracks | Duplication; both copies are now suspect | Decide the true home by the questions above, keep one, link from the other location's natural neighbor |
-| `docs/adr/` exists | Decisions filed as a subfolder of the present state | Move to root `adr/`, update every link and the index; this is one act, not a rename plus follow-ups |
+| `docs/adr/` exists | Decisions filed as a subfolder of the present state | Move to root `adr/`, update every link and the index; this is one act, not a rename plus follow-ups. When ADR tooling or a site generator pins that path, report the finding but leave the move to the user |
 | An orphan document no index or page links to | Knowledge that exists but cannot be found | Add it to the owning track's index, or fold its content into an existing page |
 
 ## What must not be moved
 
 - Files owned by tools and conventions: `LICENSE`, `CHANGELOG.md`, `package.json`, `.github/`, `.claude/`, editor and linter configs. They have externally-defined homes.
+- A docs tree owned by a static site generator. When `mkdocs.yml`, `docusaurus.config.*`, `conf.py`, or `book.toml` sits beside `docs/`, the tree's internal layout is defined by the tool and wired into navigation and builds. Findings inside it are reported as proposals; the librarian does not move files there, because the breakage belongs to the user to weigh.
 - Code comments. A comment glued to a specific line is at the right altitude; do not exile it to `docs/` for tidiness.
 - Anything whose move breaks published URLs or external references, without flagging that breakage explicitly in the proposal.
 

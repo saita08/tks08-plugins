@@ -12,7 +12,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/four-track-contract/references/doctrine.md` f
 
 ## Step 1 — Survey before building
 
-Read the repository: what it is, what stack it runs, what documentation already exists. An existing README is inherited, not replaced — the documentation map is appended to it. A handful of existing documents can be adopted into the new structure as part of setup; report where each will live. More than a handful means this is an audit, not a setup.
+Read the repository: what it is, what stack it runs, what documentation already exists, and what language its documentation speaks — every file setup creates is written in that language, with the templates' Japanese serving as reference form only. An existing README is inherited, not replaced — the documentation map is appended to it. An existing CLAUDE.md is likewise inherited; if it mixes values with structure or history, disentangling it is an audit's job, not a setup's. A handful of existing documents can be adopted into the new structure as part of setup; report where each will live. More than a handful means this is an audit, not a setup.
 
 ## Step 2 — Erect the tracks
 

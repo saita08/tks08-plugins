@@ -14,6 +14,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/four-track-contract/references/doctrine.md` b
 
 Collect the project's documents: every `*.md` outside dependency and build directories, plus data-shaped files that look like reference material. Exclude what the placement guide marks as unmovable: tool-owned files, `LICENSE`, `CHANGELOG.md`, configs, `.claude/`, `.github/`. If `$ARGUMENTS` names a path, scope the inventory to it.
 
+Before classifying anything under `docs/`, check whether the tree belongs to a static site generator — `mkdocs.yml`, `docusaurus.config.*`, `conf.py`, or `book.toml` beside it. A generator-owned tree keeps its internal layout: findings inside it are still reported, but as proposals the user weighs, never as moves the librarian executes.
+
 ## Step 2 — Classify
 
 For each document, apply the classification questions. Read the file — classification by filename alone is guessing. For mixed files, classify per section and note which portions sit in the wrong track. Record, for every finding: the file, the misplaced content, which classification question it failed, and the proposed destination.
@@ -23,6 +25,7 @@ Also check the structural health of the tracks themselves:
 - Do the entrances exist — root README's documentation map, `docs/README.md`, `adr/README.md`?
 - Do the index tables match the actual files on disk?
 - Is `adr/` at the repository root? A `docs/adr/` is itself a finding.
+- Are superseded ADRs marked as such in the index, and do the old and new records link to each other?
 - Does the same content appear in more than one track?
 - Are there orphan documents no index or page links to?
 

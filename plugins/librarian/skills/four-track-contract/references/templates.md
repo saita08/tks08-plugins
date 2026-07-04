@@ -2,6 +2,8 @@
 
 Skeletons for the entry-point files the four-track structure needs. Fill placeholders from what the repository actually shows; do not invent facts to complete a template. A template section that has nothing true to hold is deleted, not padded.
 
+The skeleton prose below is written in Japanese as the reference form. Render every generated file in the project's own documentation language — judge it from the existing README and docs, not from the user's conversation language. The structure is the template; the words are not.
+
 ## Root README.md — the documentation map section
 
 Append to an existing README (or include in a new one). The prose around it stays the project's own.
@@ -67,6 +69,10 @@ the implementation lands.
 | ファイル | 目的 |
 |---|---|
 | <file>.md | <purpose> |
+
+## 関連する設計判断
+
+- [ADR-0002](../adr/0002-adopt-four-track-documentation.md) — 知識を四層に分けるという取り決め
 ```
 
 ## adr/README.md
@@ -99,6 +105,7 @@ the implementation lands.
 | # | タイトル | Status |
 |---|---|---|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
+| [0002](0002-adopt-four-track-documentation.md) | Adopt the four-track documentation contract | Accepted |
 ```
 
 ## adr/template.md
