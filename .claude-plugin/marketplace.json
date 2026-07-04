@@ -143,6 +143,31 @@
       "name": "shosoin",
       "source": "./plugins/shosoin",
       "description": "Shelve every document into its proper track — CLAUDE.md, README, docs/, adr/, references/ — inspect each one's content against reality, and reorganize on approval or bootstrap the structure in a new project."
+    },
+    {
+      "name": "parallel-universe",
+      "source": "./plugins/parallel-universe",
+      "description": "Spin up several independent attempts at one task in parallel, judge them through different lenses, and graft the winner with the best of the rest."
+    },
+    {
+      "name": "grimoire",
+      "source": "./plugins/grimoire",
+      "description": "A spellbook of battle-tested Workflow scripts — cast them against a target, inscribe your own, and browse the collected spells."
+    },
+    {
+      "name": "shikigami",
+      "source": "./plugins/shikigami",
+      "description": "Conjure fenced autonomous routines that run on a schedule when you are away, each bound to report back so its work is never invisible."
+    },
+    {
+      "name": "tsushinbo",
+      "source": "./plugins/tsushinbo",
+      "description": "A personal eval harness that issues a report card to your Claude setup — register tasks as subjects, examine them with a fixed grader, and track how scores move when your configuration changes."
+    },
+    {
+      "name": "tengan",
+      "source": "./plugins/tengan",
+      "description": "Open the visual-verification loop: capture every visual surface of a project — simulators, web apps, videos, extensions, images — then look at the screenshots and judge them against intent instead of trusting that it works."
     }
   ],
   "renames": {

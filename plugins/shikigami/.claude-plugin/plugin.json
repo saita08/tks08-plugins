@@ -1,0 +1,8 @@
+{
+  "name": "shikigami",
+  "description": "Conjure fenced autonomous routines that run on a schedule when you are away, each bound to report back so its work is never invisible.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

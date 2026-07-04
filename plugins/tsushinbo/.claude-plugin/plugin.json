@@ -1,0 +1,8 @@
+{
+  "name": "tsushinbo",
+  "description": "A personal eval harness that issues a report card to your Claude setup — register tasks as subjects, examine them with a fixed grader, and track how scores move when your configuration changes.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

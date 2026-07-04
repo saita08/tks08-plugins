@@ -1,0 +1,8 @@
+{
+  "name": "grimoire",
+  "description": "A spellbook of battle-tested Workflow scripts — cast them against a target, inscribe your own, and browse the collected spells.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "tengan",
+  "description": "Open the visual-verification loop: capture every visual surface of a project — simulators, web apps, videos, extensions, images — then look at the screenshots and judge them against intent instead of trusting that it works.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}
