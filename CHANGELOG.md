@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.9] - 2026-07-12
+
+### Added
+- pixie-dust: New plugin. A skill that fires the moment Claude is about to draw or animate anything in SVG — characters, mascots, spinners, icons, empty states, decorative blobs — and applies the principles that separate lifelike output from the flat machine-made default: asymmetric organic paths instead of perfect circles, layered tinted shadows instead of the flat gray ellipse, anticipation, squash and stretch, phase-shifted follow-through, arcs, designed cubic-bezier easing, all grounded in the animation canon and the major motion design systems, with verified keyframe recipes bundled and an explicit branch to Rive or WebGL where SVG's deformation ceiling is reached
+
 ## [1.4.8] - 2026-07-10
 
 ### Added
