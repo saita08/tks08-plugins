@@ -1,0 +1,8 @@
+{
+  "name": "kurofune",
+  "description": "Delegate implementation work to xAI's Grok Build running headless as a supervised worker: sessions persist, so a correction continues the worker's conversation instead of starting over.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}
