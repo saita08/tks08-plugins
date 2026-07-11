@@ -173,6 +173,11 @@
       "name": "kurofune",
       "source": "./plugins/kurofune",
       "description": "Delegate implementation work to xAI's Grok Build running headless as a supervised worker — sessions persist, so a correction continues the worker's conversation instead of starting over."
+    },
+    {
+      "name": "pixie-dust",
+      "source": "./plugins/pixie-dust",
+      "description": "Sprinkle life into AI-generated SVG — characters, spinners, icons, blobs, and illustrations alike: asymmetric organic shapes, layered tinted shadows, anticipation, squash and stretch, follow-through, and designed easing, so the output stops looking machine-made."
     }
   ],
   "renames": {
