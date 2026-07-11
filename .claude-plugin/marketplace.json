@@ -168,6 +168,11 @@
       "name": "tengan",
       "source": "./plugins/tengan",
       "description": "Open the visual-verification loop: capture every visual surface of a project — simulators, web apps, videos, extensions, images — then look at the screenshots and judge them against intent instead of trusting that it works."
+    },
+    {
+      "name": "kurofune",
+      "source": "./plugins/kurofune",
+      "description": "Delegate implementation work to xAI's Grok Build running headless as a supervised worker — sessions persist, so a correction continues the worker's conversation instead of starting over."
     }
   ],
   "renames": {
