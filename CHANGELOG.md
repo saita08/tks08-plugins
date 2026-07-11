@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- kurofune: New plugin. Delegates implementation work to xAI's Grok Build running headless as a supervised worker — Claude Code specifies, verifies, and reviews while Grok executes; sessions persist so corrections continue the worker's conversation, and non-overlapping task splits run several workers in parallel
+
 ## [1.4.7] - 2026-07-05
 
 ### Added
