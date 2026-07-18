@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- kurofune: stopping a dispatch now stops Grok itself — cancelling with Esc, quitting Claude Code, and shutdown signals all terminate the running grok process instead of leaving it working unsupervised in the background
+
 ## [1.4.11] - 2026-07-18
 
 ### Changed
