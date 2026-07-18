@@ -30,6 +30,8 @@ Omit the `references/` line when the project has no raw reference data.
 
 Generate the opening and closing from this form; the middle principles must come from the project itself (observed conventions, the owner's stated priorities, decisions already visible in the code). Placeholder principles help no one — if only two values are known, write two.
 
+Each principle carries the reasoning that makes it true, written as prose that a reader can argue with — enough that someone facing a situation the document never anticipated can reconstruct what the value demands. A value stated without its why is a rule, and rules only cover the cases already seen.
+
 ```markdown
 # CLAUDE.md
 
@@ -42,7 +44,9 @@ and [adr/README.md](adr/README.md) for the decision history.
 
 ## <Principle name, stated as a value>
 
-<Why it matters, general enough to guide unanticipated situations.>
+<Why this matters: the failure it prevents or the good it protects, reasoned
+in full sentences. Written so that a reader facing an unanticipated situation
+can derive what the value asks of them, not just recognize the cases listed.>
 
 ## The four-track knowledge contract is load-bearing
 
