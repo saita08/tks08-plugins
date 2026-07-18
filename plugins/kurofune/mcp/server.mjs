@@ -14,7 +14,12 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fs from "node:fs";
 import readline from "node:readline";
-import { doctor, runGrok } from "./kurofune-core.mjs";
+import {
+  doctor,
+  runGrok,
+  killActiveChildren,
+  activeChildCount,
+} from "./kurofune-core.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PLUGIN_ROOT = path.resolve(__dirname, "..");
@@ -134,12 +139,17 @@ function log(...args) {
   console.error("[kurofune-mcp]", ...args);
 }
 
+// In-flight tools/call requests, so a cancellation can reach its grok process.
+const inFlight = new Map();
+
 // Serialize writes so concurrent tool handlers do not interleave stdout bytes.
 let writeChain = Promise.resolve();
 
 function sendMessage(msg) {
   const line = JSON.stringify(msg) + "\n";
-  writeChain = writeChain.then(
+  // A failed write must fail its own caller without silencing every later
+  // message, so the chain recovers before appending.
+  writeChain = writeChain.catch(() => {}).then(
     () =>
       new Promise((resolve, reject) => {
         const ok = process.stdout.write(line, (err) => {
@@ -175,14 +185,14 @@ function formatToolResult(envelope) {
 }
 
 async function callDoctor() {
-  const d = doctor();
+  const d = await doctor();
   return {
     isError: !d.ok,
     content: [{ type: "text", text: d.lines.join("\n") }],
   };
 }
 
-async function callTaskOrResume(kind, args) {
+async function callTaskOrResume(kind, args, signal) {
   if (kind === "resume" && !args.sessionId) {
     return {
       isError: true,
@@ -192,7 +202,9 @@ async function callTaskOrResume(kind, args) {
 
   // Match / slightly under the MCP server idle budget so the client does not
   // kill us first. Default 45 minutes; override with KUROFUNE_TIMEOUT_MS.
-  const timeoutMs = Number(process.env.KUROFUNE_TIMEOUT_MS || 45 * 60 * 1000);
+  const configured = Number(process.env.KUROFUNE_TIMEOUT_MS);
+  const timeoutMs =
+    Number.isFinite(configured) && configured > 0 ? configured : 45 * 60 * 1000;
   const { envelope, timedOut } = await runGrok({
     mode: kind,
     sessionId: args.sessionId,
@@ -201,6 +213,7 @@ async function callTaskOrResume(kind, args) {
     review: !!args.review,
     model: args.model,
     timeoutMs,
+    signal,
   });
 
   const body = formatToolResult(envelope);
@@ -223,7 +236,7 @@ async function callTaskOrResume(kind, args) {
   };
 }
 
-async function handleToolsCall(params) {
+async function handleToolsCall(params, signal) {
   const name = params?.name;
   const args = params?.arguments || {};
   switch (name) {
@@ -236,7 +249,7 @@ async function handleToolsCall(params) {
           content: [{ type: "text", text: "prompt is required" }],
         };
       }
-      return callTaskOrResume("task", args);
+      return callTaskOrResume("task", args, signal);
     case "resume":
       if (!args.prompt || typeof args.prompt !== "string") {
         return {
@@ -244,7 +257,7 @@ async function handleToolsCall(params) {
           content: [{ type: "text", text: "prompt is required" }],
         };
       }
-      return callTaskOrResume("resume", args);
+      return callTaskOrResume("resume", args, signal);
     default:
       return {
         isError: true,
@@ -259,6 +272,13 @@ async function handleMessage(msg) {
   if (msg.method && msg.id === undefined) {
     if (msg.method === "notifications/initialized") {
       log("initialized");
+    } else if (msg.method === "notifications/cancelled") {
+      const requestId = msg.params?.requestId;
+      const controller = inFlight.get(requestId);
+      if (controller) {
+        log(`request ${requestId} cancelled by client: stopping its grok process`);
+        controller.abort();
+      }
     }
     return;
   }
@@ -283,7 +303,17 @@ async function handleMessage(msg) {
         await sendResult(id, { tools: TOOLS });
         break;
       case "tools/call": {
-        const result = await handleToolsCall(params);
+        const controller = new AbortController();
+        inFlight.set(id, controller);
+        let result;
+        try {
+          result = await handleToolsCall(params, controller.signal);
+        } finally {
+          inFlight.delete(id);
+        }
+        // A cancelled request gets no response, per the MCP cancellation
+        // contract — the client has already stopped listening for it.
+        if (controller.signal.aborted) break;
         await sendResult(id, result);
         break;
       }
@@ -321,8 +351,28 @@ rl.on("line", (line) => {
   dispatch(msg);
 });
 
-rl.on("close", () => {
-  process.exit(0);
-});
+// Every exit path takes the in-flight grok processes down with it — an
+// orphaned worker would keep writing to the tree with nobody verifying.
+let shuttingDown = false;
+function shutdown(reason) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  const n = killActiveChildren("SIGTERM");
+  if (n === 0) process.exit(0);
+  log(`shutdown (${reason}): sent SIGTERM to ${n} in-flight grok process(es)`);
+  const poll = setInterval(() => {
+    if (activeChildCount() === 0) process.exit(0);
+  }, 250);
+  poll.unref?.();
+  setTimeout(() => {
+    killActiveChildren("SIGKILL");
+    process.exit(0);
+  }, 5000);
+}
+
+rl.on("close", () => shutdown("stdin closed"));
+for (const sig of ["SIGTERM", "SIGINT", "SIGHUP"]) {
+  process.on(sig, () => shutdown(sig));
+}
 
 log(`ready version=${SERVER_VERSION}`);
