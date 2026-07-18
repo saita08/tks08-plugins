@@ -19,7 +19,23 @@ const PLUGIN_ROOT = path.resolve(__dirname, "..");
 const SCRIPT = path.join(PLUGIN_ROOT, "scripts", "kurofune.sh");
 const SERVER_NAME = "kurofune";
 const SERVER_VERSION = "0.2.0";
-const PROTOCOL_VERSION = "2024-11-05";
+// MCP wire-protocol revision labels from the official SDK and
+// https://modelcontextprotocol.io/specification — current latest is 2025-11-25.
+const LATEST_PROTOCOL_VERSION = "2025-11-25";
+const SUPPORTED_PROTOCOL_VERSIONS = [
+  "2025-11-25",
+  "2025-06-18",
+  "2025-03-26",
+  "2024-11-05",
+  "2024-10-07",
+];
+
+function negotiateProtocolVersion(requested) {
+  if (requested && SUPPORTED_PROTOCOL_VERSIONS.includes(requested)) {
+    return requested;
+  }
+  return LATEST_PROTOCOL_VERSION;
+}
 
 const TOOLS = [
   {
@@ -307,7 +323,7 @@ async function handleMessage(msg) {
     switch (method) {
       case "initialize":
         sendResult(id, {
-          protocolVersion: PROTOCOL_VERSION,
+          protocolVersion: negotiateProtocolVersion(params?.protocolVersion),
           capabilities: { tools: {} },
           serverInfo: { name: SERVER_NAME, version: SERVER_VERSION },
         });
