@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.12] - 2026-07-18
+
 ### Fixed
 - kurofune: stopping a dispatch now stops Grok itself — cancelling with Esc, quitting Claude Code, and shutdown signals all terminate the running grok process instead of leaving it working unsupervised in the background
 - pluginize: the detection judge can no longer act on what it observes — its session now runs with no tools and no MCP servers, and its prompt marks the transcript as untrusted data, after a judge was caught replaying an instruction (an image-generation dispatch) it had merely watched
