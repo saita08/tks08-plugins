@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.11] - 2026-07-18
+
 ### Changed
 - kurofune: dispatch and result packaging now run on Node alone — python3 is no longer required, and `doctor` stops checking for it
 - kurofune: the `kurofune-craft` skill no longer appears in the slash menu — it is doctrine Claude loads automatically when delegating to Grok, not an action a user runs
