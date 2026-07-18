@@ -1,7 +1,7 @@
 {
   "name": "shosoin",
   "description": "Shelve every document into its proper track — CLAUDE.md, README, docs/, adr/, references/ — inspect each one's content against reality, and reorganize on approval or bootstrap the structure in a new project.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "tks08"
   }

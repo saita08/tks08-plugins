@@ -172,7 +172,7 @@
     {
       "name": "kurofune",
       "source": "./plugins/kurofune",
-      "description": "Delegate implementation work to xAI's Grok Build running headless as a supervised worker — sessions persist, so a correction continues the worker's conversation instead of starting over."
+      "description": "Call xAI Grok Build from the main Claude conversation like a subagent — MCP tools for task, resume, and doctor; sessions persist so corrections continue the same Grok session."
     },
     {
       "name": "pixie-dust",
