@@ -116,11 +116,32 @@ function gitSnapshot(dir) {
   return out;
 }
 
+function captureQuick(cmd, args, timeoutMs) {
+  return new Promise((resolve) => {
+    let stdout = "";
+    let stderr = "";
+    const child = spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
+    child.stdout.on("data", (c) => (stdout += c));
+    child.stderr.on("data", (c) => (stderr += c));
+    const timer = setTimeout(() => child.kill("SIGKILL"), timeoutMs);
+    const done = () => {
+      clearTimeout(timer);
+      resolve({ stdout, stderr });
+    };
+    child.on("error", done);
+    child.on("close", done);
+  });
+}
+
 /**
  * Check the Grok Build install without touching the user's environment.
- * Returns { ok, lines }; lines that start with "kurofune:" are complaints.
+ * Async so a hung binary cannot block the caller's event loop — the MCP
+ * server answers pings while this runs. Returns { ok, lines }; lines that
+ * start with "kurofune:" are complaints.
  */
-export function doctor() {
+export async function doctor() {
   if (!isExecutable(GROK_BIN)) {
     return {
       ok: false,
@@ -131,7 +152,7 @@ export function doctor() {
     };
   }
   const lines = [];
-  const version = spawnSync(GROK_BIN, ["--version"], { encoding: "utf8", timeout: 60_000 });
+  const version = await captureQuick(GROK_BIN, ["--version"], 60_000);
   lines.push((version.stdout || version.stderr || "").trim());
   const authPath = path.join(os.homedir(), ".grok", "auth.json");
   if (!fs.existsSync(authPath)) {
@@ -147,12 +168,37 @@ export function doctor() {
 
 let dispatchSeq = 0;
 
+const activeChildren = new Set();
+
+/**
+ * Signal every grok process still in flight and report how many were hit.
+ * The server's exit paths call this so no dispatch outlives its supervisor —
+ * an orphaned worker keeps writing to the tree with nobody verifying.
+ */
+export function killActiveChildren(signal = "SIGTERM") {
+  let n = 0;
+  for (const child of activeChildren) {
+    try {
+      child.kill(signal);
+      n++;
+    } catch {
+      // already gone
+    }
+  }
+  return n;
+}
+
+export function activeChildCount() {
+  return activeChildren.size;
+}
+
 /**
  * Run one headless Grok dispatch and package the outcome.
  *
- * mode is "task" or "resume" (resume also needs sessionId). Resolves to
- * { envelope, exitCode, timedOut }; it never rejects — every failure is an
- * ok:false envelope so callers always have something machine-readable.
+ * mode is "task" or "resume" (resume also needs sessionId). An AbortSignal
+ * passed as `signal` cancels the dispatch by terminating grok. Resolves to
+ * { envelope, exitCode, timedOut, aborted }; it never rejects — every failure
+ * is an ok:false envelope so callers always have something machine-readable.
  */
 export function runGrok({
   mode,
@@ -162,6 +208,7 @@ export function runGrok({
   review = false,
   model,
   timeoutMs,
+  signal,
 } = {}) {
   return new Promise((resolve) => {
     const useModel = model || DEFAULT_MODEL;
@@ -179,7 +226,14 @@ export function runGrok({
     if (!isExecutable(GROK_BIN)) {
       envelope.exitCode = 1;
       envelope.error = `grok binary not found at ${GROK_BIN}`;
-      resolve({ envelope, exitCode: 1, timedOut: false });
+      resolve({ envelope, exitCode: 1, timedOut: false, aborted: false });
+      return;
+    }
+
+    if (signal?.aborted) {
+      envelope.exitCode = 1;
+      envelope.error = "cancelled before dispatch";
+      resolve({ envelope, exitCode: 1, timedOut: false, aborted: true });
       return;
     }
 
@@ -216,6 +270,16 @@ export function runGrok({
       env: { ...process.env },
       stdio: ["ignore", "pipe", "pipe"],
     });
+    activeChildren.add(child);
+
+    let aborted = false;
+    const onAbort = () => {
+      aborted = true;
+      child.kill("SIGTERM");
+      setTimeout(() => child.kill("SIGKILL"), 5000).unref?.();
+    };
+    if (signal) signal.addEventListener("abort", onAbort, { once: true });
+
     let stdout = "";
     let stderr = "";
     child.stdout.setEncoding("utf8");
@@ -237,16 +301,22 @@ export function runGrok({
       }, timeoutMs);
     }
 
-    child.on("error", (err) => {
+    const release = () => {
       if (timer) clearTimeout(timer);
+      activeChildren.delete(child);
+      if (signal) signal.removeEventListener("abort", onAbort);
+    };
+
+    child.on("error", (err) => {
+      release();
       envelope.exitCode = 1;
       envelope.error = `failed to start grok: ${err.message}`;
-      resolve({ envelope, exitCode: 1, timedOut });
+      resolve({ envelope, exitCode: 1, timedOut, aborted });
     });
 
-    child.on("close", (code, signal) => {
-      if (timer) clearTimeout(timer);
-      const rc = code ?? (signal ? 1 : 0);
+    child.on("close", (code, exitSignal) => {
+      release();
+      const rc = code ?? (exitSignal ? 1 : 0);
       envelope.resultFile = resultFile;
       envelope.exitCode = rc;
       try {
@@ -294,8 +364,10 @@ export function runGrok({
 
       if (raw) {
         const cancelled = raw.stopReason === "Cancelled";
-        if (rc === 0 && !cancelled && !timedOut) {
+        if (rc === 0 && !cancelled && !timedOut && !aborted) {
           envelope.ok = true;
+        } else if (aborted) {
+          envelope.error = "cancelled by the client; partial envelope recovered";
         } else if (timedOut) {
           envelope.error = `timed out after ${timeoutMs}ms; partial envelope recovered`;
         } else if (cancelled) {
@@ -309,15 +381,17 @@ export function runGrok({
         for (const k of ["usage", "num_turns", "requestId", "total_cost_usd", "modelUsage"]) {
           if (k in raw) envelope[k] = raw[k];
         }
-        resolve({ envelope, exitCode: envelope.ok ? 0 : 1, timedOut });
+        resolve({ envelope, exitCode: envelope.ok ? 0 : 1, timedOut, aborted });
         return;
       }
 
       const errSnip = stderr.slice(0, 2000).trim();
-      envelope.error = timedOut
-        ? `timed out after ${timeoutMs}ms`
-        : errSnip || `no JSON envelope from grok (exit ${rc})`;
-      resolve({ envelope, exitCode: rc || 1, timedOut });
+      envelope.error = aborted
+        ? "cancelled by the client"
+        : timedOut
+          ? `timed out after ${timeoutMs}ms`
+          : errSnip || `no JSON envelope from grok (exit ${rc})`;
+      resolve({ envelope, exitCode: rc || 1, timedOut, aborted });
     });
   });
 }

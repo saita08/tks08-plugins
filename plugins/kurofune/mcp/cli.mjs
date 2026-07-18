@@ -49,8 +49,8 @@ function parseRunArgs(argv) {
   return { opts, positionals: argv.slice(i) };
 }
 
-function runDoctor() {
-  const d = doctor();
+async function runDoctor() {
+  const d = await doctor();
   for (const line of d.lines) {
     if (line.startsWith("kurofune:")) console.error(line);
     else console.log(line);
@@ -84,7 +84,7 @@ async function runDispatch(mode, argv) {
 const [cmd, ...rest] = process.argv.slice(2);
 switch (cmd) {
   case "doctor":
-    runDoctor();
+    await runDoctor();
     break;
   case "task":
   case "resume":
