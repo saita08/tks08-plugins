@@ -10,16 +10,14 @@
  * (messages MUST NOT contain embedded newlines). See
  * https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
  */
-import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fs from "node:fs";
-import os from "node:os";
 import readline from "node:readline";
+import { doctor, runGrok } from "./kurofune-core.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PLUGIN_ROOT = path.resolve(__dirname, "..");
-const SCRIPT = path.join(PLUGIN_ROOT, "scripts", "kurofune.sh");
 const PLUGIN_JSON = path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json");
 const SERVER_NAME = "kurofune";
 
@@ -58,7 +56,7 @@ const TOOLS = [
   {
     name: "doctor",
     description:
-      "Check that the Grok Build CLI is installed and authenticated, and that python3 is available for result packaging. Run this when a kurofune dispatch fails immediately or before the first use in a session.",
+      "Check that the Grok Build CLI is installed and authenticated. Run this when a kurofune dispatch fails immediately or before the first use in a session.",
     inputSchema: {
       type: "object",
       properties: {},
@@ -166,138 +164,61 @@ function sendError(id, code, message, data) {
   return sendMessage({ jsonrpc: "2.0", id, error: err });
 }
 
-function runCommand(args, { timeoutMs } = {}) {
-  return new Promise((resolve) => {
-    const child = spawn("bash", [SCRIPT, ...args], {
-      env: { ...process.env },
-      cwd: process.env.HOME || os.tmpdir() || PLUGIN_ROOT,
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    let stdout = "";
-    let stderr = "";
-    child.stdout.setEncoding("utf8");
-    child.stderr.setEncoding("utf8");
-    child.stdout.on("data", (c) => {
-      stdout += c;
-    });
-    child.stderr.on("data", (c) => {
-      stderr += c;
-    });
-
-    let timedOut = false;
-    let timer;
-    if (timeoutMs && timeoutMs > 0) {
-      timer = setTimeout(() => {
-        timedOut = true;
-        child.kill("SIGTERM");
-        setTimeout(() => child.kill("SIGKILL"), 5000).unref?.();
-      }, timeoutMs);
-    }
-
-    child.on("close", (code, signal) => {
-      if (timer) clearTimeout(timer);
-      resolve({
-        code: code ?? (signal ? 1 : 0),
-        signal,
-        stdout,
-        stderr,
-        timedOut,
-      });
-    });
-  });
-}
-
-function parseToolPayload(stdout) {
-  const trimmed = (stdout || "").trim();
-  if (!trimmed) return null;
-  try {
-    return JSON.parse(trimmed);
-  } catch {
-    const start = trimmed.lastIndexOf("{");
-    if (start >= 0) {
-      try {
-        return JSON.parse(trimmed.slice(start));
-      } catch {
-        return null;
-      }
-    }
-    return null;
+function formatToolResult(envelope) {
+  const copy = { ...envelope };
+  if (typeof copy.thought === "string" && copy.thought.length > 2000) {
+    copy.thought = copy.thought.slice(0, 2000) + "…(truncated)";
   }
-}
-
-function formatToolResult(payload, fallback) {
-  if (payload) {
-    const copy = { ...payload };
-    if (typeof copy.thought === "string" && copy.thought.length > 2000) {
-      copy.thought = copy.thought.slice(0, 2000) + "…(truncated)";
-    }
-    if (copy.raw) {
-      delete copy.raw;
-    }
-    // Compact single-line JSON so embedded newlines never break stdio framing
-    // if a client ever re-embeds this text into an NDJSON channel.
-    return JSON.stringify(copy);
-  }
-  return fallback;
+  // Compact single-line JSON so embedded newlines never break stdio framing
+  // if a client ever re-embeds this text into an NDJSON channel.
+  return JSON.stringify(copy);
 }
 
 async function callDoctor() {
-  const { code, stdout, stderr } = await runCommand(["doctor"], {
-    timeoutMs: 60_000,
-  });
-  const text = [stdout, stderr].filter(Boolean).join("\n").trim();
+  const d = doctor();
   return {
-    isError: code !== 0,
-    content: [{ type: "text", text: text || `doctor exited ${code}` }],
+    isError: !d.ok,
+    content: [{ type: "text", text: d.lines.join("\n") }],
   };
 }
 
 async function callTaskOrResume(kind, args) {
-  const cli = [kind];
-  if (args.review) cli.push("-r");
-  if (args.cwd) cli.push("-C", args.cwd);
-  if (args.model) cli.push("-m", args.model);
-  if (kind === "resume") {
-    if (!args.sessionId) {
-      return {
-        isError: true,
-        content: [{ type: "text", text: "sessionId is required for resume" }],
-      };
-    }
-    cli.push(args.sessionId, args.prompt);
-  } else {
-    cli.push(args.prompt);
+  if (kind === "resume" && !args.sessionId) {
+    return {
+      isError: true,
+      content: [{ type: "text", text: "sessionId is required for resume" }],
+    };
   }
 
   // Match / slightly under the MCP server idle budget so the client does not
   // kill us first. Default 45 minutes; override with KUROFUNE_TIMEOUT_MS.
   const timeoutMs = Number(process.env.KUROFUNE_TIMEOUT_MS || 45 * 60 * 1000);
-  const { code, stdout, stderr, timedOut } = await runCommand(cli, { timeoutMs });
-  const payload = parseToolPayload(stdout);
+  const { envelope, timedOut } = await runGrok({
+    mode: kind,
+    sessionId: args.sessionId,
+    prompt: args.prompt,
+    cwd: args.cwd,
+    review: !!args.review,
+    model: args.model,
+    timeoutMs,
+  });
+
+  const body = formatToolResult(envelope);
 
   if (timedOut) {
-    const recovery = payload
-      ? formatToolResult(payload, "")
-      : `Timed out after ${timeoutMs}ms. stderr:\n${stderr.slice(0, 2000)}`;
     return {
       isError: true,
       content: [
         {
           type: "text",
-          text: `kurofune ${kind} timed out after ${timeoutMs}ms. Partial/recovered payload:\n${recovery}`,
+          text: `kurofune ${kind} timed out after ${timeoutMs}ms. Partial/recovered payload:\n${body}`,
         },
       ],
     };
   }
 
-  const body = formatToolResult(
-    payload,
-    `Non-JSON output (exit ${code}).\nstdout:\n${stdout.slice(0, 4000)}\nstderr:\n${stderr.slice(0, 2000)}`
-  );
-
-  const isError = code !== 0 || (payload && payload.ok === false);
   return {
-    isError,
+    isError: !envelope.ok,
     content: [{ type: "text", text: body }],
   };
 }
@@ -382,11 +303,6 @@ function dispatch(msg) {
   });
 }
 
-if (!fs.existsSync(SCRIPT)) {
-  log(`wrapper missing: ${SCRIPT}`);
-  process.exit(1);
-}
-
 const rl = readline.createInterface({
   input: process.stdin,
   crlfDelay: Infinity,
@@ -409,4 +325,4 @@ rl.on("close", () => {
   process.exit(0);
 });
 
-log(`ready script=${SCRIPT} version=${SERVER_VERSION}`);
+log(`ready version=${SERVER_VERSION}`);

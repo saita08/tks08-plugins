@@ -1,6 +1,7 @@
 ---
 name: kurofune-craft
 description: This skill should be used when the user wants to delegate implementation work to Grok Build or Grok 4.5, mentions "Grokに投げて", "Grokにやらせて", "grok build", "kurofune", or asks Claude to use Grok like a subagent from the main conversation. Provides the doctrine for calling kurofune MCP tools (task / resume / doctor) from the main context.
+user-invocable: false
 allowed-tools: Bash, Read
 ---
 
