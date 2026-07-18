@@ -47,8 +47,10 @@ function timestamp() {
 }
 
 /**
- * Pull the first parseable JSON object out of a string that may carry noise
- * around it (progress lines, warnings). Returns null when none is found.
+ * Pull the last parseable JSON object out of a string that may carry noise
+ * around it (progress lines, warnings, an earlier stray JSON message). The
+ * envelope is the final thing grok prints, so the last object wins. Returns
+ * null when none is found.
  */
 export function extractJsonObject(s) {
   const trimmed = (s || "").trim();
@@ -59,6 +61,7 @@ export function extractJsonObject(s) {
   } catch {
     // fall through to the brace scan
   }
+  let found = null;
   for (let i = 0; i < trimmed.length; i++) {
     if (trimmed[i] !== "{") continue;
     let depth = 0;
@@ -79,16 +82,20 @@ export function extractJsonObject(s) {
         if (depth === 0) {
           try {
             const obj = JSON.parse(trimmed.slice(i, j + 1));
-            if (obj && typeof obj === "object") return obj;
+            if (obj && typeof obj === "object") {
+              found = obj;
+              i = j; // skip past this object; keep scanning for a later one
+            }
           } catch {
-            // balanced but unparsable — try the next opening brace
+            // balanced but unparsable — the next outer pass tries the
+            // braces inside this region
           }
           break;
         }
       }
     }
   }
-  return null;
+  return found;
 }
 
 function gitSnapshot(dir) {
@@ -138,6 +145,8 @@ export function doctor() {
   return { ok: true, lines };
 }
 
+let dispatchSeq = 0;
+
 /**
  * Run one headless Grok dispatch and package the outcome.
  *
@@ -175,7 +184,9 @@ export function runGrok({
     }
 
     fs.mkdirSync(RESULT_DIR, { recursive: true });
-    const stamp = `${timestamp()}_${process.pid}`;
+    // pid alone cannot disambiguate: the MCP server dispatches concurrent
+    // tasks from one process, so a per-process sequence keeps files apart.
+    const stamp = `${timestamp()}_${process.pid}_${++dispatchSeq}`;
     const resultFile = path.join(RESULT_DIR, `${mode}_${stamp}.json`);
     const errFile = path.join(RESULT_DIR, `${mode}_${stamp}.stderr`);
 
