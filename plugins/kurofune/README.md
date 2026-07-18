@@ -72,7 +72,7 @@ kurofune.sh doctor                                            # 港の点検
 | `KUROFUNE_GROK_BIN` | 船体の置き場。既定は `~/.grok/bin/grok` |
 | `KUROFUNE_MODEL` | 既定の船種。既定は `grok-4.5` |
 | `KUROFUNE_RESULT_DIR` | 航海日誌の控えを置く棚 |
-| `KUROFUNE_TIMEOUT_MS` | 旗が戻るのを待つ上限。既定は 30 分 |
+| `KUROFUNE_TIMEOUT_MS` | 旗が戻るのを待つ上限。既定は 45 分。MCP サーバ定義の timeout は 60 分 |
 
 ## 旧条約
 

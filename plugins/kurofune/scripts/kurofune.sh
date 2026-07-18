@@ -41,6 +41,11 @@ doctor() {
   fi
   echo "auth cache present: ~/.grok/auth.json"
   echo "default model: $DEFAULT_MODEL"
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "kurofune: python3 not found on PATH — result packaging needs it" >&2
+    exit 1
+  fi
+  echo "python3 present: $(command -v python3)"
 }
 
 # Build the machine-readable summary. Paths to files avoid huge env vars.

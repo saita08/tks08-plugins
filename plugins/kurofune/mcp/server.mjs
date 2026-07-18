@@ -3,22 +3,39 @@
  * kurofune MCP server (stdio, local process).
  *
  * Exposes Grok Build as tools the main Claude conversation can call like a
- * subagent: task / resume / doctor. No cloud host — Claude Code spawns this
- * process on the user's machine and talks over stdin/stdout.
+ * subagent: task / resume / doctor. Claude Code spawns this process on the
+ * user's machine and talks over stdin/stdout.
  *
- * Zero npm dependencies: speaks MCP JSON-RPC with Content-Length framing.
+ * Zero npm dependencies. MCP stdio framing is newline-delimited JSON-RPC
+ * (messages MUST NOT contain embedded newlines). See
+ * https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
  */
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fs from "node:fs";
 import os from "node:os";
+import readline from "node:readline";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PLUGIN_ROOT = path.resolve(__dirname, "..");
 const SCRIPT = path.join(PLUGIN_ROOT, "scripts", "kurofune.sh");
+const PLUGIN_JSON = path.join(PLUGIN_ROOT, ".claude-plugin", "plugin.json");
 const SERVER_NAME = "kurofune";
-const SERVER_VERSION = "0.2.0";
+
+function readServerVersion() {
+  try {
+    const raw = fs.readFileSync(PLUGIN_JSON, "utf8");
+    const v = JSON.parse(raw).version;
+    if (typeof v === "string" && v.length > 0) return v;
+  } catch {
+    // fall through
+  }
+  return "0.0.0";
+}
+
+const SERVER_VERSION = readServerVersion();
+
 // MCP wire-protocol revision labels from the official SDK and
 // https://modelcontextprotocol.io/specification — current latest is 2025-11-25.
 const LATEST_PROTOCOL_VERSION = "2025-11-25";
@@ -41,7 +58,7 @@ const TOOLS = [
   {
     name: "doctor",
     description:
-      "Check that the Grok Build CLI is installed and authenticated. Run this when a kurofune dispatch fails immediately or before the first use in a session.",
+      "Check that the Grok Build CLI is installed and authenticated, and that python3 is available for result packaging. Run this when a kurofune dispatch fails immediately or before the first use in a session.",
     inputSchema: {
       type: "object",
       properties: {},
@@ -72,7 +89,7 @@ const TOOLS = [
         },
         model: {
           type: "string",
-          description: "Grok model id. Default: grok-4.5 (or KUROFUNE_MODEL).",
+          description: "Grok model id. Default: grok-4.5 or KUROFUNE_MODEL.",
         },
       },
       required: ["prompt"],
@@ -96,16 +113,16 @@ const TOOLS = [
         },
         cwd: {
           type: "string",
-          description: "Absolute path to the working directory (should match the original task).",
+          description: "Absolute path to the working directory. Should match the original task.",
         },
         review: {
           type: "boolean",
-          description: "Review (read-only) mode. Default false.",
+          description: "Review read-only mode. Default false.",
           default: false,
         },
         model: {
           type: "string",
-          description: "Grok model id. Default: grok-4.5 (or KUROFUNE_MODEL).",
+          description: "Grok model id. Default: grok-4.5 or KUROFUNE_MODEL.",
         },
       },
       required: ["sessionId", "prompt"],
@@ -115,32 +132,44 @@ const TOOLS = [
 ];
 
 function log(...args) {
-  // MCP: stdout is the protocol channel. Logs go to stderr only.
+  // stdout is the protocol channel. Logs go to stderr only.
   console.error("[kurofune-mcp]", ...args);
 }
 
+// Serialize writes so concurrent tool handlers do not interleave stdout bytes.
+let writeChain = Promise.resolve();
+
 function sendMessage(msg) {
-  const json = JSON.stringify(msg);
-  const body = Buffer.from(json, "utf8");
-  process.stdout.write(`Content-Length: ${body.length}\r\n\r\n`);
-  process.stdout.write(body);
+  const line = JSON.stringify(msg) + "\n";
+  writeChain = writeChain.then(
+    () =>
+      new Promise((resolve, reject) => {
+        const ok = process.stdout.write(line, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+        if (!ok) {
+          process.stdout.once("drain", resolve);
+        }
+      })
+  );
+  return writeChain;
 }
 
 function sendResult(id, result) {
-  sendMessage({ jsonrpc: "2.0", id, result });
+  return sendMessage({ jsonrpc: "2.0", id, result });
 }
 
 function sendError(id, code, message, data) {
   const err = { code, message };
   if (data !== undefined) err.data = data;
-  sendMessage({ jsonrpc: "2.0", id, error: err });
+  return sendMessage({ jsonrpc: "2.0", id, error: err });
 }
 
 function runCommand(args, { timeoutMs } = {}) {
   return new Promise((resolve) => {
     const child = spawn("bash", [SCRIPT, ...args], {
       env: { ...process.env },
-      // Stable cwd: the caller's shell may sit in a deleted temp dir.
       cwd: process.env.HOME || os.tmpdir() || PLUGIN_ROOT,
       stdio: ["ignore", "pipe", "pipe"],
     });
@@ -184,7 +213,6 @@ function parseToolPayload(stdout) {
   try {
     return JSON.parse(trimmed);
   } catch {
-    // last JSON object in stream
     const start = trimmed.lastIndexOf("{");
     if (start >= 0) {
       try {
@@ -199,16 +227,16 @@ function parseToolPayload(stdout) {
 
 function formatToolResult(payload, fallback) {
   if (payload) {
-    // Cap thought size so the main context is not flooded.
     const copy = { ...payload };
     if (typeof copy.thought === "string" && copy.thought.length > 2000) {
       copy.thought = copy.thought.slice(0, 2000) + "…(truncated)";
     }
     if (copy.raw) {
-      // raw is recoverable from resultFile; drop from tool body to save context
       delete copy.raw;
     }
-    return JSON.stringify(copy, null, 2);
+    // Compact single-line JSON so embedded newlines never break stdio framing
+    // if a client ever re-embeds this text into an NDJSON channel.
+    return JSON.stringify(copy);
   }
   return fallback;
 }
@@ -241,8 +269,9 @@ async function callTaskOrResume(kind, args) {
     cli.push(args.prompt);
   }
 
-  // Grok coding tasks can take many minutes. 30 min default; override via env.
-  const timeoutMs = Number(process.env.KUROFUNE_TIMEOUT_MS || 30 * 60 * 1000);
+  // Match / slightly under the MCP server idle budget so the client does not
+  // kill us first. Default 45 minutes; override with KUROFUNE_TIMEOUT_MS.
+  const timeoutMs = Number(process.env.KUROFUNE_TIMEOUT_MS || 45 * 60 * 1000);
   const { code, stdout, stderr, timedOut } = await runCommand(cli, { timeoutMs });
   const payload = parseToolPayload(stdout);
 
@@ -266,7 +295,6 @@ async function callTaskOrResume(kind, args) {
     `Non-JSON output (exit ${code}).\nstdout:\n${stdout.slice(0, 4000)}\nstderr:\n${stderr.slice(0, 2000)}`
   );
 
-  // ok:false or non-zero exit => isError so the main model notices
   const isError = code !== 0 || (payload && payload.ok === false);
   return {
     isError,
@@ -307,7 +335,6 @@ async function handleToolsCall(params) {
 async function handleMessage(msg) {
   if (!msg || typeof msg !== "object") return;
 
-  // Notifications (no id)
   if (msg.method && msg.id === undefined) {
     if (msg.method === "notifications/initialized") {
       log("initialized");
@@ -322,76 +349,37 @@ async function handleMessage(msg) {
   try {
     switch (method) {
       case "initialize":
-        sendResult(id, {
+        await sendResult(id, {
           protocolVersion: negotiateProtocolVersion(params?.protocolVersion),
           capabilities: { tools: {} },
           serverInfo: { name: SERVER_NAME, version: SERVER_VERSION },
         });
         break;
       case "ping":
-        sendResult(id, {});
+        await sendResult(id, {});
         break;
       case "tools/list":
-        sendResult(id, { tools: TOOLS });
+        await sendResult(id, { tools: TOOLS });
         break;
       case "tools/call": {
         const result = await handleToolsCall(params);
-        sendResult(id, result);
+        await sendResult(id, result);
         break;
       }
       default:
-        sendError(id, -32601, `Method not found: ${method}`);
+        await sendError(id, -32601, `Method not found: ${method}`);
     }
   } catch (err) {
     log("handler error", err);
-    sendError(id, -32603, err?.message || String(err));
+    await sendError(id, -32603, err?.message || String(err));
   }
 }
 
-// --- stdio framing (Content-Length, MCP / LSP style) ---
-
-let buffer = Buffer.alloc(0);
-
-function tryConsume() {
-  while (true) {
-    const headerEnd = buffer.indexOf("\r\n\r\n");
-    if (headerEnd === -1) return;
-    const header = buffer.slice(0, headerEnd).toString("utf8");
-    const match = /Content-Length:\s*(\d+)/i.exec(header);
-    if (!match) {
-      // Resync: drop one byte
-      buffer = buffer.slice(1);
-      continue;
-    }
-    const length = parseInt(match[1], 10);
-    const bodyStart = headerEnd + 4;
-    if (buffer.length < bodyStart + length) return;
-    const body = buffer.slice(bodyStart, bodyStart + length).toString("utf8");
-    buffer = buffer.slice(bodyStart + length);
-    let msg;
-    try {
-      msg = JSON.parse(body);
-    } catch (e) {
-      log("invalid JSON body", e.message);
-      continue;
-    }
-    // Fire and forget; concurrent tool calls are serialized by await in handleMessage chain
-    messageQueue.push(msg);
-    drainQueue();
-  }
-}
-
-const messageQueue = [];
-let draining = false;
-
-async function drainQueue() {
-  if (draining) return;
-  draining = true;
-  while (messageQueue.length) {
-    const msg = messageQueue.shift();
-    await handleMessage(msg);
-  }
-  draining = false;
+// Concurrent dispatch: long tools/call must not block ping or a second task.
+function dispatch(msg) {
+  handleMessage(msg).catch((err) => {
+    log("unhandled dispatch error", err);
+  });
 }
 
 if (!fs.existsSync(SCRIPT)) {
@@ -399,17 +387,26 @@ if (!fs.existsSync(SCRIPT)) {
   process.exit(1);
 }
 
-process.stdin.on("data", (chunk) => {
-  buffer = Buffer.concat([buffer, Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)]);
-  tryConsume();
+const rl = readline.createInterface({
+  input: process.stdin,
+  crlfDelay: Infinity,
 });
 
-process.stdin.on("end", () => {
+rl.on("line", (line) => {
+  const trimmed = line.trim();
+  if (!trimmed) return;
+  let msg;
+  try {
+    msg = JSON.parse(trimmed);
+  } catch (e) {
+    log("invalid JSON line", e.message);
+    return;
+  }
+  dispatch(msg);
+});
+
+rl.on("close", () => {
   process.exit(0);
 });
 
-// Also accept newline-delimited JSON for manual debugging (optional).
-// Only used when no Content-Length header path is active and a full line arrives.
-// Disabled when Content-Length is present in the buffer — tryConsume handles that.
-
-log(`ready script=${SCRIPT}`);
+log(`ready script=${SCRIPT} version=${SERVER_VERSION}`);

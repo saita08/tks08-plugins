@@ -1,6 +1,9 @@
 {
-  "kurofune": {
-    "command": "node",
-    "args": ["${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs"]
+  "mcpServers": {
+    "kurofune": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs"],
+      "timeout": 3600000
+    }
   }
 }
