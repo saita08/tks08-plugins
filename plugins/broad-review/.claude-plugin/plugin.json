@@ -1,7 +1,7 @@
 {
   "name": "broad-review",
   "description": "Code review command based on custom coding standards. Extends the code-review plugin and outputs results to local files.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": {
     "name": "tks08"
   }
