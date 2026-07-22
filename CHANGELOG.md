@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- broad-review: README now documents the environment setting required for Claude Code 2.1.217+ so review fan-out keeps working
+- broad-review: the review now stops with a clear message instead of silently degrading when that setting is missing
+
 ## [1.4.12] - 2026-07-18
 
 ### Fixed
