@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- broad-review: when the required spawn-depth setting is missing, you can now explicitly choose to continue with a single-agent review instead of the run always stopping
+
+### Fixed
+- broad-review: the `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` setting is now checked before the review starts, so a missing setting is reported upfront with setup guidance instead of surfacing only after the delegated review fails to fan out
+
 ## [1.4.13] - 2026-07-22
 
 ### Fixed

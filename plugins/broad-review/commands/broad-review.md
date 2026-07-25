@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(gh pr view:*), Bash(gh pr list:*), Bash(gh pr diff:*), Bash(mkdir:*), Read, Write, Edit, Glob, Grep, Skill, Agent, TaskList, TaskStop
+allowed-tools: Bash(gh pr view:*), Bash(gh pr list:*), Bash(gh pr diff:*), Bash(mkdir:*), Bash(echo:*), Read, Write, Edit, Glob, Grep, Skill, Agent, TaskList, TaskStop
 description: Run code review based on custom coding standards and output results to local files
 argument-hint: (no arguments needed - auto-detects PR from current branch)
 ---
@@ -95,13 +95,24 @@ The most complete artifact decides first: if `notes/pr{N}-review-comments.md` ex
 
 ### 2. Code review via subagent
 
+#### Prerequisite check
+
+The delegation below depends on nested agent spawning: this command spawns one delegate, and the delegate fans out review agents of its own. Nesting was introduced in Claude Code 2.1.172 but has been disabled by default since 2.1.217, and the block does not raise an error — it silently removes the `Agent` tool from the delegate's toolset. A requirement that fails silently must be verified before the Agent call, not discovered after it.
+
+Before anything else in this step, run `echo "${CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH:-unset}"`. If the value is `2` or higher, the prerequisite is met; continue with the delegation below. Otherwise do not make the Agent call. The variable cannot be set from inside a running session — an export in a Bash call dies with that shell, and hooks cannot modify the session environment either — so report the missing setting and let the user choose:
+
+- Set `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` to `2` via the `env` key of `.claude/settings.json` — the recommended method, documented in this plugin's README under prerequisites — then restart Claude Code and run this command again.
+- Continue in this session without fan-out, accepting a review performed by a single agent alone. This choice must come from the user explicitly. If it does, proceed to the delegation and append one line to the **Method** block of the Agent prompt: "Fan-out is unavailable in this session and the user has accepted a single-agent review: apply the review criteria yourself instead of stopping when the `Agent` tool is missing."
+
+#### Delegation
+
 Load the `broad-review:review-policy` skill to obtain the coding standards.
 
 Delegate the review with a single synchronous Agent tool call (`subagent_type: general-purpose`, `run_in_background: false` stated explicitly). The call blocks until the subagent finishes and returns its completion note; there is normally no team to create, no task to track, and no waiting phase. If the runtime converts the long-running call to a background task (C-11), the only thing that changes is the completion signal: end the turn and wait for the notification naming this agent, doing no other work in the meantime, then continue as if the call had returned, and mention the conversion in the Step 7 report. The Agent `prompt` is the only channel that carries instructions to the subagent (C-2), so it must be self-contained. Include everything below:
 
 **Purpose**: Review the PR and write the structured findings to the review report file.
 
-**Method**: Invoke the skill `code-review:code-review` via the Skill tool. The plugin-qualified name is required because Claude Code now ships a built-in `/code-review` command whose name collides with the short form: the short name `code-review` resolves to that built-in command rather than to this skill, and a subagent that reaches for the short name will silently perform a different review than the one this command depends on. The colon-qualified form `code-review:code-review` is unambiguous — it names the skill `code-review` inside the plugin `code-review`, a shape the built-in command cannot take — and is the only form that reliably reaches the intended skill. This skill is the sole means of performing the review. It fans out subagents of its own to perform the review; that is expected behavior, and the containment constraints below govern how that fan-out runs. Nesting was introduced in Claude Code 2.1.172 but has been disabled by default since 2.1.217, so `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` must be set to `2` or higher, as documented in the README's prerequisites. The block does not raise an error; it manifests as the `Agent` tool missing from the delegate's toolset. If the delegate finds itself without the `Agent` tool while trying to fan out, per C-10 it must report the missing configuration and stop rather than improvise a review without fan-out. If the skill fails to load, report the failure and stop.
+**Method**: Invoke the skill `code-review:code-review` via the Skill tool. The plugin-qualified name is required because Claude Code now ships a built-in `/code-review` command whose name collides with the short form: the short name `code-review` resolves to that built-in command rather than to this skill, and a subagent that reaches for the short name will silently perform a different review than the one this command depends on. The colon-qualified form `code-review:code-review` is unambiguous — it names the skill `code-review` inside the plugin `code-review`, a shape the built-in command cannot take — and is the only form that reliably reaches the intended skill. This skill is the sole means of performing the review. It fans out subagents of its own to perform the review; that is expected behavior, and the containment constraints below govern how that fan-out runs. The spawn-depth setting this nesting requires was verified in the prerequisite check above, but verification does not remove the delegate's own guard: if the delegate finds itself without the `Agent` tool while trying to fan out, per C-10 it must report the missing configuration and stop rather than improvise a review without fan-out. The only thing that lifts this rule is the prerequisite check's single-agent-review line, appended when the user explicitly chose that path. If the skill fails to load, report the failure and stop.
 
 **Containment constraints**: Two rules bind every Agent call the delegate makes: always pass `run_in_background: false` explicitly — the parameter defaults to background when omitted, and a background agent outlives its creator — and never pass `name`. To impose the same rules downstream, include the following block verbatim in the prompt of every agent spawned (C-12). The block is written for its recipients and deliberately names no skill or command, so forward it exactly as it stands:
 
