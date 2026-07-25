@@ -80,6 +80,10 @@ Containment is therefore part of the delegation prompt: every agent beneath the 
 
 A forwarded constraint is read by agents that never saw its origin, so it must carry its intended sense — and only that sense — with no context but itself. Anything in it that is meaningful only at the origin will be re-interpreted at the destination: a reference the origin used to describe its own setup reads downstream as an instruction to reproduce that setup, and each recipient that obeys forwards the same text again, compounding the misreading at every depth. The forwardable text therefore states only what its readers must do and avoid, in their own terms, and names nothing they could act on that they should not. For the same reason it spells out what the runtime would otherwise decide silently: an option with a default must be given its safe value explicitly, because "leave the option alone" and "choose the safe value" are different instructions the moment the default is not the safe value.
 
+### C-13: A precondition that fails silently is verified before the act that depends on it
+
+Preconditions differ in how they announce their own absence. Some fail loudly: the dependent act errors out, the error names the cause, and detection after the fact costs only the failed attempt. Others fail silently: the dependent act still appears to proceed, produces something that resembles the intended result, and the gap surfaces only later, if at all — no error interrupts, and nothing names the cause. For loud preconditions, reacting to the error is enough. For silent ones there is no error to react to, so the only reliable detection point is before the dependent act, as an explicit check whose outcome decides whether the act happens. Mentioning the precondition in surrounding prose does not substitute for this check: text describes, a step verifies, and only what is verified can stop the act in time.
+
 ## Steps
 
 ### 1. Auto-detect PR number
@@ -97,7 +101,7 @@ The most complete artifact decides first: if `notes/pr{N}-review-comments.md` ex
 
 #### Prerequisite check
 
-The delegation below depends on nested agent spawning: this command spawns one delegate, and the delegate fans out review agents of its own. Nesting was introduced in Claude Code 2.1.172 but has been disabled by default since 2.1.217, and the block does not raise an error — it silently removes the `Agent` tool from the delegate's toolset. A requirement that fails silently must be verified before the Agent call, not discovered after it.
+The delegation below depends on nested agent spawning: this command spawns one delegate, and the delegate fans out review agents of its own. Nesting was introduced in Claude Code 2.1.172 but has been disabled by default since 2.1.217, and the block does not raise an error — it silently removes the `Agent` tool from the delegate's toolset. This is a precondition that fails silently, so per C-13 it is verified here, before the Agent call that depends on it, rather than discovered after.
 
 Before anything else in this step, run `echo "${CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH:-unset}"`. If the value is `2` or higher, the prerequisite is met; continue with the delegation below. Otherwise do not make the Agent call. The variable cannot be set from inside a running session — an export in a Bash call dies with that shell, and hooks cannot modify the session environment either — so report the missing setting and let the user choose:
 
