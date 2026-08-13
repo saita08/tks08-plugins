@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.13] - 2026-08-13
+
 ### Added
 - shosoin: a fifth shelf, `notes/`, for task-lifetime work products — audit flags durable knowledge parked there and links pointing into it, and inspect reports notes that outlived their task as promote-or-delete decisions
 - shosoin: Claude's private auto-memory is now shut off per project — the official setting, a hook that blocks memory access from Write/Edit and Bash alike, and a session-start cleanup that deletes memory already written. `/shosoin:setup` installs it in new projects, `/shosoin:audit` offers it to existing ones that lack it, and the pieces live in the project's own `.claude/` so they keep working even with the plugin disabled
