@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [1.4.13] - 2026-08-13
+## [1.4.14] - 2026-08-13
 
 ### Added
 - shosoin: a fifth shelf, `notes/`, for task-lifetime work products — audit flags durable knowledge parked there and links pointing into it, and inspect reports notes that outlived their task as promote-or-delete decisions
