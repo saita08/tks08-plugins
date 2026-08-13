@@ -142,7 +142,7 @@
     {
       "name": "shosoin",
       "source": "./plugins/shosoin",
-      "description": "Shelve every document into its proper track — CLAUDE.md, README, docs/, adr/, references/ — inspect each one's content against reality, and reorganize on approval or bootstrap the structure in a new project."
+      "description": "Shelve every document into its proper home — CLAUDE.md, README, docs/, adr/, references/, notes/ — inspect each one's content against reality, and reorganize on approval or bootstrap the structure, constitution seed and auto-memory shut-off included, in a new project."
     },
     {
       "name": "parallel-universe",

@@ -1,6 +1,6 @@
 # Content Inspection
 
-How to verify that a document's content still tells the truth. Placement says where a book lives; inspection says whether the book can be trusted. The doctrine's ground for this is the principle that records describe a moment: every page was true when written, and the code has moved since.
+How to verify that a document's content still tells the truth. Placement says where a book lives; inspection says whether the book can be trusted. The contract's ground for this is the principle that records describe a moment: every page was true when written, and the code has moved since.
 
 ## The standard of evidence
 
@@ -11,8 +11,10 @@ A staleness finding pairs the document's claim with the reality on disk: "the pa
 - Every relative link resolves to an existing file and anchor.
 - Every index table row points to a file that exists, and every file in the directory appears in its index.
 - Code fences naming commands, scripts, or make targets correspond to things that exist in the repository's manifests.
+- No link from `docs/`, `adr/`, CLAUDE.md, or the README points into `notes/` — a durable shelf depending on a disposable one is a dead link that has not happened yet.
+- Where the project carries the auto-memory shut-off (`autoMemoryEnabled: false` plus the shosoin hooks in `.claude/settings.json`), the hook entries still point at scripts that exist and are executable. A shut-off whose scripts have gone missing protects nothing while looking installed.
 
-## Per-track checks
+## Per-shelf checks
 
 ### docs/ — does the description match the disk?
 
@@ -25,14 +27,18 @@ Extract the checkable claims: file paths, directory layouts, function and class 
 - Accepted records have not been rewritten after acceptance. Check with `git log --follow` on records whose status is Accepted: substantive edits after the acceptance date violate immutability. Status-line updates and link fixes are legitimate; changed reasoning is not.
 - Consequences that name `docs/` pages point at pages that still exist.
 
-### CLAUDE.md — are the values still principles?
+### CLAUDE.md — are the values still values?
 
-- Each section states a value general enough to guide unanticipated situations. A section that has decayed into a list of specific cases is drift, and the doctrine's own test applies: would this sentence survive a rewrite of the codebase?
+- Each section states a value general enough to guide unanticipated situations. A section that has decayed into a list of specific cases is drift, and the contract's own test applies: could several distinct rules still be derived from it?
 - Principles do not contradict each other, and none is contradicted by what the repository observably does. A value the codebase systematically violates is either a dead letter or a finding about the code — report it, do not judge which.
 
 ### references/ — has the snapshot drifted?
 
 `references/` cannot be verified against the live system it snapshots — that is its documented weakness. What can be checked: whether the code's expectations still match the snapshot's shape. Column counts, field names, and index constants that appear in both code and reference data should agree. Where the code has moved past the snapshot, the snapshot is stale by proxy, and that is reportable evidence.
+
+### notes/ — is anything still alive in the morgue?
+
+A note is trustworthy only while its task is. For each file, judge from the repository whether the task it served is visibly closed — the PR merged, the feature landed, the handover superseded by later work. A note whose task is closed and that was neither promoted nor deleted is a finding: its contents are outside trust, and anything durable inside it is knowledge parked where it is destined to be deleted. Report it as a promote-or-delete decision for the user; inspection does not judge which parts deserve promotion.
 
 ### README — is the front door honest?
 
