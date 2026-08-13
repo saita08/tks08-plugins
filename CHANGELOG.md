@@ -9,13 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 - shosoin: a fifth shelf, `notes/`, for task-lifetime work products — audit flags durable knowledge parked there and links pointing into it, and inspect reports notes that outlived their task as promote-or-delete decisions
-- shosoin: `/shosoin:setup` now shuts off Claude's private auto-memory for the project — the official setting, a hook that blocks memory access from Write/Edit and Bash alike, and a session-start cleanup that deletes memory already written — all installed into the project's own `.claude/` so they keep working even with the plugin disabled
+- shosoin: Claude's private auto-memory is now shut off per project — the official setting, a hook that blocks memory access from Write/Edit and Bash alike, and a session-start cleanup that deletes memory already written. `/shosoin:setup` installs it in new projects, `/shosoin:audit` offers it to existing ones that lack it, and the pieces live in the project's own `.claude/` so they keep working even with the plugin disabled
 - shosoin: `/shosoin:setup` seeds a project's CLAUDE.md from a bundled default constitution instead of an empty skeleton, and asks whether the project is personal or shared to decide how much of the seed to plant
 
 ### Changed
 - shosoin: the constitution is now the hardest shelf to enter — classification asks every other shelf first, and a value-vs-rule touchstone sends mechanically checkable rules to docs/ conventions instead of CLAUDE.md
-- shosoin: generated CLAUDE.md files are always written in English to cut the every-session token cost; other generated files keep the project's documentation language
-- shosoin: reports, references, and the README now speak of shelves instead of tracks, and the skill was renamed `four-track-contract` → `shelving-contract`
+- shosoin: generated CLAUDE.md files are always written in English; other generated files keep the project's documentation language
+- shosoin: the plugin now speaks of shelves instead of tracks — in its reports, in its README, and in the skill's name, renamed `four-track-contract` → `shelving-contract`
 
 ## [1.4.13] - 2026-07-22
 

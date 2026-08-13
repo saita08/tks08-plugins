@@ -15,7 +15,7 @@ Ask in this order; the first yes wins. The order is load-bearing: the constituti
 
 Content that answers none of these is usually not documentation: generated output, tool state. Leave it alone or question its existence, but do not force it into a shelf.
 
-The boundary between questions 4 and 6 is the touchstone from the contract: derivable-rules means value, followable-as-written and mechanically checkable means rule, and rules live in `docs/` as conventions. "Dependencies point inward only" is a rule and stops at question 4; "minimize the reader's cognitive load, because every artifact is read by someone without today's context" derives many rules and passes to question 6. Knowledge that reads as both is not classified silently — ask the human who owns its meaning.
+The boundary between questions 4 and 6 is the touchstone from the contract: a statement from which several distinct rules can be derived is a value; a statement followable as written and mechanically checkable is a rule, and rules live in `docs/` as conventions. Knowledge that reads as both is not classified silently — ask the human who owns its meaning.
 
 ## Common misplacements and their fixes
 
