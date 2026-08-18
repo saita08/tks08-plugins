@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [1.4.15] - 2026-08-13
+## [1.4.15] - 2026-08-19
 
 ### Added
 - makuai: new plugin — a knowledge skill Claude loads when designing a free app's ad model, carrying product-agnostic principles for when ads may appear (audience-avoidance, whitelisted break points, two-stage gating), how often (auto-capping vs. reward-driven quiet periods), how they present (a pre-ad notice named in the product's own vocabulary, App Store Guideline 2.5.18, ATT timing), and how to build them (SDK seam, production values last, deterministic tests via injected randomness, time, and scene transitions)
