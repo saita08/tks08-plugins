@@ -1,25 +1,25 @@
-# 出し方 — 不意打ちにしない
+# Presentation — Never an Ambush
 
-## 予告画面
+## The pre-ad notice
 
-全画面広告の直前に短い予告画面を挟む。出典では約 1 秒に置いたが、これは調整可能な定数である。広告の不意打ち感は、しばしば広告そのものより体験を悪くする。短い予告は出現を予測可能にし、操作中の誤タップを減らし、広告を「奇襲」から「演出」に変える。一呼吸の待ちというコストは、これらの便益が上回る。
+Insert a brief notice screen immediately before any full-screen ad. The source used roughly one second, and the duration is a tunable constant. The feeling of ambush often damages the experience more than the ad itself does. A short notice makes the appearance predictable, reduces mistaps during operation, and turns the ad from a raid into a staged moment. The cost of one breath of waiting is outweighed by these gains.
 
-予告画面の名前はプロダクトの世界観の語彙から取る。出典プロダクトは公演のメタファーを持っていたので、幕間を意味する INTERMISSION と名付けた。予告画面は広告の一部ではなくプロダクトの一部であり、世界観の語彙で名付ければ、広告はブランドを削る瞬間ではなくブランドの延長になる。
+Name the notice screen in the product's own vocabulary. The source product carried a theater metaphor, so it named the screen INTERMISSION. The notice is part of the product, not part of the ad, and named in the product's language it makes the ad an extension of the brand rather than a moment that erodes it.
 
-予告画面に「AD」などの広告ラベルは入れない。直後に出る広告には SDK が自動的にラベルを付けるため、法的にも規約的にも予告側のラベルは不要であり、入れれば予告のミニマルさだけが損なわれる。将来ラベルが必要になる規約変更があれば、そのときに設計判断として追加する。
+Put no AD label on the notice. The ad that follows carries its own label applied by the SDK, so a label on the notice is required neither legally nor by policy, and adding one only costs the notice its minimalism. If a policy change ever demands a label, add it then as a recorded design decision.
 
-## 自作モーダルの佇まい
+## The bearing of a self-built modal
 
-起動時などに自作モーダルで広告を出すなら、画面全体を覆わない。背後の画面を薄く暗転させ、中央にプロダクトの佇まいをした額縁の土台を浮かべ、その中に広告素材だけを収める。閉じる操作は土台の外に明確に置き、暗転部分のタップでも閉じられるようにする。全画面を覆う体験は世界観を分断するが、額縁方式は「プロダクトの中に広告が招かれている」という構図を保ち、利用者はいつでも自分の画面に戻れることを視覚的に知る。
+When showing ads in a self-built modal, at launch for example, do not cover the whole screen. Dim the screen behind, float a framed pedestal in the center that carries the product's own bearing, and place nothing but the ad material inside it. Put the close control clearly outside the pedestal, and let a tap on the dimmed area close it too. A full-screen takeover severs the product's world, while the framed approach keeps the composition of an ad being hosted inside the product, and the user can see at all times that their screen is one tap away.
 
-## ハウス広告にも同じ規律
+## House ads under the same discipline
 
-自社アプリのクロスプロモにも、他社広告と同じ頻度規律と placement 規律を適用する。利用者の体験にとって、中断は広告主が誰であっても中断である。「自社だから多めに出してよい」という例外は規律に開いた最初の穴になり、以後のすべての判断を緩ませる。審査の観点でも、ハウス広告は広告として扱われる。自社導線を確保したいなら、例外ではなく設計で確保する。その方法である確率混合の比率は `engineering.md` が扱う。
+Apply to house cross-promotion the same frequency and placement discipline as to third-party ads. To the user an interruption is an interruption regardless of who the advertiser is. An exception of showing more because it is our own is the first hole opened in the discipline, and every judgment after it loosens. Review treats house ads as ads too. To secure the house funnel, secure it by design rather than by exception; the mechanism for that, the probability mix ratio, is covered in `engineering.md`.
 
 ## App Store Review Guideline 2.5.18
 
-iOS では Guideline 2.5.18 が広告表示の要件を定める。広告であることを明示すること、十分に大きく見つけやすい閉じるボタンを備えること、誤タップを誘導する UI にしないこと。標準フォーマットを使えばこれらは SDK が満たしてくれるが、自作モーダル方式を選ぶとこの責任を自分で負う。閉じるボタンを小さく飾りたくなる誘惑は収益を伸ばしたい誘惑と同じものなので、レビュー要件を設計の下限として先に固定してから見た目を詰める。
+On iOS, Guideline 2.5.18 sets the requirements for ad display: make clear that an ad is an ad, provide a close button large and findable enough, and never design the UI to bait mistaps. The standard formats satisfy these through the SDK, but choosing the self-built modal means carrying the responsibility yourself. The temptation to shrink the close button into a decoration is the same temptation as the revenue itself, so fix the review requirements as the design's floor before polishing the looks.
 
-## ATT プロンプト
+## The ATT prompt
 
-App Tracking Transparency の許諾は、利用者がプロダクトの価値を体験した後に、自前の説明画面であるプリプロンプトを挟んでから出す。初回起動直後に文脈なしで出る OS ダイアログは拒否率が最も高く、許諾率は広告単価に直結する。そして一度拒否されると OS ダイアログの再表示はできず、設定アプリへの誘導しか残らない。出しどきは実質一回しかないのだから、価値の体験と、なぜ許諾を求めるのかの説明を先に済ませる。
+Show the App Tracking Transparency request only after the user has experienced the product's value, and lead into it with a pre-prompt, a screen of your own that explains the ask. The OS dialog shown context-free right after first launch has the highest refusal rate, and the grant rate feeds directly into ad revenue. Once refused, the OS dialog cannot be shown again and only a pointer to the Settings app remains. There is effectively one chance to ask, so spend it after the value and the explanation have landed.

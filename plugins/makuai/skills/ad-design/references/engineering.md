@@ -1,25 +1,25 @@
-# 実装 — 差し込みは最後、判定は純粋に
+# Implementation — Judgment Pure, Injection Last
 
-## SDK シーム分離
+## The SDK seam
 
-広告ロジックはプロトコル境界の背後に閉じる。確率・ゲート・停止状態の発火判定は SDK を知らない純粋ロジックとして境界の手前に置き、SDK を呼び出す提示だけを境界の向こうに置く。判定と提示が癒着すると、SDK なしでは判定をテストできず、モックへの差し替えもできない。境界があれば、有料版やテストのような広告を出さない構成ではモックを注入し、広告コードが到達不能であることをコンパイルレベルで保証できる。
+Close all ad logic behind a protocol boundary. Firing judgment, meaning probability, gating, and suspension state, lives on the near side of the boundary as pure logic that knows nothing of the SDK; only presentation, the actual SDK calls, lives on the far side. When judgment and presentation fuse, the judgment cannot be tested without the SDK and cannot be swapped for a mock. With the boundary in place, configurations that show no ads, the paid tier and the test suite alike, inject a mock, and the unreachability of ad code becomes a compile-level guarantee.
 
-## 実装順 — 本番設定値の投入だけを最後に
+## Ordering — production values last
 
-広告 SDK の導入には三つの層がある。発火ロジックのコード実装、SDK 実体のリンク、そしてアプリ ID や広告ユニット ID といった本番設定値の投入である。このうち広告アカウントの取得を要するのは最後の層だけなので、それだけを実装全体の最後に置く。前の二層はテスト ID とモックで開発もテストも完結するから、アカウントの審査を待つ時間が開発を止めない。プロトコル境界を先に作ってあれば、最後の層は受け口に設定値を差し込む一手で済み、手戻りがない。
+Introducing an ad SDK has three layers: implementing the firing logic in code, linking the SDK binary, and injecting the production values, meaning the app ID and the ad unit IDs. Only the last layer requires an ad account, so place only that layer at the very end of the work. The first two layers complete their development and testing on test IDs and mocks, so waiting for account review never stalls the project. With the protocol boundary already built, the final layer shrinks to plugging values into a socket, with no rework.
 
-開発ビルドではテスト用ユニット ID を、運用規律ではなくビルド構成による分岐のようなコードの構造で強制する。本番 ID を開発中に叩くことは広告ネットワークから無効トラフィックとみなされ、アカウント停止のリスクになる。事故は注意ではなく構造で防ぐ。リリースビルドで設定値が未投入・空だった場合は、その広告種別を「出さない」に倒す。
+Force test unit IDs in development builds through code structure, a build-configuration branch for example, never through operational discipline. Hitting production IDs during development is treated by ad networks as invalid traffic and risks account suspension. Prevent the accident by structure, not by care. When a release build finds a value missing or empty, fail toward not showing that ad type.
 
-罠を一つ記録しておく。SDK の中には、アプリのコードを一切経由せず、フレームワークがロードされた時点で自身の初期化を走らせるものがある。Google Mobile Ads はその例で、アプリ ID が Info.plist に無いままリンクすると起動時にクラッシュし、アプリ側のコードガードでは防げない。SDK をリンクした時点で何の設定値が必須になるのかを、導入の最初にドキュメントで確認する。
+Record one trap. Some SDKs run their own initialization the moment the framework loads, without passing through any app code. Google Mobile Ads is one: linked without an app ID in Info.plist, it crashes at launch, and no guard in app code can prevent it. At the very start of an integration, check the SDK's documentation for which values become mandatory the moment it is linked.
 
-## 決定的テスト — 乱数・時刻・シーン遷移を注入する
+## Deterministic tests — inject randomness, time, and scene transitions
 
-確率で発火する広告は、0 以上 1 未満を返すクロージャとして乱数源を注入し、テストでは固定値を渡して「しきい値の内側で発火し、外側で発火しない」を検証する。時限の停止は時刻源を注入し、解除時刻の境界を検証する。実乱数と実時刻に依存したテストは不安定で、境界ちょうどの挙動を検証できない。
+For ads that fire by probability, inject the randomness source as a closure returning a value from zero up to but not including one, and in tests pass fixed values to verify firing inside the threshold and silence outside it. For timed suspensions, inject the time source and verify the boundary at the expiry instant. Tests that depend on real randomness and real clocks are flaky and cannot examine the boundaries at all.
 
-シーン遷移というアプリのライフサイクルに反応する広告は、判定を純粋な状態機械に切り出し、遷移列を注入してテストする。ここに実地の教訓が一つある。「フォアグラウンド復帰」を素朴に「active への遷移」と実装すると、購入シート・通知センター・システムアラートの開閉まで復帰と誤検知する。これらは inactive 止まりで background に達しないからである。出典プロダクトではこの誤検知が、IAP の購入をキャンセルした直後に広告が出るという最悪の並びを生んだ。修正は、購入フロー中だけ抑止するフラグのような症状にではなく、定義に対して行う。background を経由した後の active 遷移だけを復帰とみなす。判定が純粋な状態機械に切り出してあれば、この定義はシート往復・画面ロック・アプリ切り替えの遷移列で決定的に検証できる。
+For ads that react to the app's lifecycle, its scene transitions, extract the judgment into a pure state machine and test it by feeding transition sequences. A lesson from the field lives here. Implementing foreground resume naively as any transition to active also counts the opening and closing of purchase sheets, notification center, and system alerts, which stop at inactive and never reach background. In the source product this false positive produced the worst possible sequence: an ad shown immediately after the user cancelled an in-app purchase. Fix the definition, not the symptom of a flag suppressing ads during the purchase flow: only a transition to active that passed through background counts as a resume. With the judgment extracted as a pure state machine, that definition is verified deterministically against sheet round-trips, screen locks, and app switches.
 
-## クロスプロモと他社広告の混合
+## Mixing cross-promo with third-party ads
 
-自社アプリのクロスプロモと他社広告を同じ枠で出すなら、優先順位ではなく確率で混ぜる。出典では自社 3 割、他社 7 割に置いたが、これは調整可能な定数である。「自社在庫があれば自社を優先」という規則は、自社アプリを一件登録した瞬間にその枠の広告収益をゼロにする。確率混合なら自社導線と収益が両立し、按配は一つの定数の調整で済む。抽選に当たった側の在庫が無ければもう一方へフォールバックし、両方得られなければその回は出さない。
+When house cross-promotion and third-party ads share one slot, mix them by probability, not by priority. The source used 30 percent house and 70 percent third-party, and the ratio is a tunable constant. A rule of house first whenever house inventory exists zeroes the slot's ad revenue the moment a single house app is registered. A probability mix keeps the house funnel and the revenue coexisting, and rebalancing is a one-constant change. When the winning side has no inventory, fall back to the other; when neither yields anything, show nothing that round.
 
-クロスプロモの在庫はリモート JSON、ディスクキャッシュ、バンドル既定の三段フォールバックで供給する。リモートはアプリの更新なしに在庫を差し替えるため、キャッシュはオフラインでの起動のため、バンドル既定は初回起動とキャッシュ消失のためにある。空配列は有効な結果として扱う。在庫ゼロは異常ではなく、枠が他社側へフォールバックするだけである。
+Supply the cross-promo inventory through three tiers of fallback: remote JSON, then disk cache, then a bundled default. The remote tier swaps inventory after release without an app update; the cache serves offline launches; the bundled default covers first launch and cache loss. Treat an empty array as a valid result. Zero inventory is not an error; the slot simply falls back to the third-party side.

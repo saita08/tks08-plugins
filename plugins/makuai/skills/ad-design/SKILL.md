@@ -5,17 +5,17 @@ user-invocable: false
 allowed-tools: Read
 ---
 
-# 幕間の広告設計
+# Ad Design for the Intermission
 
-無料版と広告で成り立つアプリにおいて、広告をいつ・どのように出すかの原則を収める。出典は出荷済みの iOS アプリで複数の ADR と実機検証を経て練られた判断であり、AdMob のガイドライン、App Store Review Guideline、ATT の実務といった 2026 年時点の業界定石と照合してプロダクト非依存の形に書き直してある。
+This skill holds the principles for when and how a free app shows ads. They originate in a shipped iOS app where they were forged through multiple ADRs and on-device iteration, then rewritten as product-agnostic principles checked against the industry practice of 2026: AdMob's guidelines, the App Store Review Guidelines, and ATT in the field.
 
-中核は一つの価値である。広告の害は平均頻度ではなく最悪の一回で決まる。利用者が道具本来の仕事をしている最中——舞台の上、商談の途中、計測の最中——に出た一回の広告は、その道具への信頼を壊す。だから広告は幕間にだけ出す。すなわち、出してよい瞬間を作業の区切りとして限定列挙し、それ以外のすべてを禁止に倒し、この判定をすべての広告に先立つ共通ゲートに一箇所集約する。
+One value sits at the core. The harm of advertising is decided not by average frequency but by the single worst impression. One ad shown while the user is doing the work the tool exists for, on stage, mid-negotiation, mid-measurement, destroys trust in the tool. Therefore ads appear only in the intermission: enumerate the allowed moments as breaks in the user's work, treat every other moment as forbidden by default, and concentrate that judgment in a single gate every ad must pass first.
 
-参照ファイルは関心で分かれている。全部を一度に読まず、手元の設計課題に合うものだけを読む。
+The references are split by concern. Read only the one that matches the design question at hand rather than loading them all.
 
-- `references/placement.md` — 出しどき。客前回避の絶対原則、発火可能ポイントの限定列挙、二段ゲート、初回セッションの保護、自作モーダルと App Open Ads という起動時広告の二方式の比較。広告をどこに置くかを決めるとき、また新しい広告枠の提案を評価するときに読む。
-- `references/frequency.md` — 頻度。自動 capping とリワードへ移譲するユーザー主導という二つの思想、後者の成立条件、思想を問わず守る下限、静寂期間と停止の単調合成、リワード経済の規律。広告の頻度・リワード・広告除去 IAP を設計するときに読む。
-- `references/presentation.md` — 出し方。予告画面と世界観の語彙による命名、自作モーダルの佇まい、ハウス広告の規律、App Store Review Guideline 2.5.18、ATT プロンプトの出しどき。広告の見た目・提示・審査要件を設計するときに読む。
-- `references/engineering.md` — 実装。SDK シーム分離と実装順、乱数・時刻・シーン遷移の注入による決定的テスト、フォアグラウンド復帰の誤検知の教訓、クロスプロモの確率混合と三段フォールバック。広告コードを書く段になったら読む。
+- `references/placement.md` — timing. The absolute rule of never showing ads mid-work, the whitelist of firing points, the two-stage gate, first-session protection, and the comparison of the two launch-ad approaches, a self-built modal versus App Open Ads. Read when deciding where ads may appear, or when evaluating a proposal for a new ad slot.
+- `references/frequency.md` — frequency. The two peer philosophies, auto-capping and user-driven control that delegates cooldown to rewarded video, the conditions under which the latter holds, the floor both must respect, quiet periods and monotonic suspension merging, and the discipline of the reward economy. Read when designing ad frequency, rewarded video, or a remove-ads purchase.
+- `references/presentation.md` — presentation. The pre-ad notice named in the product's own vocabulary, the bearing of a self-built modal, house ads under the same discipline, App Store Review Guideline 2.5.18, and the timing of the ATT prompt. Read when designing how ads look, present themselves, and pass review.
+- `references/engineering.md` — implementation. The SDK seam and the ordering that leaves production values last, deterministic tests via injected randomness, time, and scene transitions, the lesson of the foreground-resume false positive, and cross-promo probability mixing with three-tier fallback. Read when it is time to write the ad code.
 
-適用にあたって三つの姿勢を保つ。第一に、発火確率、停止時間、混合比率といった本文中の数値はすべて出典プロダクトの調整結果であって原則ではない。持ち帰るのは構造であり、数値は対象プロダクトで調整し直す定数として実装する。第二に、原則を対象プロダクトへ移すときは、その世界観の語彙で名付け直す。出典では予告画面を INTERMISSION と呼んだが、それは舞台の語彙を持つアプリだったからである。第三に、iOS と AdMob に固有の事項は本文でその旨を明示してあるので、他プラットフォームでは構造だけを移す。
+Keep three postures when applying these principles. First, numbers such as firing probability, suspension duration, and mixing ratio are the source product's tuning results, not principles; carry home the structure, and implement each number as a constant to be retuned for the target product. Second, when moving a principle into a target product, rename it in that product's own vocabulary; the source called its pre-ad notice INTERMISSION because it was an app built on stage vocabulary. Third, matters specific to iOS and AdMob are marked as such in the text, so on other platforms carry over only the structure.

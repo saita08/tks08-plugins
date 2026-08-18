@@ -1,31 +1,31 @@
-# 頻度 — 誰が広告を止めるのか
+# Frequency — Who Stops the Ads
 
-## 二つの思想
+## Two philosophies
 
-頻度制御には対等な二つの思想があり、どちらを選ぶかは設計判断である。
+Frequency control has two peer philosophies, and choosing between them is a design decision.
 
-一つは自動 capping である。セッションあたりの表示上限や最短表示間隔をアプリが持ち、アプリが利用者を広告から守る。業界標準であり、AdMob やメディエーション各社の管理画面が既定で提供する仕組みでもある。挙動が予測可能で、導線設計を誤っても高頻度事故が起きない安全側の方式である。
+One is auto-capping. The app holds a per-session impression limit and a minimum interval between impressions, and the app protects the user from its own ads. This is the industry standard, and it is what AdMob and the mediation platforms offer by default in their dashboards. Behavior is predictable, and a mistake in funnel design cannot produce a high-frequency accident; it is the safe-side choice.
 
-もう一つはユーザー主導方式である。クールダウンや間隔制御をアプリが持たず、発火は確率だけで決め、広告を減らす手段としてリワード動画の視聴を利用者に渡す。リワードを見れば一定時間すべての広告が止まり、静寂期間を利用者自身が作る。挙動が「確率」と「停止」の二つだけで説明でき、頻度の主導権がアプリから利用者へ移る。出典プロダクトはこちらを選んだ。
+The other is user-driven control. The app holds no cooldown and no interval; firing is decided by probability alone, and the means of reducing ads is handed to the user as rewarded video. Watching a reward stops every ad for a fixed period, so the user creates the quiet period themselves. Behavior becomes explainable with just two words, probability and suspension, and the initiative over frequency moves from the app to the user. The source product chose this side.
 
-重要なのは、選ばなかった方を欠落として扱わないことである。出典プロダクトに capping が無いのは実装漏れではなく、ADR に記録された設計判断である。「持たないこと」を決定として文書に残さなければ、将来の自分を含む後任が善意で capping を追加し、思想を静かに壊す。持たない設計を選んだら、持たないこと自体を記録する。
+What matters is refusing to treat the unchosen side as an omission. The source product has no capping, and that is not an implementation gap but a design decision recorded in an ADR. Unless not having something is itself written down as a decision, a successor, future self included, will add capping in good faith and quietly break the philosophy. When a design chooses not to have something, record the not-having.
 
-## ユーザー主導方式の成立条件
+## The conditions under which user-driven control holds
 
-この方式は、リワード導線が利用者に十分届いているときにだけ成立する。導線が届かなければ、利用者から見れば止める手段のないただの高頻度広告アプリになる。出典プロダクトは設定画面の常設ボタンに加え、インタースティシャル提示後に確率でリワードオファーを出す。オファーはスキップした人に限らず最後まで視聴した人にも出す。頻度制御の主役がリワードである以上、その存在は全員に届かなければならないからである。
+This philosophy holds only while the reward funnel actually reaches users. If the funnel does not reach them, the app is, from the user's seat, just a high-frequency ad app with no off switch. The source product keeps a permanent watch button in settings and additionally offers the reward by probability after an interstitial has shown. The offer goes to viewers who watched to the end, not only to those who skipped, because when the reward is the protagonist of frequency control its existence must reach everyone.
 
-## 思想を問わず守る下限
+## The floor both philosophies must respect
 
-どちらの思想を選んでも、一つの区切りで広告を複数連続表示してはならない。AdMob が明示的に禁止する配置であり、体験としても一回の中断が二回分の重さになる。ユーザー主導方式でも、同一の発火イベントから二枚目を出すことはしない。なお、コピー完了の直後に一覧へ戻る操作のような、隣接する別々の区切りで連続することは、ユーザー主導方式では起こりうる受容である。その受容ができないなら、それは capping を選ぶ理由になる。
+Whichever philosophy is chosen, never show more than one ad at a single break. AdMob explicitly forbids the placement, and as an experience one interruption comes to weigh as two. Even under user-driven control, never fire a second ad from the same triggering event. Ads may still run back to back across adjacent but distinct breaks, for example returning to a list right after completing a copy; that is an accepted outcome of the user-driven philosophy, and if it is not acceptable, that is a reason to choose capping.
 
-## 静寂期間と停止の単調合成
+## Quiet periods and monotonic suspension merging
 
-リワード視聴の効果は、全種類の広告を一定時間止めることに置く。出典では 6 時間に置いたが、これは調整可能な定数である。広告が止まれば広告後のリワードオファーも止まるので、静寂は広告の静寂であると同時に誘導の静寂でもある。止めた利用者は本当に静かな時間を得る。
+Set the effect of a rewarded view to stopping every kind of ad for a fixed period. The source set six hours, and the value is a tunable constant. When the ads stop, the post-ad reward offers stop with them, so the quiet is quiet from solicitation too. The user who chose to stop the ads gets genuinely quiet time.
 
-停止の合成は単調にする。新しい停止指定が既存の解除時刻より早い場合、停止を短縮しない。常に長い停止が勝つ。リワードの時限停止と広告除去 IAP の恒久停止のように停止源が複数あるとき、短い停止が長い停止を上書きして縮める事故は静かに起きて発見が遅い。単調性として実装すれば、これは一つの不変条件としてテストできる。
+Merge suspensions monotonically. When a new suspension would expire earlier than the one already in effect, do not shorten; the longer suspension always wins. With more than one suspension source, a timed reward suspension and a permanent remove-ads purchase for instance, the accident where a short suspension overwrites and shortens a long one happens silently and is found late. Implemented as monotonicity, it becomes a single invariant that tests can hold.
 
-## リワード経済の規律
+## The discipline of the reward economy
 
-報酬の内容は視聴前に明示する。「動画を見ると 6 時間広告が止まる」のように、利用者は何と引き換えに時間を差し出すのかを押す前に知る。付与は視聴完了時のみとし、SDK の完了通知を受けてから行う。途中離脱に与えれば報酬の意味が壊れ、視聴前に与えれば広告主への不正になる。
+State the reward before the view: watching this video stops ads for six hours, or whatever the product's terms are, so the user knows what they are trading their time for before they tap. Grant only on completed views, after the SDK's completion callback. Granting on abandonment destroys the meaning of the reward; granting before the view is fraud against the advertiser.
 
-広告除去 IAP は、リワードの上位互換として位置づける。静寂期間の恒久版、毎回のリワード視聴のスキップ権である。こう位置づけると、視聴という無料の手段と購入という有料の手段が同じ一本の線に乗り、利用者は自分の負担感に応じて選べる。リワードで広告の止まる体験を知った利用者ほど、その恒久化に価値を感じる。これは近年の設計トレンドとも一致する。
+Position the remove-ads purchase as the reward's superior form: the permanent version of the quiet period, a skip pass for every future rewarded view. Framed this way, the free path of watching and the paid path of purchasing lie on one line, and users choose by their own tolerance. Users who have felt ads stop through the reward are the ones who value making it permanent, which also matches where the industry has been heading.

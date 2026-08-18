@@ -1,37 +1,37 @@
-# 出しどき — 幕間にだけ出す
+# Timing — Only in the Intermission
 
-## 客前回避の絶対原則
+## The absolute rule: never in front of the audience
 
-利用者が道具本来の仕事をしている最中には、確率や頻度を問わず広告を出さない。広告体験の質を決めるのは総表示回数ではなく最悪の一回であり、作業中に出た一回は利用者にとっての事故になる。人前で使われる道具なら職業上の事故であり、そうでなくても集中の破壊は同じ重さを持つ。控えめな平均頻度は、この一回を正当化しない。
+Never show an ad while the user is doing the work the tool exists for, regardless of probability or frequency. What decides the quality of an ad experience is not the total number of impressions but the single worst one, and an ad shown mid-work is an accident from the user's point of view. In a tool used in front of other people it is a professional accident; even in private, broken concentration carries the same weight. A modest average frequency does not justify that one impression.
 
-「絶対」の意味は、確率を下げて守るのではなく構造で守るということである。作業中であるというだけで、抽選にすら進ませない。作業中に出る確率が 1% あるという状態は、原則を 99% 守っている状態ではなく、破っている状態である。
+Absolute means the rule is enforced by structure, not by lowering a probability. Being mid-work must by itself prevent the lottery from even running. A state where an ad can appear mid-work one percent of the time is not a state where the rule is 99 percent kept; it is a state where the rule is broken.
 
-この原則は、コンテンツの自然な区切りで表示せよという AdMob の natural break points の配置原則と整合する。独自の禁欲ではなく、プラットフォームの定石を厳格化したものと理解してよい。
+This rule is consistent with the placement principle AdMob recommends as natural break points, meaning ads shown at natural pauses in content. Understand it not as private asceticism but as a stricter form of the platform's own convention.
 
-## 発火可能ポイントの限定列挙
+## Enumerate the allowed moments, not the forbidden ones
 
-出してはならない瞬間を数え上げるのではなく、出してよい瞬間を数え上げる。禁止リストは新しい画面や操作が加わるたびに漏れるが、許可リストなら列挙にない瞬間は自動的に禁止に倒れる。安全側の既定は、原則を守る側に立てる。
+Count the moments where ads may appear rather than the moments where they must not. A blocklist leaks every time a new screen or operation is added, while under an allowlist any moment missing from the enumeration is forbidden by default. A safe default stands on the side of the rule.
 
-出してよい瞬間に共通するのは、利用者が作業を自分の意思で区切った直後だという点である。出典プロダクトでの列挙は、アプリのコールドスタート時、履歴の振り返り画面の開閉直後、設定画面の開閉直後、全消去の確認完了直後、エクスポート完了直後だった。作業を始める操作や作業中の任意の瞬間は、どれだけ発火機会として魅力的でも列挙に入れない。
+What the allowed moments share is that the user has just closed a unit of work by their own decision. In the source product the enumeration was: cold start of the app, immediately after opening or closing the history review screen, immediately after opening or closing settings, immediately after confirming a reset-all, and immediately after completing an export. Operations that begin work, and any moment during work, never enter the enumeration however attractive they look as inventory.
 
-新しい広告枠の提案が来たら、まずこの列挙と客前回避の原則に照らして判断する。列挙への追加は、ADR のような原則を記録した文書の更新としてしか行わない。将来の自分や後任が収益の誘惑に駆られたとき、この文書が歯止めになる。
+When a proposal for a new ad slot arrives, judge it first against this enumeration and the absolute rule. Additions happen only as updates to the document that records the rule, an ADR or its equivalent. When future maintainers, the original author included, are tempted by revenue, that document is the brake.
 
-## 二段ゲート
+## The two-stage gate
 
-すべての広告に先立つ共通ゲートを一つ置き、そこで二つの質問だけをする。利用者はいま作業中か。リワード視聴や広告除去 IAP によって広告は停止中か。どちらかが真なら、広告の種別も発火点も確率も見ずに弾く。
+Place one common gate ahead of every ad and ask only two questions there. Is the user mid-work right now? Are ads suspended, whether by a rewarded view or a remove-ads purchase? If either answer is yes, reject without looking at ad type, firing point, or probability.
 
-回避原則を発火点ごとの条件分岐に散らすと、発火点が増えるたびに書き漏らす。一箇所への集約は、原則の変更を一箇所の変更にし、原則が守られていることの検証を一箇所のテストにする。発火可能ポイントの限定列挙と合わせて二重の防御になる。発火点を客前でない場所に絞るのが結線レベルの防御、それでも到達した要求をゲートが弾くのが判定レベルの防御である。
+Scattering the avoidance rule across per-firing-point conditionals guarantees an omission as firing points multiply. Concentration in one place turns a change of the rule into a change in one place, and turns verifying the rule into one test. Together with the whitelist this forms a double defense: narrowing the firing points to non-work moments defends at the wiring level, and the gate rejecting whatever still arrives defends at the judgment level.
 
-## 初回セッションを守る
+## Protect the first session
 
-初回セッションとオンボーディング完了前には広告を出さない。まだプロダクトの価値を体験していない利用者への広告は、収益ではなく離脱を生む。無料+広告モデルの生命線は D1 リテンションであり、初日の広告収益はそれと引き換えにするには安すぎる。これは業界の定石であり、数回の使用後に解禁せよという後述の App Open Ads の公式推奨とも同じ理由に立つ。
+Show no ads during the first session or before onboarding completes. An ad shown to a user who has not yet experienced the product's value produces churn, not revenue. Day-one retention is the lifeline of a free-with-ads model, and first-day ad revenue is far too cheap a thing to trade it for. This is industry convention, and it stands on the same reasoning as the official App Open Ads recommendation described below, to unlock only after several uses.
 
-## 起動時に何を出すか — 二つの方式
+## What to show at launch — two approaches
 
-AdMob は起動時・終了時の標準インタースティシャルを禁止しており、アプリのロード中に被さる全画面広告は無効トラフィックとして扱われうる。起動時に広告枠を置くなら、方式は二つある。
+AdMob forbids standard interstitials at app launch and exit, and a full-screen ad overlapping the app's load can be treated as invalid traffic. If a launch ad slot is wanted, two approaches exist.
 
-一つは自作モーダルに静止画を収める方式である。形・内容・提示タイミングを完全に制御でき、ロード待ちなしに即時表示でき、プロダクトの世界観に統合でき、自社クロスプロモを同じ枠で混ぜられる。代償は、バナーのような標準フォーマットより単価の低い素材を使うことと、提示・閉じる操作・ラベルの規律を自分で守る責任を負うことである。この責任は `presentation.md` が扱う。
+One is a self-built modal holding a static image. It gives complete control of shape, content, and presentation timing, displays instantly without a load wait, integrates into the product's visual world, and lets house cross-promotion share the same slot. The costs are using inventory that pays less than the standard formats, banners for example, and carrying the responsibility for presentation, close affordances, and labeling yourself. That responsibility is covered in `presentation.md`.
 
-もう一つは App Open Ads である。起動・復帰専用に設計された公式フォーマットで、実装が軽く、単価も標準フォーマットとして立つ。Google の公式推奨は、初回起動からではなく利用者が数回アプリを使った後に解禁することであり、これは初回セッション保護と同じ理由に立つ。代償は、形式とタイミングの制御が SDK 側にあり、世界観への統合が効かないことである。
+The other is App Open Ads, the official format built for launch and resume. It is light to implement and earns standard-format rates. Google's official recommendation is to unlock it not from the first launch but after the user has used the app several times, which stands on the same reasoning as first-session protection. The cost is that format and timing belong to the SDK, so integration with the product's world is out of reach.
 
-どちらが正しいという話ではない。世界観の統制を優先するなら自作モーダル、収益効率と実装コストを優先するなら App Open Ads という設計判断であり、選んだ理由を記録する。出典プロダクトは抑制されたビジュアル言語に SDK 任せの全画面広告が同居できないと判断して前者を選んだ。
+Neither is the correct answer on its own. Choosing the self-built modal prioritizes control of the product's world; choosing App Open Ads prioritizes revenue efficiency and implementation cost. Record the reason for the choice. The source product judged that an SDK-controlled full-screen ad could not coexist with its restrained visual language, and chose the former.
