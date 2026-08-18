@@ -178,6 +178,11 @@
       "name": "pixie-dust",
       "source": "./plugins/pixie-dust",
       "description": "Sprinkle life into AI-generated SVG — characters, spinners, icons, blobs, and illustrations alike: asymmetric organic shapes, layered tinted shadows, anticipation, squash and stretch, follow-through, and designed easing, so the output stops looking machine-made."
+    },
+    {
+      "name": "makuai",
+      "source": "./plugins/makuai",
+      "description": "Product-agnostic principles for when and how a free app shows ads — never in front of the audience, whitelisted break points, two-stage gating, reward-driven quiet periods — distilled from a shipped iOS app's ADRs and checked against industry practice; Claude applies them when designing your next free tier."
     }
   ],
   "renames": {
