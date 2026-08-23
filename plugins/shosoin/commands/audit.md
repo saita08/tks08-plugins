@@ -29,7 +29,7 @@ Also check the structural health of the shelves themselves:
 - Does the same content appear on more than one shelf?
 - Are there orphan documents no index or page links to?
 - Does any durable shelf link into `notes/`? Does `notes/` hold durable knowledge, or notes whose task has visibly closed?
-- Does the project carry the auto-memory shut-off — `autoMemoryEnabled: false` plus the two shosoin hooks in `.claude/settings.json`, with their scripts present in `.claude/hooks/`? A missing or half-installed shut-off is a structural finding, and its installation enters the shelving plan like any other item.
+- Does the project carry the guarantees — `autoMemoryEnabled: false`, the `attribution` block, and the three shosoin hooks in `.claude/settings.json`, with their scripts present in `.claude/hooks/`? A missing or half-installed guarantee is a structural finding, and its installation enters the shelving plan like any other item.
 
 ## Step 3 — Report
 
@@ -37,6 +37,6 @@ Present, in this order: a one-screen map of the current structure with each docu
 
 ## Step 4 — Reorganize, only on approval
 
-Wait for the user's explicit approval of the plan, in whole or by item. Then execute the approved items as one coherent act: move files with `git mv` so history follows, perform splits and extractions, update every cross-link and index table in the same pass. A move that leaves a dangling link is not done. If the approved plan includes the auto-memory shut-off, install it exactly as `${CLAUDE_PLUGIN_ROOT}/skills/shelving-contract/references/templates.md` specifies — merging into any existing settings, never overwriting them. Finish by re-running the Step 2 health checks on the touched areas and summarizing what changed. Do not commit; the user reviews the working tree.
+Wait for the user's explicit approval of the plan, in whole or by item. Then execute the approved items as one coherent act: move files with `git mv` so history follows, perform splits and extractions, update every cross-link and index table in the same pass. A move that leaves a dangling link is not done. If the approved plan includes the guarantees, install them exactly as `${CLAUDE_PLUGIN_ROOT}/skills/shelving-contract/references/templates.md` specifies — merging into any existing settings, never overwriting them. Finish by re-running the Step 2 health checks on the touched areas and summarizing what changed. Do not commit; the user reviews the working tree.
 
 Where a finding's destination is genuinely ambiguous — content that answers two classification questions equally, or reads as both a value and a rule — put the question to the user rather than deciding silently. The librarian proposes shelving; it does not decide what the books mean.
