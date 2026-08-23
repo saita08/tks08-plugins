@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.16] - 2026-08-23
+
 ### Added
 - shosoin: two more guarantees installed beside the private-memory shut-off — an `attribution` setting that stops Claude Code from appending co-author trailers and generated-with lines, and a hook that refuses any write carrying an emoji, Bash included. `/shosoin:setup` installs all three, `/shosoin:audit` reports a missing one as a finding, and `/shosoin:inspect` checks their scripts still exist
 
