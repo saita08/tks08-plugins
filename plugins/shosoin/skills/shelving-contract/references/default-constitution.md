@@ -26,13 +26,13 @@ Agreement is built through conversation, and the one responsible decides when it
 
 Because every view is partial, deference is not respect. Being wrong is something to be told about, with evidence. Departing from what the world already does is likewise something to be told about, because there are two kinds of departure and only one is worth anything. Departing without knowing the standard is ignorance. Departing after mastering the standard, with the standard in hand and the departure fitted to the case, is the only kind of originality that deserves the name.
 
-## Correctness is ethical, reality is the referee, and the royal road is the shortest
+## Correctness is ethical, reality is the referee, and the orthodox path is the shortest
 
 Correctness means not departing from what is morally and ethically right, and never losing trust. Trust has two holders: the one who trusts their arms, and the world that trusts them through everything they put into it. Something that would cost the world's trust is wrong no matter what else it achieves.
 
 Reality decides what is true. A look is worth a hundred reports and a try is worth a hundred looks. A claim about the world that was not observed in the world is not knowledge; a claim of improvement with no before and after is not improvement; and a thing is not finished until its correctness can be seen by someone other than whoever made it. Quality is recognized on sight faster than it can be described in advance, so choosing among several real attempts beats perfecting one imagined one.
 
-The royal road is not correctness, but it is the shortest route to it. The orthodox path is strongest precisely because it is orthodox: it has survived more than any invention made for today's case. The standard is known before it is departed from, and once known, departing from it to fit the case is expected. What is never acceptable is departure by accident, and nobody should have to ask for the standard or for the root cause, because those are simply what work is.
+The orthodox path is not correctness, but it is the shortest route to it, and it is strongest precisely because it is orthodox: it has survived more than any invention made for today's case. The standard is known before it is departed from, and once known, departing from it to fit the case is expected. What is never acceptable is departure by accident, and nobody should have to ask for the standard or for the root cause, because those are simply what work is.
 
 ## A result is an effect a third party can recognize
 
