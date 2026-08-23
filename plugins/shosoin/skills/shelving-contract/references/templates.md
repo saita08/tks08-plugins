@@ -61,8 +61,9 @@ content is never written onto more than one shelf. When the structure changes,
 `docs/` moves with it and the ADR is written before the implementation lands.
 This file is the hardest shelf to enter: only values that ground judgment across
 situations live here; anything followable as written belongs in `docs/`.
-Claude's private auto-memory is disabled in this project — knowledge worth
-keeping goes onto a shelf teammates can read.
+Claude's private auto-memory is disabled in this project, attribution is left
+to git, and no file carries an emoji; these are guaranteed by settings and
+hooks in `.claude/`, not by this text.
 ```
 
 ## docs/README.md
@@ -160,25 +161,33 @@ Link the docs/ pages this decision shapes.>
 
 A bootstrap is itself two decisions, and they are recorded like any other: `0001-record-architecture-decisions.md` records the adoption of ADRs, and `0002-adopt-shelved-documentation.md` records the adoption of the documentation contract, both dated the day setup ran, with Alternatives Considered filled honestly (one document for everything; a wiki; doing nothing). Write them from the template above. A structure that preaches "record your decisions" but cannot show the record of its own adoption starts life in contradiction with itself.
 
-## The auto-memory shut-off
+## The guarantees
 
-Setup installs three layers into the project's `.claude/`, so the shut-off belongs to the project — it keeps working for every contributor and survives the plugin being disabled.
+Some of what a constitution used to ask for can be guaranteed by a setting or a hook, and what is guaranteed there leaves the text: a value that cannot be violated no longer needs to be stated, only understood. Setup installs three guarantees into the project's `.claude/`, so they belong to the project, keep working for every contributor, and survive the plugin being disabled.
 
-1. **The official switch.** Merge `"autoMemoryEnabled": false` into `.claude/settings.json`. This stops both the writing and the session-start loading of Claude's private memory, for everyone who works in the project.
-2. **The blocking hook.** Copy `${CLAUDE_PLUGIN_ROOT}/assets/hooks/shosoin-block-memory.sh` to `.claude/hooks/shosoin-block-memory.sh` and make it executable. It denies any Write, Edit, NotebookEdit, or Bash call that touches the memory directory — Bash included, because appending with `echo` or a heredoc is the path of least resistance. This layer covers the case where the official switch is overridden (the `CLAUDE_CODE_DISABLE_AUTO_MEMORY=0` environment variable forces memory on past settings).
-3. **The cleanup hook.** Copy `${CLAUDE_PLUGIN_ROOT}/assets/hooks/shosoin-clean-memory.sh` to `.claude/hooks/shosoin-clean-memory.sh` and make it executable. On every session start it deletes the project's memory directory, so anything written before the shut-off existed — or slipped past it — is gone by the next session. The slug derivation it relies on is an internal Claude Code convention; if that convention changes the script misses and deletes nothing, which is the safe direction.
+**Private memory stays closed.** Three layers, because the official switch can be overridden by the `CLAUDE_CODE_DISABLE_AUTO_MEMORY=0` environment variable.
+
+1. Merge `"autoMemoryEnabled": false` into `.claude/settings.json`. This stops both the writing and the session-start loading of Claude's private memory.
+2. Copy `${CLAUDE_PLUGIN_ROOT}/assets/hooks/shosoin-block-memory.sh` to `.claude/hooks/shosoin-block-memory.sh`, executable. It denies any Write, Edit, NotebookEdit, or Bash call that touches the memory directory; Bash included, because appending with `echo` or a heredoc is the path of least resistance.
+3. Copy `${CLAUDE_PLUGIN_ROOT}/assets/hooks/shosoin-clean-memory.sh` to `.claude/hooks/shosoin-clean-memory.sh`, executable. On every session start it deletes the project's memory directory, so anything written before the guarantee existed is gone by the next session. The slug derivation it relies on is an internal Claude Code convention; if that convention changes the script misses and deletes nothing, which is the safe direction.
+
+**Attribution stays accurate.** Merge `"attribution": {"commit": "", "pr": "", "sessionUrl": false}` into `.claude/settings.json`. Without it Claude Code appends a co-author trailer to commits and a generated-with line to pull request bodies, while a constitution asking for accurate attribution pulls the other way; the setting removes the injection at its source, so there is nothing left to ask.
+
+**No emoji reach a file.** Copy `${CLAUDE_PLUGIN_ROOT}/assets/hooks/shosoin-block-emoji.sh` to `.claude/hooks/shosoin-block-emoji.sh`, executable. It denies any Write, Edit, NotebookEdit, or Bash call whose text carries an emoji, in every file without exception. Escaped forms and data piped through from elsewhere pass; those are observed before they are chased.
 
 Merge into `.claude/settings.json` (create the file if absent; merge, never overwrite, if present):
 
 ```json
 {
   "autoMemoryEnabled": false,
+  "attribution": { "commit": "", "pr": "", "sessionUrl": false },
   "hooks": {
     "PreToolUse": [
       {
         "matcher": "Write|Edit|NotebookEdit|Bash",
         "hooks": [
-          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/shosoin-block-memory.sh" }
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/shosoin-block-memory.sh" },
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/shosoin-block-emoji.sh" }
         ]
       }
     ],
@@ -193,4 +202,4 @@ Merge into `.claude/settings.json` (create the file if absent; merge, never over
 }
 ```
 
-If `.claude/settings.json` already declares `hooks.PreToolUse` or `hooks.SessionStart` entries, append these hook groups to the existing arrays rather than replacing them, and leave every unrelated key untouched. Report the installation in the handover: the user should know their project now deletes private memory on every session start, and that removing the three pieces reverses it.
+If `.claude/settings.json` already declares `hooks.PreToolUse` or `hooks.SessionStart` entries, append these hook groups to the existing arrays rather than replacing them, and leave every unrelated key untouched. Report the installation in the handover: the user should know their project now deletes private memory on every session start, writes no attribution trailers, and refuses emoji in files, and that removing the pieces reverses each guarantee.

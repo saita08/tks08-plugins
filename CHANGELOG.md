@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.16] - 2026-08-23
+
+### Added
+- shosoin: two more guarantees installed beside the private-memory shut-off — an `attribution` setting that stops Claude Code from appending co-author trailers and generated-with lines, and a hook that refuses any write carrying an emoji, Bash included. `/shosoin:setup` installs all three, `/shosoin:audit` reports a missing one as a finding, and `/shosoin:inspect` checks their scripts still exist
+
+### Changed
+- shosoin: the bundled constitution seed is replaced by its 2026-08-23 revision — five values each carried with its reasoning, with no rules and no hard-constraints section, because what a setting or a hook guarantees is no longer asked for in the text
+
 ## [1.4.15] - 2026-08-19
 
 ### Added

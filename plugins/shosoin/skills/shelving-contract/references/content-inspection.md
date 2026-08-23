@@ -12,7 +12,7 @@ A staleness finding pairs the document's claim with the reality on disk: "the pa
 - Every index table row points to a file that exists, and every file in the directory appears in its index.
 - Code fences naming commands, scripts, or make targets correspond to things that exist in the repository's manifests.
 - No link from `docs/`, `adr/`, CLAUDE.md, or the README points into `notes/` — a durable shelf depending on a disposable one is a dead link that has not happened yet.
-- Where the project carries the auto-memory shut-off (`autoMemoryEnabled: false` plus the shosoin hooks in `.claude/settings.json`), the hook entries still point at scripts that exist and are executable. A shut-off whose scripts have gone missing protects nothing while looking installed.
+- Where the project carries the guarantees, `autoMemoryEnabled: false`, the `attribution` block, and the shosoin hooks in `.claude/settings.json`, the hook entries still point at scripts that exist and are executable. A guarantee whose script has gone missing protects nothing while looking installed.
 
 ## Per-shelf checks
 
