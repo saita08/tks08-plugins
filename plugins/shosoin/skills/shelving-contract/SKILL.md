@@ -11,7 +11,7 @@ A repository's written knowledge is split across five shelves plus one entrance.
 - `references/contract.md` — the contract itself: what each shelf holds, why the split exists, how the shelves are read selectively, and the operational discipline that keeps it alive. Read before auditing, reorganizing, or explaining the structure.
 - `references/placement-guide.md` — the placement procedure: how to classify a given document or piece of content, the common misplacements and their fixes, and what must not be moved. Read when deciding where something belongs.
 - `references/content-inspection.md` — the verification procedure: how to check a document's claims against the repository, per shelf, with the standard of evidence. Read when judging whether a document is still true rather than where it lives.
-- `references/templates.md` — skeletons for every entry-point file the structure needs, and the auto-memory shut-off setup installs. Read when creating missing pieces or bootstrapping a project.
+- `references/templates.md` — skeletons for every entry-point file the structure needs, and the guarantees setup installs. Read when creating missing pieces or bootstrapping a project.
 - `references/default-constitution.md` — the constitution seed setup plants as a project's CLAUDE.md when the owner has none of their own. Read only when generating a CLAUDE.md.
 
 The one rule that outranks all others: when knowledge is written onto two shelves, both copies become untrustworthy, because a reader can no longer tell which one moved with reality. Every placement decision serves that rule. Its sharpest corollary guards the constitution: CLAUDE.md is the hardest shelf to enter, and only knowledge every other shelf has refused may live there.

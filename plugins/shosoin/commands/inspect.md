@@ -16,7 +16,7 @@ Inventory the documents to inspect: the shelves' contents plus the root README a
 
 ## Step 2 — Mechanical pass
 
-Run the mechanical checks from the reference across the whole scope first: link resolution, index-to-disk correspondence, named commands against the manifests, no durable-shelf links into `notes/`, and — where the project carries the auto-memory shut-off — that its hook scripts still exist and are executable. These are cheap, objective, and often explain the deeper findings.
+Run the mechanical checks from the reference across the whole scope first: link resolution, index-to-disk correspondence, named commands against the manifests, no durable-shelf links into `notes/`, and — where the project carries the guarantees — that their hook scripts still exist and are executable. These are cheap, objective, and often explain the deeper findings.
 
 ## Step 3 — Claim verification
 
