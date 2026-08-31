@@ -74,3 +74,7 @@ Evaluate code against the following criteria. Listed in priority order.
 - Are console.warn and console.error used appropriately?
 - Are there unnecessary warnings on unreachable code?
 - Are appropriate notification mechanisms used where user notification is needed?
+
+## Language of the review
+
+Write the review files in the language the project's documentation uses. When that language is not English, keep terms of art in their original or katakana form (ブランチ, マージ, レビュー) and use everyday process words — 承認, never 批准 — because the report is edited in place across later passes and a calqued term written once survives them all.

@@ -14,6 +14,8 @@ A report card is only as trustworthy as the subjects it grades. A careless subje
 
 ## Writing a rubric that observes
 
+Everything written here — assignment, rubric, grader prompt, report — is written in the user's language, and when that language is not English, terms of art keep their original or katakana form and process words stay everyday (承認, never 批准). This matters doubly for the grader prompt: it is frozen at registration, so a calqued term written into it can never be corrected without discarding the subject's score history.
+
 A rubric is a set of criteria, each stating a specific checkable thing about the answer and what it is worth. The discipline is a single ban: no criterion may turn on a word like "good", "clear", "well-written", or "high-quality". Those words hand the grader a judgment call, and a judgment call is exactly the wobble the whole design fights to remove. Replace each with what it is standing in for.
 
 "The answer is well-structured" becomes "the answer addresses each of the three required parts in a separate section". "The code is good" becomes "the function handles the empty-input case and does not throw on it". "The explanation is clear" becomes "the explanation names the specific cause, not just the symptom". Each rewrite turns a feeling into something a grader can find present or absent by looking. A criterion two careful graders would score differently is not yet a criterion; it is a preference, and it belongs in the assignment as a requirement or nowhere.

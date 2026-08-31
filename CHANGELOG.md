@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - shosoin: `/shosoin:setup` now verifies its own build before handing over — the inspection's mechanical checks run on the structure it just created, so links resolve, indexes match the disk, and hook scripts are executable on day one
 
 ### Changed
+- ai-company-studio, baton, broad-review, claude-rpg, easter-egg, embassy, goal-architect, grimoire, handoff-bottle, lexicon, mission-control, new-toys, parallel-fix, sensei-notebook, shikigami, sketch-first, tengan, tsushinbo, veto-ledger: everything these plugins write in a language other than English — handoffs, ledgers, reports, briefings, commit messages, grader prompts — now keeps terms of art in their original or katakana form and uses everyday process words, so a Japanese run says 承認, never 批准. Each plugin carries the rule in the one file its own writing path actually reads
 - adr-keeper, constitution-gardener: ADRs and principle proposals written in a language other than English now keep terms of art in their original form or that language's usual transliteration and use everyday process words — and the prompts no longer speak of "ratification" or "decree", the words that came out as treaty language the moment a record was written
 - shosoin: everything the plugin writes or says in the project's language now keeps terms of art in their original form or that language's usual transliteration and uses everyday process words
 

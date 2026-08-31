@@ -20,3 +20,5 @@ The bundled spells:
 - `references/spells/deep-survey.md` — parallel investigation, deep reads, one synthesis; answer a broad question that no single agent can hold at once.
 
 The idea under all of it: a Workflow is code, so it is repeatable, resumable, and auditable in a way a conversation is not. The craft is in choosing the right barrier, wrapping the schema correctly, and keeping the script deterministic so a resume returns the same run.
+
+Reports of a cast and the prose of an inscribed spell — its when-to-use, its args documentation — are written in the user's language. When that language is not English, terms of art keep their original or katakana form and process words stay everyday (承認, never 批准); an inscribed spell is reread at every future cast, so its vocabulary outlives the session that wrote it.

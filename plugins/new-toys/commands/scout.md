@@ -59,6 +59,10 @@ own context and say where the feature applies to *them*:
 Then, per feature, write:
 
 - **What it is** — one line, in the user's own terms, not marketing copy.
+  When writing in a language other than English, keep Claude Code's terms of
+  art in their original or katakana form (フック, サブエージェント, MCP サーバー)
+  and use everyday process words — 承認, never 批准; a suggestion the user must
+  re-translate back into the docs' vocabulary is not a suggestion they can act on.
 - **あなたへの適用案 (how it applies to you)** — the concrete hook it could
   replace, the permission it could tighten, the plugin it pairs with, or the
   workflow it unblocks. If a feature genuinely does not fit this user's setup,

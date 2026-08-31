@@ -75,6 +75,7 @@ Easter eggs live and die by their humor. Keep these principles:
 - **Self-deprecating humor is safe**: Poking fun at your own code/product is universally charming
 - **Timing matters**: A joke during frustration (404 page, loading screen) has more impact than one during success
 - **Know the audience**: Developer jokes (segfault puns) for dev tools, universal humor (cute animals) for consumer apps
+- **Write jokes in the product's language, natively**: Humor written into a non-English codebase must read as a native speaker's wit, with terms of art kept in their original or katakana form — a joke that reads as machine translation is worse than no joke, because it sits in the product forever
 
 ## Quick Reference: Classic Easter Egg Elements
 

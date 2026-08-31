@@ -32,6 +32,7 @@ When you do not know the intent well enough to judge it, that gap is itself the 
 - Describe what is there, not how it feels. "The three cards have unequal vertical gaps, the second gap is roughly twice the first" beats "the spacing feels off".
 - Separate breakage from taste. A clipped label is breakage and you fix it. A color choice you find unappealing is taste and you return it to the user. Conflating the two either lets real bugs pass as opinion or imposes your aesthetic as if it were a bug.
 - When you fix and recapture, say what changed in the new image versus the old one, so the fix is verified by observation and not by assumption.
+- Write observations and the recipe file in the user's language. When that is not English, keep terms of art in their original or katakana form (ビューポート, レイアウト) and use everyday process words — 承認, never 批准.
 
 ## Where the judgment stops
 

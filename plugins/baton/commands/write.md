@@ -21,6 +21,8 @@ A baton is a fresh sheet each time, not a running log — the human reads the la
 
 Fill this template from the actual work just completed. Every step must be something the human can literally do — a command they can paste, a URL they can open, a screen they can look at. Vague instructions ("check it works") defeat the purpose; the baton exists to remove the guesswork the human would otherwise have to supply.
 
+Write the filled sections in the language the conversation was held in. When that is not English, keep terms of art in their original or katakana form (コミット, デプロイ, マージ) and use everyday process words — 承認, never 批准 — so the sheet reads like something a colleague wrote, not a translation.
+
 ```markdown
 # バトン: <一行で、何を検証してほしいか>
 
