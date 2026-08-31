@@ -33,9 +33,11 @@ mistake when it was actually a considered tradeoff.>
 
 ## How to fill each section well
 
+Write the record in the language the project's documents are written in. When that language is not English, keep terms of art in their original or katakana form and use everyday process words — 承認, never 批准 — because a record is the style example every later record copies, and a calqued term planted here compounds through the whole archive.
+
 **Title.** State the decision, not the topic. "Use one feature per PR" beats "PR policy". A reader scanning titles should see the decisions, not the subjects.
 
-**Status.** `Accepted` for a decision actually made and agreed. `Proposed` if it still awaits the user's ratification — and say so to the user. When a new record replaces an old one, set the old one to `Superseded by NNNN` and reference the old number from the new record's Status. This two-way link is what keeps a reader from acting on a decision that has been overtaken.
+**Status.** `Accepted` for a decision actually made and agreed. `Proposed` if it still awaits the user's approval — and say so to the user. When a new record replaces an old one, set the old one to `Superseded by NNNN` and reference the old number from the new record's Status. This two-way link is what keeps a reader from acting on a decision that has been overtaken.
 
 **Context.** This is the load-bearing section. It carries the *why*, and the why is the only part of a decision that does not survive in the code on its own. Write the forces and constraints as they were at the time. Do not write the solution here — that is the Decision. A good Context makes the Decision feel almost inevitable, and lets a future reader judge whether the forces still apply.
 

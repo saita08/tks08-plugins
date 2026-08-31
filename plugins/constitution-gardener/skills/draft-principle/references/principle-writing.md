@@ -24,12 +24,12 @@ A well-formed principle has three moving parts:
 
 ## Write in the constitution's voice
 
-The proposed text will live next to principles the user already wrote. It should read as though it belongs there: the same register, the same "explanation of why this matters" stance rather than a terse rule list. When drafting, match the prose of the target `CLAUDE.md` if its style is known. New content that is stylistically indistinguishable from what surrounds it is what keeps a constitution coherent as it grows.
+The proposed text will live next to principles the user already wrote. It should read as though it belongs there: the same register, the same "explanation of why this matters" stance rather than a terse rule list. When drafting, match the prose of the target `CLAUDE.md` if its style is known — including its language: draft in the language the target document is written in, and when that language is not English, keep terms of art in their original or katakana form and use everyday process words (承認, never 批准), because a calqued term reads as machine translation and a constitution must read as its owner's own writing. New content that is stylistically indistinguishable from what surrounds it is what keeps a constitution coherent as it grows.
 
 ## State the principle so examples are unnecessary
 
 A concrete example invites the reader to treat the listed case as the definition and miss the principle when reality does not match the list. State the value clearly enough that an example is not needed to understand it. If one genuinely helps, frame it explicitly as an illustration of the principle, never as a substitute for stating it.
 
-## The proposal is a draft, not a decree
+## The proposal is a draft, not a decision already made
 
-Everything here produces a draft for the user to ratify. The user may sharpen the value, reject the framing, or decide the friction was situational and not worth a principle at all. Draft it as well as if it were final, and hand it over as if it were provisional — because it is. The gardener's authority ends at the proposal; the constitution's authorship stays with the user.
+Everything here produces a draft for the user to approve. The user may sharpen the value, reject the framing, or decide the friction was situational and not worth a principle at all. Draft it as well as if it were final, and hand it over as if it were provisional — because it is. The gardener's authority ends at the proposal; the constitution's authorship stays with the user.

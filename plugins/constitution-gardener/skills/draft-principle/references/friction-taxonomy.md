@@ -34,7 +34,7 @@ Route to the **personal `~/.claude/CLAUDE.md`** when the friction concerns how C
 
 Route to a **project's `CLAUDE.md`** when the friction concerns a convention, constraint, or fact local to one project. Signals: every event in the cluster comes from the same project; the correction is about that project's stack, layout, naming, or house rules; the value would be wrong or meaningless in a different project.
 
-When a cluster genuinely straddles both — a general value that also has a project-specific expression — say so in the proposal and let the user decide the split. The routing is a recommendation the user ratifies, not a verdict. When the evidence is ambiguous, prefer the project home for anything that smells project-specific and the personal home only for what is clearly general; a false-general principle pollutes every future session, while a false-local one is merely underused.
+When a cluster genuinely straddles both — a general value that also has a project-specific expression — say so in the proposal and let the user decide the split. The routing is a recommendation the user accepts or overrides, not a verdict. When the evidence is ambiguous, prefer the project home for anything that smells project-specific and the personal home only for what is clearly general; a false-general principle pollutes every future session, while a false-local one is merely underused.
 
 ## The consumers of this taxonomy
 
