@@ -44,9 +44,13 @@ A note is trustworthy only while its task is. For each file, judge from the repo
 
 Quickstart commands exist and match the manifests. The documentation map's links resolve. The project description does not promise features the repository visibly lacks.
 
+## The language check, on project-language documents
+
+Where the documentation language is not English, check each document's vocabulary against the contract's language rule: terms of art in their original or katakana form, process words as everyday words. A term of art translated into a literary calque — 批准 where the project's readers would say 承認, 枝 where they would say ブランチ — is a finding, because later documents copy the collection's existing records as house style and the drift compounds with each one written. Report the word, where it appears, and the ordinary form; the fix is a word substitution and rides with the mechanical fixes. Flag only vocabulary the project's own readers would not use — never sentence style, and never the project's genuine domain terms.
+
 ## What inspection does not judge
 
-Whether the prose is well written, whether the design described is good, and whether a decision was wise. Inspection verifies correspondence with reality, not quality of thought. A wrong-headed ADR that accurately records its wrong-headed reasoning is a healthy record.
+Whether the prose is well written, whether the design described is good, and whether a decision was wise. Inspection verifies correspondence with reality, not quality of thought. A wrong-headed ADR that accurately records its wrong-headed reasoning is a healthy record. The language check above is the one vocabulary-shaped exception, and it reaches only translated terms of art, not writing.
 
 ## Fixing
 

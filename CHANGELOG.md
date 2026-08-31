@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- shosoin: a language check — in projects documented in a language other than English, `/shosoin:inspect` flags terms of art translated into literary calques (批准 for approval, 枝 for branch) with the ordinary form proposed as a fix, and `/shosoin:setup` proofreads the documents it writes against the same rule before handing over, because the first records planted become the style examples every later document copies
+- shosoin: `/shosoin:setup` now verifies its own build before handing over — the inspection's mechanical checks run on the structure it just created, so links resolve, indexes match the disk, and hook scripts are executable on day one
+
+### Changed
+- shosoin: everything the plugin writes or says in the project's language now keeps terms of art in their original or katakana form and uses everyday process words — 承認, never 批准
+
 ## [1.4.16] - 2026-08-23
 
 ### Added
