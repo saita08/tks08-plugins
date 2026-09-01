@@ -24,7 +24,7 @@ A well-formed principle has three moving parts:
 
 ## Write in the constitution's voice
 
-The proposed text will live next to principles the user already wrote. It should read as though it belongs there: the same register, the same "explanation of why this matters" stance rather than a terse rule list. When drafting, match the prose of the target `CLAUDE.md` if its style is known — including its language: draft in the language the target document is written in, and when that language is not English, keep terms of art in their original or katakana form and use everyday process words (承認, never 批准), because a calqued term reads as machine translation and a constitution must read as its owner's own writing. New content that is stylistically indistinguishable from what surrounds it is what keeps a constitution coherent as it grows.
+The proposed text will live next to principles the user already wrote. It should read as though it belongs there: the same register, the same "explanation of why this matters" stance rather than a terse rule list. When drafting, match the prose of the target `CLAUDE.md` if its style is known — including its language: draft in the language the target document is written in, and when that language is not English, keep terms of art in their original form or that language's usual transliteration and use everyday process words, because a calqued term reads as machine translation and a constitution must read as its owner's own writing. New content that is stylistically indistinguishable from what surrounds it is what keeps a constitution coherent as it grows.
 
 ## State the principle so examples are unnecessary
 
