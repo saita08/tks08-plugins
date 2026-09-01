@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - shosoin: `/shosoin:setup` now verifies its own build before handing over — the inspection's mechanical checks run on the structure it just created, so links resolve, indexes match the disk, and hook scripts are executable on day one
 
 ### Changed
-- shosoin: everything the plugin writes or says in the project's language now keeps terms of art in their original or katakana form and uses everyday process words — 承認, never 批准
+- shosoin: everything the plugin writes or says in the project's language now keeps terms of art in their original form or that language's usual transliteration and uses everyday process words
 
 ## [1.4.16] - 2026-08-23
 
