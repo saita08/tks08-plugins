@@ -50,7 +50,7 @@ The project's face for someone who just arrived: what this is, why it exists, th
 
 ## The language of the shelves
 
-Documents are written in the project's documentation language; CLAUDE.md alone is written in English, for the economy its shelf states. When that language is not English, terms of art keep their original form or its katakana rendering, and process words stay everyday words — for a Japanese project, approval is 承認 not 批准, a branch is ブランチ not 枝. A term of art translated into a literary calque reads as machine output, and a document that reads machine-made loses the reader's trust before its content is weighed. This rule governs conversation held under the contract as much as the files it produces, and it weighs heaviest on the first records a structure receives: later documents copy them as house style, so a calque planted at setup compounds with every record written after it.
+Documents are written in the project's documentation language; CLAUDE.md alone is written in English, for the economy its shelf states. When that language is not English, terms of art keep their original form or that language's usual transliteration, and process words stay everyday words. A term of art translated into a literary calque reads as machine output, and a document that reads machine-made loses the reader's trust before its content is weighed. This rule governs conversation held under the contract as much as the files it produces, and it weighs heaviest on the first records a structure receives: later documents copy them as house style, so a calque planted at setup compounds with every record written after it.
 
 ## Reading is half the contract
 

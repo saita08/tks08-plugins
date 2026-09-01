@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- shosoin: a language check — in projects documented in a language other than English, `/shosoin:inspect` flags terms of art translated into literary calques (批准 for approval, 枝 for branch) with the ordinary form proposed as a fix, and `/shosoin:setup` proofreads the documents it writes against the same rule before handing over, because the first records planted become the style examples every later document copies
+- shosoin: a language check — in projects documented in a language other than English, `/shosoin:inspect` flags terms of art translated into literary calques, with the ordinary form proposed as a fix, and `/shosoin:setup` proofreads the documents it writes against the same rule before handing over, because the first records planted become the style examples every later document copies
 - shosoin: `/shosoin:setup` now verifies its own build before handing over — the inspection's mechanical checks run on the structure it just created, so links resolve, indexes match the disk, and hook scripts are executable on day one
 
 ### Changed
