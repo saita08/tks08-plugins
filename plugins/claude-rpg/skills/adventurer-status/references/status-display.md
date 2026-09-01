@@ -44,8 +44,8 @@ Show, in this order:
 Celebratory but never inflating. The numbers are already impressive on their
 own; the job is to frame them as feats, not to exaggerate them. The RPG flavor
 lives in the framing, not the vocabulary: technical terms stay in their original
-or katakana form (セッション, コミット, エージェント), and process words stay
-everyday — 承認, never 批准. If the record
+form or that language's usual transliteration, and process words stay
+everyday. If the record
 is thin (a brand-new install), say so warmly — the adventure is just starting —
 rather than dressing up an empty log.
 

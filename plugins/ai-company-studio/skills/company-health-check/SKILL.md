@@ -156,7 +156,7 @@ Assess whether the company shows signs it needs to evolve.
 
 ## Output Format
 
-Generate the report in the user's preferred language (match the language of CLAUDE.md or COMPANY.md). When that language is not English, keep terms of art in their original or katakana form and use everyday process words — 承認, never 批准.
+Generate the report in the user's preferred language (match the language of CLAUDE.md or COMPANY.md). When that language is not English, keep terms of art in their original form or that language's usual transliteration and use everyday process words.
 
 Write the report to `docs/health-check-{YYYY-MM-DD}.md` with this structure:
 

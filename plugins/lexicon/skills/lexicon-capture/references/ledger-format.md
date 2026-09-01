@@ -30,7 +30,7 @@ Three columns, always in this order:
 - **Meaning** — one line, the agreed sense in the user's intent. Not a dictionary definition; the meaning *this project* settled on.
 - **Agreed in the context of** — one short line recording what was happening when the agreement was made. This is what lets a future reader judge whether the agreement still applies.
 
-Write the meaning and context in the language the agreement was reached in — a term agreed in Japanese gets a Japanese row, whatever language the example above uses. Terms of art keep their original or katakana form, and process words stay everyday (承認, never 批准); the glossary is replayed into every future session, so its own vocabulary sets the tone for all of them.
+Write the meaning and context in the language the agreement was reached in — a term agreed in another language gets its row in that language, whatever language the example above uses. Terms of art keep their original form or that language's usual transliteration, and process words stay everyday; the glossary is replayed into every future session, so its own vocabulary sets the tone for all of them.
 
 ## Appending a row
 

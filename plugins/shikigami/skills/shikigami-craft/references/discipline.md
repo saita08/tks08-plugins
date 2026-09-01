@@ -20,7 +20,7 @@ Every firing writes a report, without exception. This is not bookkeeping; it is 
 
 So even a firing that found nothing writes that it ran and found nothing. Silence in the report file must always mean the familiar did not fire, never that it fired and chose not to say. The report is appended, dated, never overwritten, so the history of a familiar's service accumulates where the master already looks for it.
 
-The report is written in the master's language. When that language is not English, terms of art keep their original or katakana form and process words stay everyday — 承認, never 批准 — because a report full of calqued vocabulary reads as machine output, and each report teaches the next firing how to write.
+The report is written in the master's language. When that language is not English, terms of art keep their original form or that language's usual transliteration and process words stay everyday, because a report full of calqued vocabulary reads as machine output, and each report teaches the next firing how to write.
 
 ## A shikigami can be dismissed at any moment
 

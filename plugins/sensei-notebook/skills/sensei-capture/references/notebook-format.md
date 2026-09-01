@@ -37,7 +37,7 @@ The YAML frontmatter (`plugin: sensei-notebook`) follows the `.claude/<plugin>.l
 - **Answer gist** — a short bullet list of the key points. Distill; do not transcribe. Three or four bullets that carry the understanding beat a paragraph that reproduces the conversation.
 - **Date** — an italic `_YYYY-MM-DD_` line closing the entry, recording when it was captured.
 
-Write entries in the language the question was asked in — a question asked in Japanese is captured in Japanese, whatever language the example above happens to use. Terms of art keep their original or katakana form, and process words stay everyday (承認, never 批准); the notebook must read like the user's own study notes, not a translation.
+Write entries in the language the question was asked in — a question asked in another language is captured in that language, whatever language the example above happens to use. Terms of art keep their original form or that language's usual transliteration, and process words stay everyday; the notebook must read like the user's own study notes, not a translation.
 
 ## Appending an entry
 

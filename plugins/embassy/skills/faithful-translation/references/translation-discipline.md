@@ -26,7 +26,7 @@ Whenever a hard limit forces content out — step 4, and sometimes step 3 — th
 
 ## The artifact keeps the source's language
 
-The translated document stays in the natural language of the source constitution — a Japanese CLAUDE.md yields a Japanese paste file, whatever language this conversation is held in; only the chat report follows the conversation. And in any language other than English, terms of art keep their original or katakana form and process words stay everyday (承認, never 批准): a constitution that reads as machine translation loses its authority before its content is weighed.
+The translated document stays in the natural language of the source constitution — a CLAUDE.md written in another language yields a paste file in that language, whatever language this conversation is held in; only the chat report follows the conversation. And in any language other than English, terms of art keep their original form or that language's usual transliteration and process words stay everyday: a constitution that reads as machine translation loses its authority before its content is weighed.
 
 ## The test for any translated principle
 
