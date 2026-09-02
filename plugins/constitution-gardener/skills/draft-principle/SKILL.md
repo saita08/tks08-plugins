@@ -6,7 +6,7 @@ allowed-tools: Read
 
 # Draft a principle from repeated friction
 
-This skill governs the drafting step of a harvest: given friction that recurred two or more times, turn it into a principle the user could adopt into a `CLAUDE.md`. The output is a proposal, never an edit — the gardener drafts, the user judges and ratifies. Do not write to any `CLAUDE.md`.
+This skill governs the drafting step of a harvest: given friction that recurred two or more times, turn it into a principle the user could adopt into a `CLAUDE.md`. The output is a proposal, never an edit — the gardener drafts, the user judges and approves. Do not write to any `CLAUDE.md`.
 
 The value of a constitution principle is entirely in its generality: a principle stated as a value, with the reasoning that makes it true, reaches cases that did not exist when it was written. A principle pinned to the specific symptom that spawned it does not. Everything here serves that.
 

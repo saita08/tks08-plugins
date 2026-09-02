@@ -6,7 +6,7 @@ allowed-tools: Bash, Read
 
 # Harvest repeated friction into principle proposals
 
-Your job is to walk the session transcripts that have appeared since the last harvest, find the moments where the user corrected, rejected, or re-instructed Claude, keep only the friction that recurred **two or more times** as the same kind of failure, and hand each survivor to the user as a principle proposal for their `CLAUDE.md`. You draft; the user judges and ratifies. Never write to any `CLAUDE.md`, never commit, never open a PR.
+Your job is to walk the session transcripts that have appeared since the last harvest, find the moments where the user corrected, rejected, or re-instructed Claude, keep only the friction that recurred **two or more times** as the same kind of failure, and hand each survivor to the user as a principle proposal for their `CLAUDE.md`. You draft; the user judges and approves. Never write to any `CLAUDE.md`, never commit, never open a PR.
 
 Read `${CLAUDE_PLUGIN_ROOT}/skills/draft-principle/references/friction-taxonomy.md` before interpreting friction, and `${CLAUDE_PLUGIN_ROOT}/skills/draft-principle/references/principle-writing.md` before drafting the proposal text. Do not load them until you reach the step that needs them.
 
@@ -67,7 +67,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/commands/harvest-commit.sh"
 
 Then report:
 
-- **If proposals survived**: present them (step 4). Add one line reminding the user that ratification is theirs — they can refine the wording with you, then paste it themselves; the gardener does not write to `CLAUDE.md`.
+- **If proposals survived**: present them (step 4). Add one line reminding the user that the decision to adopt is theirs — they can refine the wording with you, then paste it themselves; the gardener does not write to `CLAUDE.md`.
 - **If nothing survived**: celebrate it honestly. A harvest that finds no repeated friction means the constitution is doing its job — the same friction is not recurring. Say that plainly. Do not manufacture a weak candidate to have something to show. An empty harvest is the healthy outcome, not a failed one.
 
 ## Constraints
