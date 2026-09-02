@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.18] - 2026-09-03
+
+### Changed
+- README: the repository is now a mirror synced from a private workspace; the Contributing section explains that pull requests opened here are reapplied in the workspace and ship with the next release, with a reply on the PR pointing at that release
+
 ## [1.4.17] - 2026-09-02
 
 ### Added
