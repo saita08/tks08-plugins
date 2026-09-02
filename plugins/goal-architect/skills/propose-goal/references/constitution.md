@@ -30,6 +30,8 @@ The boundary between the phases is what prevents `/goal` from declaring victory 
 
 The single property that makes a condition usable is that it can be judged by reading the conversation alone. Every other quality follows from this one.
 
+Write the condition in the language the user speaks, since the transcript it will be judged against is in that language. When that is not English, keep terms of art in their original form or that language's usual transliteration and use everyday process words — the evaluator reads the condition literally, and a calqued term it cannot match against the transcript is a condition that never comes true.
+
 A condition that names a measurable artifact passes the test. "All tests in `test/auth` pass" is verifiable because Claude runs the tests and the result appears in the transcript. "The migration script exits 0 and `git status` is clean afterward" is verifiable for the same reason.
 
 A condition that names an unobservable state fails. "The code is clean" cannot be judged because cleanliness is not surfaced. "The user is satisfied" cannot be judged because the user is not the evaluator. "The bug is fixed" can be judged only if "fixed" has been operationalized as something the transcript shows, such as a passing reproduction test.

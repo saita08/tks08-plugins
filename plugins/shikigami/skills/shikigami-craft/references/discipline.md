@@ -20,6 +20,8 @@ Every firing writes a report, without exception. This is not bookkeeping; it is 
 
 So even a firing that found nothing writes that it ran and found nothing. Silence in the report file must always mean the familiar did not fire, never that it fired and chose not to say. The report is appended, dated, never overwritten, so the history of a familiar's service accumulates where the master already looks for it.
 
+The report is written in the master's language. When that language is not English, terms of art keep their original form or that language's usual transliteration and process words stay everyday, because a report full of calqued vocabulary reads as machine output, and each report teaches the next firing how to write.
+
 ## A shikigami can be dismissed at any moment
 
 A familiar serves at its master's pleasure and can be released the instant it is no longer wanted, with no ceremony and no resistance. Dismissal removes it from the scheduler so it stops firing and strikes it from the register so it stops being counted. That the master can always do this cheaply is part of why summoning one is safe: nothing conjured here is a commitment that cannot be undone.

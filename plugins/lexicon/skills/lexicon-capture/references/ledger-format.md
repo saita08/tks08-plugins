@@ -30,6 +30,8 @@ Three columns, always in this order:
 - **Meaning** — one line, the agreed sense in the user's intent. Not a dictionary definition; the meaning *this project* settled on.
 - **Agreed in the context of** — one short line recording what was happening when the agreement was made. This is what lets a future reader judge whether the agreement still applies.
 
+Write the meaning and context in the language the agreement was reached in — a term agreed in another language gets its row in that language, whatever language the example above uses. Terms of art keep their original form or that language's usual transliteration, and process words stay everyday; the glossary is replayed into every future session, so its own vocabulary sets the tone for all of them.
+
 ## Appending a row
 
 New rows go at the **bottom** of the table. The injection hook keeps the most recent N rows when the table grows long, and "most recent" means the tail, so appending at the bottom is what keeps the freshest agreements in view.

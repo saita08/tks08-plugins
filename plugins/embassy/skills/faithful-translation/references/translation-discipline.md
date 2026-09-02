@@ -24,6 +24,10 @@ Relieve length pressure in this order, stopping as soon as the translation fits:
 
 Whenever a hard limit forces content out — step 4, and sometimes step 3 — the loss must be visible. The user is owed a plain statement of which principles were dropped or which reasoning was stripped, and why (the target's limit). This turns a silent degradation into a decision the user can act on: re-target to a service with more room, shorten the source themselves, split the institution across a service's multiple fields, or accept the loss knowingly. A translation that quietly drops a third of the constitution and presents the rest as complete has lied about what it delivered.
 
+## The artifact keeps the source's language
+
+The translated document stays in the natural language of the source constitution — a CLAUDE.md written in another language yields a paste file in that language, whatever language this conversation is held in; only the chat report follows the conversation. And in any language other than English, terms of art keep their original form or that language's usual transliteration and process words stay everyday: a constitution that reads as machine translation loses its authority before its content is weighed.
+
 ## The test for any translated principle
 
 Read the translated line and ask: does this still tell the reader *how to behave in a case I did not list here*? If yes, the principle survived translation. If it only tells them how to behave in the specific cases named, it has decayed into an example-list and must be restated as a value or cut outright. The length was never the substance; the generality was.

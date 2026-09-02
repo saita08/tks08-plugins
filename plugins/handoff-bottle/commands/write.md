@@ -10,7 +10,7 @@ Capture the current state of the work into a bottle so a future session — whic
 
 ## What goes in a bottle
 
-Fill this template from the actual work in this session. Do not invent detail; if a field has nothing real to say, write a short honest line rather than padding it.
+Fill this template from the actual work in this session. Do not invent detail; if a field has nothing real to say, write a short honest line rather than padding it. Write in the language the conversation was held in; when that is not English, keep terms of art in their original form or that language's usual transliteration and use everyday process words — so the stranger who opens the bottle reads a colleague's note, not a translation.
 
 ```markdown
 ## 瓶 <YYYY-MM-DD HH:MM>

@@ -1,7 +1,7 @@
 {
   "name": "sensei-notebook",
   "description": "Turn the conceptual explanations you were satisfied with into a Q&A notebook, so the next question in that area builds on the answer that already landed instead of starting over.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "tks08"
   }

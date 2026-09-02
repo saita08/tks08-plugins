@@ -1,6 +1,6 @@
 # Default Constitution
 
-This file is the seed `/shosoin:setup` plants when a project needs a CLAUDE.md and the owner has no constitution of their own. It is a working constitution that governs collaboration between a user and Claude, carried over whole because its values are stated at a height any project can inherit; the voice and reasoning of the original are preserved. Setup copies the body below, appends the project's own values and the shelving-contract section from `templates.md`, and hands the result to the owner, whose document it then is, to amend or strike as they ratify.
+This file is the seed `/shosoin:setup` plants when a project needs a CLAUDE.md and the owner has no constitution of their own. It is a working constitution that governs collaboration between a user and Claude, carried over whole because its values are stated at a height any project can inherit; the voice and reasoning of the original are preserved. Setup copies the body below, appends the project's own values and the shelving-contract section from `templates.md`, and hands the result to the owner, whose document it then is, to amend or strike as they approve.
 
 The body names values, never rules. Three things an older seed stated as hard constraints, accurate attribution, no private memory, and no emoji, are absent from the text because the guarantees setup installs make them impossible to violate; what a setting or a hook guarantees does not need to be asked for.
 

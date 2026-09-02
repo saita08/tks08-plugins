@@ -16,7 +16,7 @@ Inventory the documents to inspect: the shelves' contents plus the root README a
 
 ## Step 2 — Mechanical pass
 
-Run the mechanical checks from the reference across the whole scope first: link resolution, index-to-disk correspondence, named commands against the manifests, no durable-shelf links into `notes/`, and — where the project carries the guarantees — that their hook scripts still exist and are executable. These are cheap, objective, and often explain the deeper findings.
+Run the mechanical checks from the reference across the whole scope first: link resolution, index-to-disk correspondence, named commands against the manifests, no durable-shelf links into `notes/`, and — where the project carries the guarantees — that their hook scripts still exist and are executable. Where the documentation language is not English, run the reference's language check in the same pass: terms of art translated into literary calques are findings, reported with the ordinary form to substitute. These are cheap, objective, and often explain the deeper findings.
 
 ## Step 3 — Claim verification
 
@@ -28,4 +28,4 @@ Present the findings most damaging first: documents whose staleness would active
 
 ## Step 5 — Fix, only on approval
 
-Offer the mechanical fixes — dead links, renamed paths, index rows, supersede back-links — as an approvable list, and execute only what the user approves, updating each affected index and cross-link in the same act. Notes whose task has closed are offered as promote-or-delete decisions, never resolved silently. Substantive rewrites are never performed silently: propose them as writing work, because closing a staleness finding by inventing content replaces stale truth with fresh fiction. Do not commit; the user reviews the working tree.
+Offer the mechanical fixes — dead links, renamed paths, index rows, supersede back-links, calque-to-ordinary word substitutions — as an approvable list, and execute only what the user approves, updating each affected index and cross-link in the same act. Notes whose task has closed are offered as promote-or-delete decisions, never resolved silently. Substantive rewrites are never performed silently: propose them as writing work, because closing a staleness finding by inventing content replaces stale truth with fresh fiction. Do not commit; the user reviews the working tree.

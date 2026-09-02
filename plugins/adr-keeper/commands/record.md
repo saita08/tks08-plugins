@@ -36,7 +36,7 @@ Fill the standard sections — Status, Context, Decision, Consequences — follo
 
 Draw the content from what was actually decided and discussed in this session. Do not invent rationale the conversation did not contain; if a section's material is thin, say what is known and leave it honest rather than padding it.
 
-Set `Status: Accepted` for a decision that was actually made and agreed. If it is still proposed and awaiting the user's ratification, use `Status: Proposed` and tell the user it needs their acceptance.
+Set `Status: Accepted` for a decision that was actually made and agreed. If it is still proposed and awaiting the user's approval, use `Status: Proposed` and tell the user it needs their acceptance.
 
 ### 4. Confirm and point
 

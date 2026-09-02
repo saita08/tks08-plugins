@@ -68,7 +68,9 @@ commenting, or re-running of workflows.
 
 ## 4. Assemble one briefing
 
-Write a single, scannable briefing in the user's language. Lead with what needs
+Write a single, scannable briefing in the user's language, keeping terms of art
+in their original form or that language's usual transliteration and process words
+everyday. Lead with what needs
 attention, not with a repo-by-repo data dump. A workable shape:
 
 - A one-line headline: the total counts that matter (stalled PRs, red CI,
