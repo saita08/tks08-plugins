@@ -1,7 +1,7 @@
 {
   "name": "shosoin",
   "description": "Shelve every document into its proper home — CLAUDE.md, README, docs/, adr/, references/, notes/ — inspect each one's content against reality, and reorganize on approval or bootstrap the structure, constitution seed and the guarantees that close private memory, keep attribution accurate, and keep emoji out of files included, in a new project.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "tks08"
   }

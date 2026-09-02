@@ -48,6 +48,10 @@ Because everything here is destined to disappear, the durable shelves never link
 
 The project's face for someone who just arrived: what this is, why it exists, the one-paragraph shape of how it works, and the map of the shelves with links into each. Quickstart commands may appear here; full procedures live in `docs/`. The README points inward; it does not duplicate what the shelves hold.
 
+## The language of the shelves
+
+Documents are written in the project's documentation language; CLAUDE.md alone is written in English, for the economy its shelf states. When that language is not English, terms of art keep their original form or that language's usual transliteration, and process words stay everyday words. A term of art translated into a literary calque reads as machine output, and a document that reads machine-made loses the reader's trust before its content is weighed. This rule governs conversation held under the contract as much as the files it produces, and it weighs heaviest on the first records a structure receives: later documents copy them as house style, so a calque planted at setup compounds with every record written after it.
+
 ## Reading is half the contract
 
 Classification exists for selective loading. A reader's context — human or Claude — is finite, and reading everything is the same as choosing nothing. The shelves earn their keep only if they let a reader load the one kind of knowledge the moment needs and skip the rest, and what makes that selection possible is the entrances: the README map, and the inventory tables in `docs/README.md` and `adr/README.md`.
