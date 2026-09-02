@@ -40,7 +40,7 @@ Load these as needed during execution:
 
 Execute 6 phases in order. Each phase requires Owner confirmation before proceeding (Governing Principle 1).
 
-Respect the user's language preference. If the user communicates in Japanese, generate all company files in Japanese. If in English, generate in English.
+Respect the user's language preference. If the user communicates in Japanese, generate all company files in Japanese. If in English, generate in English. When generating in a language other than English, keep terms of art in their original form or that language's usual transliteration and use everyday process words, because every document generated here becomes the style example the company's future documents copy.
 
 ---
 

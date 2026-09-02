@@ -30,6 +30,8 @@ Three columns, always in this order:
 - **Principle behind the rejection** — one line stating the *general* reason, written so it catches the whole class of proposals that fail for the same reason, not just this instance. This column is the heart of the ledger.
 - **Date** — the date the rejection was recorded, `YYYY-MM-DD`. It lets a future reader weigh whether an old principle still holds.
 
+Write the direction and the principle in the language the rejection was spoken in — a conversation held in another language yields rows in that language, whatever language the example above uses. Terms of art keep their original form or that language's usual transliteration, and process words stay everyday; these rows are replayed into every future session, so a calqued term written once is repeated forever.
+
 ## Writing the principle, not the incident
 
 This is the discipline the whole plugin exists to enforce, so it is worth stating precisely.

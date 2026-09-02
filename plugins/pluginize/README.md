@@ -69,7 +69,7 @@ pluginize/
 │           ├── detection-axes.md    # 何をプラグイン化すべきか
 │           ├── plugin-value.md      # プラグイン化すると何が得られるか
 │           ├── constitution.md      # 各層を貫く価値と判断の枠組み
-│           └── generation-prompt.md # 生成セッションに渡すプロンプトの雛形
+│           └── generation-prompt.md # 生成セッションに渡すプロンプトのテンプレート
 └── README.md
 ```
 

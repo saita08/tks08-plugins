@@ -1,7 +1,7 @@
 {
   "name": "pluginize",
   "description": "Watch your work for reusable structure and suggest turning it into a plugin, generated in an isolated background session.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": {
     "name": "tks08"
   }

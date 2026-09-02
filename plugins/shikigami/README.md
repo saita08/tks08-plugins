@@ -64,7 +64,7 @@
 | Command | `/shikigami:summon` | 式神を一体、対話で誂えてスケジューラに登録する |
 | Command | `/shikigami:muster` | 現役の式神を点呼し、各自の最新報告を並べる |
 | Command | `/shikigami:dismiss` | 式神を解任し、スケジュールと登録簿の両方から外す |
-| Skill | `shikigami-craft` | 式神の掟と、務めの雛形。Claudeが自律ルーチンを組む前に読む知識ベース |
+| Skill | `shikigami-craft` | 式神の掟と、務めのテンプレート。Claudeが自律ルーチンを組む前に読む知識ベース |
 
 ## よくある質問
 
