@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.19] - 2026-09-21
+
+### Added
+- 4ldk: new plugin — a standard architecture for solo-developed products that Claude follows when laying out a project or placing code, with `/4ldk:scaffold` to build the skeleton and `/4ldk:check` to report violations without fixing them
+- shosoin: a sixth shelf, the project's own `.claude/skills/`, for procedures — anything carried out in steps is written as a project skill from the start instead of a docs/ page, so it arrives when its moment comes; `/shosoin:audit` reports step-by-step docs/ pages as procedures on the wrong shelf, `/shosoin:inspect` checks that each skill's steps still name commands and paths that exist, and `/shosoin:setup` plants the contract's own three — `shelve-knowledge`, `write-adr`, `close-notes` — indexed from `docs/README.md`, so deciding where knowledge goes, recording a decision, and closing a task's notes keep working for every contributor even without the plugin; `/shosoin:audit` offers them to existing projects that lack them
+- shosoin: triggers for docs/ pages that must not wait to be fetched — when a convention lands in docs/, the placement questions now ask whether its reader would know to look, and if not propose a `paths`-scoped rule in `.claude/rules/` or a pointer skill that carries only the condition and a link, never a copy of the page
+
 ## [1.4.18] - 2026-09-03
 
 ### Changed

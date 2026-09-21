@@ -1,8 +1,8 @@
-# The Contract: Five Shelves and One Entrance
+# The Contract: Six Shelves and One Entrance
 
 This contract assigns every kind of written knowledge in a repository exactly one home. It exists because a project's knowledge, when mixed into one document, always rots: either the current state changes and overwrites the reasons behind past decisions, or the reasons are preserved and the description of the present goes stale. A document that is trusted but wrong is worse than no document, because nobody re-verifies what they trust.
 
-Two axes drive the split. The first is lifespan: the present moves at the speed of the code, raw data drifts silently, and working notes die with their task. The second is role, which separates the two nearly-immutable kinds — values guide judgment, records preserve choices. The shelves are the image of these two axes, not a set of genres.
+Two axes drive the split. The first is lifespan: the present moves at the speed of the code, raw data drifts silently, and working notes die with their task. The second is role, which separates the two nearly-immutable kinds — values guide judgment, records preserve choices. The shelves are the image of these two axes, not a set of genres. One shelf is set apart by a third consideration, how knowledge reaches its reader: most of it waits to be fetched, but what is carried out in steps has to arrive when its moment comes.
 
 ## The shelves
 
@@ -18,9 +18,17 @@ Because it is always loaded, CLAUDE.md is written in English regardless of the p
 
 ### docs/ — what is true now, and what must be followed now
 
-Holds the present: architecture as it stands, directory structure, setup procedures, data contracts, verification steps — and the project's conventions, the rules a contributor follows as written. Each page links to the ADRs that explain its choices. `docs/README.md` is the entrance: it states the directory's role and carries an inventory table of every page with its purpose.
+Holds the present: architecture as it stands, directory structure, data contracts, environment constraints — and the project's conventions, the rules a contributor follows as written. It does not hold procedures: what is carried out in steps lives in `.claude/skills/`, and a `docs/` page keeps only the rule and the reason the steps serve. Each page links to the ADRs that explain its choices. `docs/README.md` is the entrance: it states the directory's role and carries an inventory table of every page with its purpose, and beside it a table of the project's procedures, so that a reader who never runs Claude still finds every set of steps from the one index.
 
 `docs/` governs. It is read before writing or moving code, not consulted afterward to justify what was already done. When the structure changes, `docs/` moves with it in the same act.
+
+### .claude/skills/ — procedures
+
+Holds what is carried out: anything with a moment it begins and an order to follow — writing a decision record, cutting a release, renaming a module, closing a task. A procedure is written down because it is already known to repeat; nobody records the steps of a thing done once. What repeats should arrive when its moment comes rather than wait to be fetched, and a skill is the form that does this: its description is in front of Claude in every session, its body loads only when the moment matches, and a person can call it by name. The selective loading the other shelves reach through indexes is built into this one.
+
+A skill holds the steps and nothing else. The rule the steps serve stays on its `docs/` page and the reason stays in its ADR, linked from the skill, never restated in it — a procedure that explains itself at length has become a second copy of a convention. A procedure with side effects — one that publishes, deletes, or sends — sets `disable-model-invocation: true`, so that the moment it runs is chosen by a person and never inferred.
+
+The description states what the procedure does and the moment it begins, in the third person, with the phrases people actually use for that moment. The body is written in the project's documentation language, because people read it too. These skills are the project's own: they live in its repository, work for every contributor, and owe nothing to any plugin being installed.
 
 ### adr/ (repository root) — why
 
@@ -56,17 +64,29 @@ Documents are written in the project's documentation language; CLAUDE.md alone i
 
 Classification exists for selective loading. A reader's context — human or Claude — is finite, and reading everything is the same as choosing nothing. The shelves earn their keep only if they let a reader load the one kind of knowledge the moment needs and skip the rest, and what makes that selection possible is the entrances: the README map, and the inventory tables in `docs/README.md` and `adr/README.md`.
 
-The reading order follows the shelves' roles. The constitution and the README map are the only unconditional loads. Resuming an interrupted task, read that task's note in `notes/` — nothing else there. Before touching code, pick the relevant pages from the `docs/` inventory and read only those. Open `adr/` only when a question of "why" arises, reached through the links a docs page carries. Open `references/` only in the moment a data shape must be checked.
+The reading order follows the shelves' roles. The constitution and the README map are the only unconditional loads. Resuming an interrupted task, read that task's note in `notes/` — nothing else there. Before touching code, pick the relevant pages from the `docs/` inventory and read only those. A procedure is not picked at all: its skill arrives when its moment does. Open `adr/` only when a question of "why" arises, reached through the links a docs page carries. Open `references/` only in the moment a data shape must be checked.
 
 "Reading everything just in case" is prohibited — not as a discipline of restraint but as a diagnostic: if the right pages cannot be found without reading everything, the defect is in the indexes or the classification, and the structure is what gets fixed.
+
+### Triggers: pages that must not wait to be fetched
+
+`docs/` waits for a reader to come. For most pages that is right, but a convention whose absence produces a mistake — and whose reader does not know to look — cannot depend on anyone's diligence with an index. Such a page is given a trigger, and the form of the trigger follows how its moment can be named:
+
+- When the moment is a place — the rule applies to files under certain paths — the trigger is a rule in `.claude/rules/` with `paths` frontmatter. It loads when Claude reads a matching file, by pattern and not by judgment, which makes it the more certain of the two.
+- When the moment is only a situation — designing a schema, answering a customer, preparing a review — the trigger is a skill in `.claude/skills/` whose description names the situation.
+
+A trigger holds a condition and a link, and no content. Its body tells the reader which page to read and stops; the page remains the single home, and a trigger that begins to restate its page is a second copy under another name. A rule without `paths` is never written: it loads in every session, which makes it the constitution entered by a side door.
+
+Descriptions are paid for in every session, as the constitution is, but under this contract the constitution holds only values and that budget is nearly unspent; cost is not what limits triggers. What limits them is aim. Each trigger must name a moment no other trigger names, because two that overlap will fire for each other's work, and a trigger that fires wrongly teaches its reader to ignore it.
 
 Before acting on a file name, a config value, or a structure that a `docs/` page asserts, confirm it still matches the repository on disk. Every page was true when written; the code has moved since.
 
 ## The discipline that keeps it alive
 
 - **One home per fact.** The same content is never written into more than one shelf. Duplication collapses the distinction, and the next reader can trust neither copy.
-- **Cross-link, don't copy.** A `docs/` page links to the ADRs behind it; an ADR's Consequences link to the `docs/` pages it shaped. No durable shelf links into `notes/`.
-- **A structure change is one act.** Update `docs/`, write or supersede the ADR, and update the index tables together — in the same change, not as a follow-up.
+- **Cross-link, don't copy.** A `docs/` page links to the ADRs behind it; an ADR's Consequences link to the `docs/` pages it shaped; a skill links to the page whose rule its steps serve. No durable shelf links into `notes/`.
+- **Steps are a skill from the day they are written.** Writing a procedure down is already the judgment that it will repeat; it does not spend a season in `docs/` first.
+- **A structure change is one act.** Update `docs/`, write or supersede the ADR, move any skill or trigger whose paths changed, and update the index tables together — in the same change, not as a follow-up.
 - **ADR before implementation.** The decision is recorded while the alternatives are still alive.
 - **Records describe a moment.** Every page was true when written. Before relying on a document's claim about a file, a function, or a config value, confirm it still matches what is on disk.
 - **Notes are promoted or deleted, never accumulated.** Closing a task includes closing its notes.
@@ -74,4 +94,4 @@ Before acting on a file name, a config value, or a structure that a `docs/` page
 
 ## What this contract is not
 
-It is not a demand that every project carry all five shelves from day one. A project with no external data needs no `references/`. A project with two files needs no `docs/` tree, and `notes/` is created the first time a task leaves something behind, not before. The contract states where each kind of knowledge lives when it exists; it does not require manufacturing knowledge to fill shelves. Empty structure is noise wearing a uniform.
+It is not a demand that every project carry all six shelves from day one. A project with no external data needs no `references/`. A project with two files needs no `docs/` tree, `notes/` is created the first time a task leaves something behind, not before, and a trigger is written for a page whose reader would not come looking, not for every page that exists. The contract states where each kind of knowledge lives when it exists; it does not require manufacturing knowledge to fill shelves. Empty structure is noise wearing a uniform.

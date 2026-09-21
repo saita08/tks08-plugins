@@ -1,0 +1,8 @@
+{
+  "name": "4ldk",
+  "description": "A standard architecture for solo-developed products — a layered backend (Service Layer and Repository) under onion-style inward dependencies, thin entry points that all share one services layer, and views sorted by a single question — so Claude lays out a new project's skeleton and places each new file without the structure being explained again; scaffold the skeleton, and check an existing tree for violations.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

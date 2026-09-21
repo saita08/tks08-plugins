@@ -1,5 +1,5 @@
 ---
-description: Map every document in the project to its proper shelf — CLAUDE.md, README, docs/, adr/, references/, notes/ — report misplacements with evidence, and reorganize after explicit approval.
+description: Map every document in the project to its proper shelf — CLAUDE.md, README, docs/, .claude/skills/, adr/, references/, notes/ — report misplacements with evidence, and reorganize after explicit approval.
 argument-hint: "[監査対象のパス（省略時はカレントプロジェクト全体）]"
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 ---
@@ -12,7 +12,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/shelving-contract/references/contract.md` bef
 
 ## Step 1 — Inventory
 
-Collect the project's documents: every `*.md` outside dependency and build directories, plus data-shaped files that look like reference material. Exclude what the placement guide marks as unmovable: tool-owned files, `LICENSE`, `CHANGELOG.md`, configs, `.claude/`, `.github/`. If `$ARGUMENTS` names a path, scope the inventory to it.
+Collect the project's documents: every `*.md` outside dependency and build directories, plus data-shaped files that look like reference material. Include the project's own `.claude/skills/*/SKILL.md` and `.claude/rules/*.md`: their location belongs to the tool, their content to the project. Exclude what the placement guide marks as unmovable: tool-owned files, `LICENSE`, `CHANGELOG.md`, configs, the rest of `.claude/`, `.github/`. If `$ARGUMENTS` names a path, scope the inventory to it.
 
 Before classifying anything under `docs/`, check whether the tree belongs to a static site generator — `mkdocs.yml`, `docusaurus.config.*`, `conf.py`, or `book.toml` beside it. A generator-owned tree keeps its internal layout: findings inside it are still reported, but as proposals the user weighs, never as moves the librarian executes.
 
@@ -28,6 +28,11 @@ Also check the structural health of the shelves themselves:
 - Are superseded ADRs marked as such in the index, and do the old and new records link to each other?
 - Does the same content appear on more than one shelf?
 - Are there orphan documents no index or page links to?
+- Does any `docs/` page, or section of one, consist of steps? Each is a procedure waiting on the wrong shelf, and its move to a skill enters the shelving plan.
+- Does the project carry the contract's own three procedures, `shelve-knowledge`, `write-adr`, and `close-notes`, in `.claude/skills/`? A missing one is a structural finding, installed from `${CLAUDE_PLUGIN_ROOT}/assets/skills/` as the templates reference describes once the plan is approved. Where one is present, compare its steps with the shipped file: a planted procedure that lacks a step the shipped one carries has fallen behind the contract, and bringing it level enters the plan.
+- Does every procedure skill appear in the `docs/README.md` procedures table? Does any skill restate a convention or a decision instead of linking to it?
+- Does every file in `.claude/rules/` carry `paths`? Does any trigger restate its page, and do any two triggers name the same moment?
+- Is there a convention page that bites only under certain paths or in one kind of work, with no trigger? Put the placement guide's trigger question to it, and propose the trigger its moment allows.
 - Does any durable shelf link into `notes/`? Does `notes/` hold durable knowledge, or notes whose task has visibly closed?
 - Does the project carry the guarantees — `autoMemoryEnabled: false`, the `attribution` block, and the three shosoin hooks in `.claude/settings.json`, with their scripts present in `.claude/hooks/`? A missing or half-installed guarantee is a structural finding, and its installation enters the shelving plan like any other item.
 

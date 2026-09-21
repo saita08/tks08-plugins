@@ -1,5 +1,5 @@
 ---
-description: Verify each document's content against reality — stale claims in docs/, broken links, ADRs edited after acceptance, notes that outlived their task, reference data the code has moved past — and report what can no longer be trusted.
+description: Verify each document's content against reality — stale claims in docs/, procedure skills whose steps no longer run, broken links, ADRs edited after acceptance, notes that outlived their task, reference data the code has moved past — and report what can no longer be trusted.
 argument-hint: "[点検対象のパス（省略時は全文書）]"
 allowed-tools: Read, Glob, Grep, Bash, Edit
 ---
@@ -12,11 +12,11 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/shelving-contract/references/content-inspecti
 
 ## Step 1 — Scope
 
-Inventory the documents to inspect: the shelves' contents plus the root README and CLAUDE.md. If `$ARGUMENTS` names a path, inspect only it. Exclude tool-owned files as the placement guide defines them.
+Inventory the documents to inspect: the shelves' contents — the project's own `.claude/skills/` and `.claude/rules/` among them — plus the root README and CLAUDE.md. If `$ARGUMENTS` names a path, inspect only it. Exclude tool-owned files as the placement guide defines them.
 
 ## Step 2 — Mechanical pass
 
-Run the mechanical checks from the reference across the whole scope first: link resolution, index-to-disk correspondence, named commands against the manifests, no durable-shelf links into `notes/`, and — where the project carries the guarantees — that their hook scripts still exist and are executable. Where the documentation language is not English, run the reference's language check in the same pass: terms of art translated into literary calques are findings, reported with the ordinary form to substitute. These are cheap, objective, and often explain the deeper findings.
+Run the mechanical checks from the reference across the whole scope first: link resolution, index-to-disk correspondence, the procedures table against `.claude/skills/`, trigger patterns against the files they are meant to match, named commands against the manifests, no durable-shelf links into `notes/`, and — where the project carries the guarantees — that their hook scripts still exist and are executable. Where the documentation language is not English, run the reference's language check in the same pass: terms of art translated into literary calques are findings, reported with the ordinary form to substitute. These are cheap, objective, and often explain the deeper findings.
 
 ## Step 3 — Claim verification
 

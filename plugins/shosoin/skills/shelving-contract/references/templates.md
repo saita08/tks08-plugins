@@ -13,12 +13,14 @@ Append to an existing README (or include in a new one). The prose around it stay
 ```markdown
 ## Documentation
 
-Knowledge in this repository lives on five shelves. The same content is never
+Knowledge in this repository lives on six shelves. The same content is never
 written onto more than one of them. The contract is recorded in
 [ADR-0002](adr/0002-adopt-shelved-documentation.md).
 
 - **[CLAUDE.md](CLAUDE.md)** — the project's values and judgment criteria
-- **[docs/](docs/README.md)** — what is true now: structure, procedures, contracts, conventions
+- **[docs/](docs/README.md)** — what is true now: structure, contracts, conventions
+- **.claude/skills/** — procedures: what is carried out in steps, indexed from
+  [docs/README.md](docs/README.md)
 - **[adr/](adr/README.md)** — why each choice was made: the decision records
 - **[references/](references/)** — raw reference data used during development,
   kept to verify shapes when the live system is out of reach
@@ -54,8 +56,8 @@ The load-bearing contract section, placed last:
 ## The shelving contract is load-bearing
 
 Knowledge here is split across shelves: this file holds the values, `docs/` holds
-what is true now and the conventions to follow, `adr/` holds why each choice was
-made, `references/` holds raw reference data, and `notes/` holds task-lifetime
+what is true now and the conventions to follow, `.claude/skills/` holds the
+procedures, `adr/` holds why each choice was made, `references/` holds raw reference data, and `notes/` holds task-lifetime
 work products that are promoted or deleted when their task closes. The same
 content is never written onto more than one shelf. When the structure changes,
 `docs/` moves with it and the ADR is written before the implementation lands.
@@ -89,6 +91,17 @@ defect in this index — fix the index, not the reading habit.
 | File | Purpose |
 |---|---|
 | <file>.md | <purpose> |
+
+## Procedures
+
+What is carried out in steps lives in `.claude/skills/`, not here. Claude loads
+each one when its moment comes; a person reads the file or calls it by name.
+
+| Skill | When it begins |
+|---|---|
+| [shelve-knowledge](../.claude/skills/shelve-knowledge/SKILL.md) | A documentation file is about to be created, extended, or moved |
+| [write-adr](../.claude/skills/write-adr/SKILL.md) | A choice is being made that a future reader could not reconstruct |
+| [close-notes](../.claude/skills/close-notes/SKILL.md) | A task is closing and `notes/` holds what it left behind |
 
 ## Related decisions
 
@@ -160,6 +173,69 @@ Link the docs/ pages this decision shapes.>
 ## adr/0001 and 0002 — the records setup itself writes
 
 A bootstrap is itself two decisions, and they are recorded like any other: `0001-record-architecture-decisions.md` records the adoption of ADRs, and `0002-adopt-shelved-documentation.md` records the adoption of the documentation contract, both dated the day setup ran, with Alternatives Considered filled honestly (one document for everything; a wiki; doing nothing). Write them from the template above. A structure that preaches "record your decisions" but cannot show the record of its own adoption starts life in contradiction with itself.
+
+## Skills and triggers
+
+Three skeletons. Descriptions are written in English, in the third person, stating what the skill does and the moment it begins, followed by the phrases people in this project actually use for that moment, in their language. Bodies are written in the project's documentation language. Every path a skeleton names is replaced with the path the project really uses.
+
+### A procedure
+
+```markdown
+---
+name: <verb-object>
+description: <What the procedure does>. Use when <the moment it begins>. Triggers on "<phrase people use>", "<another>".
+---
+
+# <Procedure name>
+
+<One sentence: what is true when this procedure has been carried out.>
+
+1. <Step, stated as an action with the exact command or path>
+2. <Step>
+3. <Verification: how to see that it worked>
+
+The rule these steps serve: [<docs page>](../../../docs/<page>.md).
+```
+
+Add `disable-model-invocation: true` to the frontmatter when the procedure publishes, deletes, sends, or otherwise reaches outside the working tree; its moment is then chosen by a person. A procedure that only a person would start, and that Claude should never start unasked, takes the same line. Add `allowed-tools` naming only the tools the steps actually use.
+
+### A trigger by place — `.claude/rules/<topic>.md`
+
+```markdown
+---
+paths:
+  - "<glob of the files where the convention applies>"
+---
+
+Before changing these files, read [<docs page>](../../docs/<page>.md).
+```
+
+It loads when Claude reads a file matching `paths`. The body is the one line; the convention stays on the page.
+
+### A trigger by situation — `.claude/skills/<topic>/SKILL.md`
+
+```markdown
+---
+name: <topic>
+description: <The situation, named so that no other skill's description also fits it>. Triggers on "<phrase>", "<another>".
+user-invocable: false
+allowed-tools: Read
+---
+
+Read [<docs page>](../../../docs/<page>.md) before proceeding.
+```
+
+`user-invocable: false` keeps it out of the slash menu: calling it does nothing a person intends, so the menu is the wrong place for it.
+
+### The procedures setup plants
+
+The contract creates three procedures of its own, and they ship as real files, because a structure that says procedures arrive on their own cannot leave its own to be remembered — and because a skill written afresh at every setup would differ at every setup.
+
+- `${CLAUDE_PLUGIN_ROOT}/assets/skills/shelve-knowledge/SKILL.md` → `.claude/skills/shelve-knowledge/SKILL.md`. Begins when a documentation file is about to be created, extended, or moved. It carries the placement questions into the project, so that the contract keeps being applied by every contributor, with or without this plugin — a contract whose classification lived only in the plugin would hold only on the machines that installed it.
+- `${CLAUDE_PLUGIN_ROOT}/assets/skills/write-adr/SKILL.md` → `.claude/skills/write-adr/SKILL.md`. Begins when a choice is being made that a future reader could not reconstruct, or when a structure change is about to start; that second moment is the first one, which is why the one-act discipline of a structure change lives in these steps and not in a skill of its own.
+- `${CLAUDE_PLUGIN_ROOT}/assets/skills/close-notes/SKILL.md` → `.claude/skills/close-notes/SKILL.md`. Begins when a task is closing and `notes/` holds what it left behind.
+
+Copy each file, then render it for the project as every template is rendered: the body in the project's documentation language, the description kept in English with its quoted trigger phrases replaced by the phrases this project's people would actually say, in their language. The steps, their order, the paths, and the frontmatter keys stay as shipped. Where the project's structure differs from what the steps name — an inherited `docs/adr/`, a differently named template — change the path in the step to the one on disk. Like the hooks, these files belong to the project afterward.
 
 ## The guarantees
 

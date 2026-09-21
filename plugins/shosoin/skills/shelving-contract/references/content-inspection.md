@@ -11,7 +11,9 @@ A staleness finding pairs the document's claim with the reality on disk: "the pa
 - Every relative link resolves to an existing file and anchor.
 - Every index table row points to a file that exists, and every file in the directory appears in its index.
 - Code fences naming commands, scripts, or make targets correspond to things that exist in the repository's manifests.
-- No link from `docs/`, `adr/`, CLAUDE.md, or the README points into `notes/` — a durable shelf depending on a disposable one is a dead link that has not happened yet.
+- Every skill in `.claude/skills/` appears in the procedures table of `docs/README.md` unless it is a trigger, and every row of that table points to a skill that exists.
+- Every file in `.claude/rules/` has `paths`, every pattern in it matches at least one file on disk, and the page each trigger links to exists. A pattern that matches nothing is a trigger that can no longer fire.
+- No link from `docs/`, `adr/`, a skill, CLAUDE.md, or the README points into `notes/` — a durable shelf depending on a disposable one is a dead link that has not happened yet.
 - Where the project carries the guarantees, `autoMemoryEnabled: false`, the `attribution` block, and the shosoin hooks in `.claude/settings.json`, the hook entries still point at scripts that exist and are executable. A guarantee whose script has gone missing protects nothing while looking installed.
 
 ## Per-shelf checks
@@ -19,6 +21,10 @@ A staleness finding pairs the document's claim with the reality on disk: "the pa
 ### docs/ — does the description match the disk?
 
 Extract the checkable claims: file paths, directory layouts, function and class names, config keys, column definitions, command invocations, environment variables. Verify each against the repository. A `docs/` page earns one of three verdicts: current (claims verified), stale (specific claims contradicted, listed), or unverifiable (describes systems the inspection cannot reach — say which).
+
+### .claude/skills/ — can the steps still be carried out?
+
+Extract what each step names — commands, scripts, paths, file names, other skills — and verify each against the repository, exactly as for a `docs/` page, with the same three verdicts. A procedure is the most dangerous document to leave stale, because it is followed rather than read: a wrong path in a description is noticed, a wrong command in a step is run. Check also that a skill with steps that publish, delete, or send carries `disable-model-invocation: true`.
 
 ### adr/ — is the record still a record?
 
