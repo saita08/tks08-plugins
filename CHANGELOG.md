@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.21] - 2026-10-07
+
+### Removed
+- my-favorite-mcp: **Breaking** — the plugin is removed from the marketplace. If you had it enabled, the serena and context7 MCP servers it bundled stop loading; to keep them, add them to your own MCP configuration (`claude mcp add`, or a `.mcp.json` in your project)
+
 ## [1.4.20] - 2026-10-06
 
 ### Added

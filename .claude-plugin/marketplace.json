@@ -5,11 +5,6 @@
   },
   "plugins": [
     {
-      "name": "my-favorite-mcp",
-      "source": "./plugins/my-favorite-mcp",
-      "description": "Frequently used MCP servers collection"
-    },
-    {
       "name": "gas-deploy",
       "source": "./plugins/gas-deploy",
       "description": "Google Apps Script deployment management with clasp"
@@ -208,6 +203,7 @@
   "renames": {
     "myrule-review": "broad-review",
     "team-review-fix": "parallel-fix",
-    "claude-rpg": "adventurer"
+    "claude-rpg": "adventurer",
+    "my-favorite-mcp": null
   }
 }
