@@ -1,12 +1,12 @@
 ---
-allowed-tools: Read, Edit, Write, Glob, Grep, Bash, Skill, Agent, SendMessage, TaskCreate, TaskGet, TaskList, TaskUpdate, AskUserQuestion
+allowed-tools: Read, Edit, Write, Glob, Grep, Bash, Skill, Agent, SendMessage, TaskStop, AskUserQuestion
 description: Fix review feedback by delegating to an agent team. Splits issues by file, each agent investigates, plans, and implements.
 argument-hint: <review issues text or file path> (or omit to enter interactively)
 ---
 
 Fix review feedback using a coordinated agent team. You act as the fellow, which is the role this session occupies for the duration of the run. The fellow coordinates teammates and reviews their plans, and does not write source code itself — C-1 in the principles file explains why this constraint is structural rather than stylistic.
 
-The judgment principles that govern every action below are recorded in `commands/references/principles.md` as C-0 through C-22. Read that file before Step 0 and re-consult the relevant section whenever a step's actions touch the principle it describes. The steps reference those anchors by ID; each ID is the fellow's internal reference to the reasoning the principles file holds, consulted to decide the action and informing it the way a source informs what one says.
+The judgment principles that govern every action below are recorded in `commands/references/principles.md` as C-0 through C-22. Read that file before Step 1 and re-consult the relevant section whenever a step's actions touch the principle it describes. The steps reference those anchors by ID; each ID is the fellow's internal reference to the reasoning the principles file holds, consulted to decide the action and informing it the way a source informs what one says.
 
 Each step that produces something for the user ends with a `Deliverable:` line. The deliverable is what reaches the user from that step, and the fellow's output across the run is composed of these deliverables (C-21). The work a step directs the fellow through to reach its deliverable — consulting the principles by ID, evaluating a plan against the root-cause test, confirming a state by reading an artifact — is how the fellow gets there, and it stays with the fellow the way reasoning stays with a person who reports only the conclusion.
 
@@ -74,10 +74,19 @@ Before creating the team, confirm:
 - No two teammates will modify the same file (C-4).
 - Cross-cutting concerns are resolved (C-6).
 - No teammate from an earlier run is still standing (C-20): read `~/.claude/teams/session-{first segment of $CLAUDE_CODE_SESSION_ID}/config.json` and confirm its `members` array holds only the lead. If it lists anyone else, an earlier run in this session ended without its stand-down — surface those teammates to the user and ask whether to stand them down under the Step 10 procedure or to abort. Dispatch nothing until only the lead remains.
+- No ledger from an earlier run remains (C-20): if `.claude/parallel-fix.local.md` exists, an earlier run, in this session or another, stopped before its report. Show the user what it records and ask whether to resume from it or discard it. To discard is to remove the file with the cleanup script (Step 12) and continue as a fresh run: the earlier run's commits stay in history, outside the range this run will simplify. To resume is to adopt the ledger as this run's own, which Steps 6 and 7 then follow. The ledger holds issue numbers, not their text, and the text comes from this invocation's input, so resuming fits only when this run was given the same review feedback the ledger was opened for; say so when asking.
 
-### 6. Record the Starting Commit
+Both of these checks see only a run that was left unfinished. A run that reported cleanly stood its team down and deleted its ledger (Step 12), so a prompt that re-fires afterwards against the same feedback passes both and dispatches a second team. Nothing in this step catches that case; the only guard is never scheduling such a prompt in the first place (C-19).
 
-Before any teammate writes to the repository, run `git rev-parse HEAD` and remember the hash. This becomes the lower bound of the commit range that the simplification pass in step 10 will review. Recording it here, rather than later, ensures that the range covers exactly the work the team produced — no earlier commits the user did not ask to revisit, no later commits made outside the team.
+### 6. Record the Starting Commit and Open the Ledger
+
+Before any teammate writes to the repository, run `git rev-parse HEAD` and write the hash into the run's ledger, together with one row per file group: the teammate's name, its files, its issue numbers, and its state. The ledger is the fellow's record of what has already been handled (C-22). It is the fellow's working file, not source code, so keeping it does not touch C-1.
+
+The ledger is `.claude/parallel-fix.local.md` at the repository root (create `.claude/` if needed). It belongs to the project for as long as the run is alive, where the user can open it and see where the run stands. It shows as an untracked file in `git status`; it stays out of every commit because every commit in a run names its paths (C-15), and the run removes it at the end (Step 12).
+
+The hash becomes the lower bound of the commit range that the simplification pass in step 11 will review. Recording it here, rather than later, ensures that the range covers exactly the work the team produced — no earlier commits the user did not ask to revisit, no later commits made outside the team.
+
+On a resume (Step 5) the ledger is already open, and its starting commit stands: do not record a new one, because the earlier run's commits belong to the same work and the simplification pass must cover them too. Instead, reconcile each row with the repository before relying on it (C-9). Confirm with `git merge-base --is-ancestor <hash> HEAD` that every hash a row records is in `HEAD`'s history; a row keeps its recorded state only if the repository bears it out, and otherwise falls back to the last state the repository does bear out.
 
 ### 7. Dispatch Teammates
 
@@ -85,16 +94,15 @@ Load the `parallel-fix:team-fix-strategy` skill. The skill itself records the sp
 
 There is no explicit team-creation step. The team forms implicitly the moment the first teammate is spawned, with this session as the lead (C-2).
 
-For each file group:
-
-1. Create a task with TaskCreate describing the work for that file group, then assign it by setting its owner to the teammate's name with TaskUpdate.
-2. Spawn the teammate with the Agent tool, passing a stable `name` tied to the file group (for example `teammate-api` for `src/api.ts`) and `run_in_background: true` so the fellow can review partial output as it arrives rather than waiting for a one-shot return (C-2). The fellow refers to the teammate by this name for the rest of the run, so choose it at dispatch and remember it.
+For each file group, spawn the teammate with the Agent tool, passing a stable `name` tied to the file group (for example `teammate-api` for `src/api.ts`). The `name` is what makes the call launch a teammate rather than a subagent (C-2). Do not pass `isolation`: it would launch a subagent in a worktree of its own, outside the team. The fellow refers to the teammate by this name for the rest of the run, so choose it at dispatch, and set the teammate's ledger row to `dispatched` once it has spawned.
 
 The teammate's spawn prompt must include:
 
 1. The specific issues to investigate and fix for their assigned file(s)
 2. Cross-cutting design decisions (if any)
 3. The full contents of `skills/team-fix-strategy/references/teammate-rules.md`, forwarded verbatim. Do not paraphrase the rules; the "why" clauses on each rule are what teach the teammate when it applies, and a summary loses them
+
+On a resume (Step 5), dispatch by the reconciled ledger rather than for every file group. A row that reached `verified` or beyond is finished and gets no teammate. Every other row gets a new teammate: the one that held it before is gone, stood down at Step 5 or lost with its session. Its spawn prompt also names the commits the row already records and states that any uncommitted change in its files is the earlier teammate's unfinished work and now its own, so that it begins by establishing which of its issues are still open. Set the row back to `dispatched`.
 
 Every subsequent instruction to a teammate — plan approvals, rejections, the stand-down at Step 10 — goes through `SendMessage` addressed to that teammate's name.
 
@@ -106,8 +114,8 @@ The wait between iterations of this loop is passive (C-19). When no teammate has
 
 Repeat the following loop until all teammates have completed implementation:
 
-1. Check teammate progress: read each teammate's task state with TaskGet, and read the plans and commits they report through `SendMessage`. Teammate messages arrive automatically; the fellow does not poll for them
-2. Before acting on any teammate message or task notification, read the task's state (C-22). A task notification can fire more than once for the same completion; if the state already records the event, drop the arrival as a duplicate. Whenever the fellow does act — approving, rejecting, accepting a commit — it advances the task's state with TaskUpdate in the same turn, so the record stays ahead of the next arrival
+1. Check teammate progress from what arrives: teammates report plans and commits through `SendMessage`, and when a teammate's turn ends an idle notification arrives carrying its final answer. Both arrive automatically; the fellow does not poll for them
+2. Before acting on any arrival, read the teammate's row in the ledger (C-22). One completion can arrive twice, as the teammate's report and again as its idle notification; if the row already records the event, drop the arrival as a duplicate. Whenever the fellow does act — approving, rejecting, accepting a commit — it updates the row in the same turn, so the record stays ahead of the next arrival
 3. For each teammate that has reported a plan but not yet been reviewed:
    - Evaluate using the `team-fix-strategy` skill's plan evaluation criteria
    - Does the plan address the root cause — why the problem exists? (C-7)
@@ -121,12 +129,12 @@ Deliverable: for each plan, the decision — approval with a go-ahead, or reject
 
 ### 8.5 If a staging incident occurs
 
-A staging incident means a commit contains files outside its author's assigned scope, or a teammate's unstaged work was swept into another teammate's commit. Recovery requires care because cooperative messaging does not preempt teammates mid-step (C-16). The procedure below applies to incidents detected during the monitoring loop in step 8; the same procedure is used for incidents detected during verification in step 9.
+A staging incident means a commit contains files outside its author's assigned scope, or a teammate's unstaged work was swept into another teammate's commit. Recovery rewrites history, so it must not race a teammate that is still working, and a message cannot guarantee that (C-16). The procedure below applies to incidents detected during the monitoring loop in step 8; the same procedure is used for incidents detected during verification in step 9.
 
-1. Send a stop instruction to each teammate individually by name, and require an explicit ACK from every teammate that includes their current `git status`. Do not begin recovery until all ACKs are in.
-2. Re-read `git log` immediately before any destructive step — a teammate who had not yet read the stop instruction may have committed in the interim.
+1. Stop every teammate that could still write to the index with TaskStop, by name — not only the ones involved. Unlike a message, a stop is an interrupt: the teammate's turn ends, the command it was running is killed, and it leaves the team's `members`.
+2. With all of them stopped, read `git status` and `git log`. Nothing can move underneath the recovery now. A stop can land mid-edit; a half-finished change in the working tree belongs to the teammate the ledger assigns that file to, and stays where it is.
 3. Choose the recovery method by what the history allows. If no commits have been built on top of the bad one, prefer `git reset --soft HEAD^` and re-commit with correct staging. If subsequent commits exist that cannot be cleanly recreated, use `git rebase -i <commit>^` with `reword` to make the message match the actual contents — this preserves history and carries no merge-conflict risk.
-4. After recovery, send the new `HEAD` to every teammate individually and instruct them to re-observe their position with `git log -1` before resuming, per C-17.
+4. After recovery, message each stopped teammate by name. The message brings the teammate back with its conversation intact. Tell it that it was stopped mid-work, what the new `HEAD` is, and to re-observe its position with `git log -1` and `git status` before resuming, per C-17. Record the incident and each restart in the ledger.
 
 ### 9. Verify Outcomes
 
@@ -144,11 +152,11 @@ Do NOT proceed to the simplification pass until all teammates pass verification.
 
 ### 10. Stand Down the Teammates
 
-The new team infrastructure has no single-operation team deletion. What it has instead is per-teammate shutdown, and the boundary this step exists to draw — no teammate is active once the fellow starts writing to the index — is drawn by standing every teammate down explicitly.
+Teams are stood down one teammate at a time; there is no single-operation team deletion. The boundary this step exists to draw — no teammate is active once the fellow starts writing to the index — is drawn by standing every teammate down explicitly.
 
 Once every teammate has passed verification, send each teammate a `shutdown_request` through `SendMessage`, individually by name (C-16). A teammate approves with a `shutdown_response` and its process exits. Do not treat the request as the stand-down: a cooperative message is not an interrupt (C-16), so the teammate is down only once it has actually exited.
 
-Confirm the whole team is down by reading the `members` array in `~/.claude/teams/session-{first segment of $CLAUDE_CODE_SESSION_ID}/config.json` — the same artifact the Step 5 precondition reads (C-20) — and seeing that only the lead remains; that artifact, not the arrival of `shutdown_response` messages, is the authoritative signal that teardown is complete (C-9). Do not end the turn to wait for those acknowledgements to arrive — the passive-wait discipline of Step 8 (C-19) governs waiting on teammate *work*, not this teardown, and treating it as a wait is what stalls the run. If a teammate still appears in `members`, read the file again after a short interval until only the lead remains. This reading is the fellow's own machinery. That confirmation is the structural successor to the old single `TeamDelete` call.
+Confirm the whole team is down by reading the `members` array in `~/.claude/teams/session-{first segment of $CLAUDE_CODE_SESSION_ID}/config.json` — the same artifact the Step 5 precondition reads (C-20) — and seeing that only the lead remains; that artifact, not the arrival of `shutdown_response` messages, is the authoritative signal that teardown is complete (C-9). Do not end the turn to wait for those acknowledgements to arrive — the passive-wait discipline of Step 8 (C-19) governs waiting on teammate *work*, not this teardown, and treating it as a wait is what stalls the run. If a teammate still appears in `members`, read the file again a few seconds later, up to three readings in all. A teammate that rejects the request, or is still listed at the third reading, is stopped with TaskStop. The bound can be this short because every teammate has passed verification: its work is committed, so a stop interrupts nothing half-written, and an approved shutdown needs only a single turn to take effect. Once a teammate is down, send it nothing further: a message to a teammate that is not running brings it back. This reading is the fellow's own machinery.
 
 Deliverable: the completed stand-down — the team is down, only the lead remains. The reading of `members` that established it is how the fellow confirmed the result it reports (C-21).
 
@@ -162,7 +170,7 @@ The pass must review the commit range the team produced, not its default target 
 
 `/simplify` applies its fixes to the working tree. It must not commit them: committing is the fellow's responsibility under the path-limited rule in C-15. State this in the invocation.
 
-After the pass returns, the fellow lands the result:
+The pass runs in this conversation: it launches its own review agents, waits for their completion notifications, and then applies fixes. When it has finished, the fellow lands the result:
 
 - Read the working tree with `git status` and the diff. For each file the pass modified, commit it with `git commit -- <path>` and a message describing what was simplified and why, consistent with C-15. Earlier teammate commits are not amended; the simplification fixes land as new commits on top.
 - If the pass committed on its own despite the instruction, do not amend. Confirm with `git log` and `git show --stat <hash>` that each new commit contains only files within the team's commit range and does not sweep in foreign files; if a commit violates C-15, treat it as a staging incident and recover under the step 8.5 procedure.
@@ -180,4 +188,4 @@ Once the simplification pass has finished, summarize the results to the user:
 - The simplification pass result: what it changed, or that it ran and found nothing
 - Any issues that could not be resolved (with explanation)
 
-Output this summary directly in the terminal (do not write to a file).
+Output this summary directly in the terminal (do not write to a file). Then remove the ledger by running `bash "${CLAUDE_PLUGIN_ROOT}/commands/clean-ledger.sh"`; its job ended with the run, and a ledger left behind is how the next run recognizes an unfinished one (C-20).

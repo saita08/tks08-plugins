@@ -13,7 +13,7 @@ version: 0.1.0
 
 # AI Company Migration
 
-Migration tool for AI company repositories that were built against the Agent Teams API that Claude Code removed in v2.1.178.
+Migration tool for AI company repositories that were built against the Agent Teams API that Claude Code has since removed.
 
 The company itself is fine. What broke is how its CLAUDE.md tells the CEO to call employees. The old procedure spawned employees with `TeamCreate` and an `Agent` spawn carrying `team_name`, and started the company with `claude --agent-teams`. Those tools and that flag no longer exist. The current API forms the team implicitly when the first teammate is spawned, and the CEO spawns each employee with the Agent tool's `name` parameter. This skill rewrites the procedure, and only the procedure, to match.
 
@@ -51,7 +51,7 @@ These are the tokens that mark a company as built against the removed API. Scan 
 The replacement wording, consistent with what `company-builder` now generates:
 
 - Spawn an employee: "Spawn the employee as a Teammate with the Agent tool, passing a `name`. The team forms implicitly when the first teammate is spawned, so there is no separate team-creation step."
-- Start the company: "Set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (in `settings.json` or the environment) and use Claude Code v2.1.178 or later, then open a new Claude Code session at the company." Replace a `claude --agent-teams` example with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude`.
+- Start the company: "Set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (in `settings.json` or the environment), then open a new Claude Code session at the company." Replace a `claude --agent-teams` example with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude`.
 - Shut an employee down: if the company describes ending a teammate's session, the current mechanism is a shutdown request sent by name, which the teammate approves. There is no `TeamDelete`.
 
 ## Where the removed API usually lives
@@ -71,4 +71,4 @@ Scan these, but go by what Grep finds, not by this list alone — a company may 
 4. **For each hit, compose the rewrite** using the current-API wording above. Rewrite only the clause that names the removed token; preserve the surrounding sentence, the company's voice, and any custom steps (Principle 2). When a hit sits inside this company's own custom prose, rewrite the mechanism and keep the rest verbatim.
 5. **Show the Owner the full diff** — every file, every before/after — and ask for explicit approval (Principle 1). Use AskUserQuestion if a hit is ambiguous about whether it is mechanism wording or company identity; when unsure, ask rather than guess.
 6. **On approval, apply the edits.** Do not commit — committing is the Owner's decision.
-7. **Report** each file changed, what was rewritten, and what (if anything) you deliberately left untouched and why. Suggest the Owner run `/company-health-check` to confirm the Agent Teams readiness check now passes, and remind them to set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` and use Claude Code v2.1.178 or later when running the company.
+7. **Report** each file changed, what was rewritten, and what (if anything) you deliberately left untouched and why. Suggest the Owner run `/company-health-check` to confirm the Agent Teams readiness check now passes, and remind them to set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` when running the company.

@@ -18,7 +18,7 @@ Judge whether the task even wants this. The doctrine's `references/when-to-diver
 
 ## Step 2 — Assemble the Workflow script
 
-Write a Workflow script to a temp file. It must have three phases. Follow `${CLAUDE_PLUGIN_ROOT}/skills/tournament-doctrine/references/workflow-shape.md` for the exact API — the schema object-wrap rule and the diversity-injection pattern are load-bearing, not decoration.
+Write a Workflow script with three phases. Follow `${CLAUDE_PLUGIN_ROOT}/skills/tournament-doctrine/references/workflow-shape.md` for the exact API — the schema object-wrap rule and the diversity-injection pattern are load-bearing, not decoration.
 
 The script's shape:
 
@@ -31,7 +31,7 @@ Keep the worker prompts pointed at producing a real diff in their worktree, not 
 
 ## Step 3 — Run it and report
 
-Run the script with the Workflow runner. When it finishes, report to the user, and only report — nothing lands in their working tree yet:
+Run the script with the Workflow tool, passing it inline as `script`. When it finishes, report to the user, and only report — nothing lands in their working tree yet:
 
 - a short diff summary of the winning universe, named by its worktree,
 - the judging table: each attempt scored by each lens, so the user sees not just who won but why and how close it was,

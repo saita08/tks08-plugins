@@ -26,7 +26,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/commands/harvest-select.sh" ${ARGUMENTS:-}
 
 The script prints a JSON object: `{"sessions": [{"path","project","mtime"}...], "cap": N, "cursor_exists": bool, "total_new": M}`. If `sessions` is empty, there is nothing new to mine — go straight to step 5 and celebrate the empty harvest. Do not invent work.
 
-### 2. Extract friction from each session, in parallel subagents
+### 2. Extract friction from each session, one `claude -p` call at a time
 
 For each selected session, extract the friction events with a lightweight `claude -p` call. Run these **synchronously** and stay within the cap — do not fan out unboundedly. Each call reads one transcript and returns the friction events it found, each paired with the Claude action that provoked it.
 
@@ -75,4 +75,4 @@ Then report:
 - Never write to any `CLAUDE.md`, never commit, never open a PR. Drafting the proposal is the whole job; adoption happens in dialogue with the user.
 - Never propose a cluster of size one. Recurrence is the bar; a single friction event does not clear it.
 - Stay within the session cap. This command must remain incremental and bounded — advancing the cursor is what keeps the next run cheap.
-- Do not pull raw transcript dumps into the conversation. Extraction happens in the subagents; the main context receives only structured friction events and the proposals built from them.
+- Do not pull raw transcript dumps into the conversation. Extraction happens in the `claude -p` calls; the main context receives only structured friction events and the proposals built from them.

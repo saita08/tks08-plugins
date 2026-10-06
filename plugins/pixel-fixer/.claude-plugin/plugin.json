@@ -1,0 +1,8 @@
+{
+  "name": "pixel-fixer",
+  "description": "Turn image-generator \"pixel art\" into real pixel art a game can animate — find the generator's grid, read one colour per dot onto a shared palette, clear stray dots and doubled outlines — and check every frame against its original by overlap and colour difference, with a page that sets them side by side.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

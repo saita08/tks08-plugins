@@ -112,12 +112,18 @@ Judge from evidence, not plausibility. If it is not clearly one of the three kin
 Transcript turns:
 $turns"
 
+# The extractor is an observer: the transcript it reads is untrusted input, so
+# the session it runs in gets no tools at all (--tools "") and no MCP servers
+# (--strict-mcp-config with no --mcp-config, which also keeps plugin MCP
+# servers out). Allowing nothing is the design because a deny-list cannot name
+# tools it does not know about.
 result_json="$(
   CONSTITUTION_GARDENER_GUARD=1 claude -p "$prompt" \
     --model haiku \
     --json-schema "$schema" \
     --output-format json \
-    --disallowed-tools "Bash Edit Write Read Glob Grep WebFetch WebSearch Task" \
+    --tools "" \
+    --strict-mcp-config \
     2>/dev/null || true
 )"
 

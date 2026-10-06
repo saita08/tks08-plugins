@@ -6,16 +6,13 @@ argument-hint: (no arguments needed - auto-detects project tech stack)
 
 Plant an easter egg in the current project through an interactive, conversational flow.
 
-## Constitution (Behavioral Principles)
+## Constraints
 
-| # | Principle | Type |
-|---|-----------|------|
-| C-1 | Always load the `easter-egg:easter-egg-knowledge` skill via the Skill tool before proposing candidates. The skill contains expert knowledge on implementation patterns, best practices, and famous examples. | MUST |
-| C-2 | Propose at least 3 easter egg candidates with different trigger types and difficulty levels. Never implement without user selection. | MUST |
-| C-3 | Easter eggs MUST NOT affect normal application performance, security, or accessibility. Follow the Zero-Cost Law. | MUST |
-| C-4 | Easter eggs MUST NOT bypass authentication, expose sensitive data, or create security vulnerabilities. | MUST NOT |
-| C-5 | Be genuinely funny. Generic humor is worse than no humor. Tailor jokes to the project's personality and audience. | MUST |
-| C-6 | Respect `prefers-reduced-motion` for visual effects. Provide ESC key to dismiss. Follow WCAG 2.3.1 for flash rates. | MUST |
+- The user chooses: propose several candidates with different trigger types and difficulty levels, and implement only the one they select.
+- An easter egg costs nothing until found: no effect on normal performance, security, or accessibility (the Zero-Cost Law).
+- It never bypasses authentication, exposes sensitive data, or opens a vulnerability — a hidden path that does is a backdoor, not an easter egg.
+- Humor is fitted to this project's personality and audience; a generic joke is worse than none.
+- Visual effects respect `prefers-reduced-motion`, dismiss on ESC, and stay within WCAG 2.3.1 flash limits.
 
 ## Steps
 
@@ -33,16 +30,9 @@ Scan the project to understand:
 
 Use Glob and Grep to explore the codebase structure. Read key files like package.json, Cargo.toml, pyproject.toml, or equivalent to identify the stack.
 
-### 3. Self-Critique Checkpoint
+### 3. Propose Easter Egg Candidates
 
-Before proposing candidates, verify:
-- "Do I understand the tech stack well enough to propose feasible easter eggs?"
-- "Have I loaded the easter-egg-knowledge skill?" -> If no, go back to Step 1.
-- "Am I considering both the technical constraints and the project's personality?"
-
-### 4. Propose Easter Egg Candidates
-
-Present at least 3 candidates using this format. Make the proposals themselves fun to read.
+Present 2-4 candidates using this format. Make the proposals themselves fun to read.
 
 For each candidate:
 - **Name**: A catchy name for the easter egg
@@ -73,7 +63,7 @@ Example proposal style (adapt to the actual project):
 
 Ask the user to choose, or suggest combining elements from multiple candidates.
 
-### 5. Implement the Selected Easter Egg
+### 4. Implement the Selected Easter Egg
 
 After the user selects a candidate:
 
@@ -86,7 +76,7 @@ After the user selects a candidate:
 3. **Add a subtle hint** (optional, ask user): A tiny clue that something is hidden, without giving it away. A comment in the code, a tooltip, or a tiny UI detail.
 4. **Test the easter egg** if possible: Run the trigger and verify it works
 
-### 6. Report the Hidden Treasure
+### 5. Report the Hidden Treasure
 
 Tell the user:
 - What was implemented and where (file paths)

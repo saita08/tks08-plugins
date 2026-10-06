@@ -72,5 +72,5 @@ If nothing survived, say so plainly. A dig that surfaces no candidate means eith
 - Do not build any plugin. The forge proposes candidates and hands them off; construction belongs to `pluginize` or `plugin-dev`.
 - Stay within the cap and advance the cursor. The command must remain incremental and bounded.
 - Do not propose a candidate that duplicates an installed plugin or a built-in feature. Deduping against what the user already has is part of the job, not an afterthought.
-- Do not pull raw transcript dumps into the conversation. Sampling happens in the subagents; the main context receives only structured findings.
+- Do not pull raw transcript dumps into the conversation. Sampling happens in the `claude -p` calls; the main context receives only structured findings.
 - Read only — this command analyzes `~/.claude/` data and never sends any of it to an external service.

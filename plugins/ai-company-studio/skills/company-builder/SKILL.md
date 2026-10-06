@@ -261,7 +261,7 @@ This file can be deleted after the test.
 Present the following to the Owner:
 
 1. The company has been generated at `{path}`
-2. To start the company, enable Agent Teams (set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `settings.json` or the environment, and use Claude Code v2.1.178 or later), then open a new Claude Code session at the company:
+2. To start the company, enable Agent Teams (set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `settings.json` or the environment), then open a new Claude Code session at the company:
    ```
    cd {path}
    CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude

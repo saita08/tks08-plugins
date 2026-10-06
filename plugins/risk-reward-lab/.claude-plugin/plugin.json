@@ -1,0 +1,8 @@
+{
+  "name": "risk-reward-lab",
+  "description": "Design a game's play as a choice between risk and return — no single move wins, clues are read rather than handed over, time pressure is not a reflex test — and measure every rule and number by playing the logic thousands of times without a screen, with the before and after side by side.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

@@ -273,7 +273,7 @@ Required structure for deliverables:
 Employees can and should message each other directly via Agent Teams direct messages. Don't wait for the CEO to relay — if your work affects a colleague's domain, message them directly and ask for feedback.
 
 - Direct message: send to a specific colleague
-- Broadcast: send to all employees (use sparingly)
+- To reach everyone: send the same message to each colleague by name (use sparingly)
 - All agreements reached between employees must be reported to the CEO
 
 ## Meeting Minutes

@@ -55,7 +55,7 @@ Check that the company's file structure is consistent and complete.
 
 **Agent Teams readiness checks:**
 - Employee call procedure in CLAUDE.md specifies Agent Teams (spawn a Teammate with the Agent tool's `name` parameter) as the spawn mechanism
-- The call procedure does NOT reference the removed Agent Teams API: `TeamCreate`, `TeamDelete`, `team_name`, or a `claude --agent-teams` startup flag. These were removed in Claude Code v2.1.178; a company that still names them was built against the old API and its employee call procedure will fail. If found, this is a Concern — recommend running `/migrate-company` to update the call procedure (per Principle 1, report it; do not edit the files here)
+- The call procedure does NOT reference the removed Agent Teams API: `TeamCreate`, `TeamDelete`, `team_name`, or a `claude --agent-teams` startup flag. These no longer exist; a company that still names them was built against the old API and its employee call procedure will fail. If found, this is a Concern — recommend running `/migrate-company` to update the call procedure (per Principle 1, report it; do not edit the files here)
 - Each `members/*.md` file contains a Collaboration section (employees actively communicate with colleagues)
 - `standards/meeting-rules.md` describes direct inter-employee messaging via Agent Teams
 

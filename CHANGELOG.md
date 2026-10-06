@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.20] - 2026-10-06
+
+### Added
+- risk-reward-lab: new plugin — how to design a game's play as a choice between risk and return so that no single move wins, and `balance-by-simulation`, which plays the game's logic thousands of times without a screen and sets the tables before and after a change side by side before any number is decided
+- one-for-all-screens: new plugin — one screen for every device, and every device checking the one screen: a foundation that lays a browser game's screen out at one reference size and scales the whole of it into any frame, re-measuring safe-area insets an app's web view reports late, and a check that opens the game at real device sizes and names every element that moves and every line of text that leaves its box
+- pixel-fixer: new plugin — turns image-generator "pixel art" into real pixel art at the game's own dot size: it finds the generator's grid, reads one colour per dot onto a shared palette, clears stray dots and doubled outlines, and writes a page that sets every frame beside its original with the overlap and colour difference measured
+
+### Changed
+- adventurer: **Breaking** — the plugin `claude-rpg` is renamed to `adventurer`, because plugin names starting with `claude-` are now reserved and the old name made the whole marketplace fail validation; `/claude-rpg:status` becomes `/adventurer:status`. Your enabled-plugin setting carries over on the next start, and unlocked achievements stay where they are in `~/.claude/claude-rpg/achievements.json`
+- parallel-fix: `/parallel-fix` runs on current models again — it no longer depends on the task-list tools Claude Code leaves out on newer models, and instead tracks each teammate's progress in a ledger at `.claude/parallel-fix.local.md` in your project, removed by a bundled cleanup script after the final report; a ledger left by an interrupted run is offered for resuming the next time you invoke the command
+- parallel-fix: when a commit sweeps in another teammate's files, the affected teammates are now stopped outright before history is repaired, instead of being asked to stop and acknowledge; requires Claude Code 2.1.198 or later
+- broad-review: the README no longer asks you to set `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` — Claude Code 2.1.219 and later allow the review's fan-out by default, so the setting matters only if you have lowered the limit to `1` yourself
+- broad-review: `/broad-review` follows how current Claude Code runs subagents — the review is launched in the background and the command waits for its completion notice instead of expecting a blocking call; if you interrupt the wait, the review agent is stopped and you are pointed at `/tasks` for anything still running; a small record of the running review is kept in `notes/pr{N}-review-delegation.md` so that calling the command again mid-review does not start a second one; requires Claude Code 2.1.232 or later
+- easter-egg: `/easter-egg` proposes two to four candidates instead of always at least three
+
+### Fixed
+- grimoire, parallel-universe: `/grimoire:cast` and `/parallel-universe` hand the script to the Workflow tool inline, the way the current tool expects, instead of writing a temp file first
+
+### Security
+- constitution-gardener, idea-forge: the background sessions that read your transcripts now run with no tools and no MCP servers at all, so nothing written in a transcript can make them act; the previous deny-list left MCP tools and the subagent tool reachable
+
 ## [1.4.19] - 2026-09-21
 
 ### Added

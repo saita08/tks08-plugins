@@ -1,6 +1,6 @@
 ---
 name: adventurer-status
-description: This skill should be used when the user runs /claude-rpg:status, asks to "show my achievements", "check my adventurer status", "what have I unlocked", "claude rpg", or otherwise wants to see achievements judged from their real Claude Code usage stats. It reads the local usage data, judges each achievement from that data, persists the unlocked set, and displays the adventurer's status card. Never invents data it did not read.
+description: This skill should be used when the user runs /adventurer:status, asks to "show my achievements", "check my adventurer status", "what have I unlocked", "claude rpg", or otherwise wants to see achievements judged from their real Claude Code usage stats. It reads the local usage data, judges each achievement from that data, persists the unlocked set, and displays the adventurer's status card. Never invents data it did not read.
 allowed-tools: Read, Bash
 ---
 

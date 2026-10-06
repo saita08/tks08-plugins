@@ -1,0 +1,8 @@
+{
+  "name": "one-for-all-screens",
+  "description": "One screen for every device, and every device checking the one screen. Lay a browser game's screen out at one reference size and scale the whole of it into any frame, the way an engine scales its canvas, with a foundation that re-measures safe-area insets an app's web view reports late, and a check that opens the game at real device sizes and reports every element that moves and every line of text that leaves its box.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

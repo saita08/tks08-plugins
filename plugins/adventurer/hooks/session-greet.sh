@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# claude-rpg SessionStart hook.
+# adventurer SessionStart hook.
 #
 # On session start, re-judge achievements from the real usage data, compare
 # against the saved unlocked set, and — only if something newly unlocked since
@@ -12,7 +12,7 @@
 # The judging here MUST mirror skills/adventurer-status/references/
 # achievements.md. It is deliberately a subset kept simple enough to run without
 # an LLM: it needs only to detect *new* unlocks to decide whether to greet. The
-# full, authoritative card is produced by the /claude-rpg:status command.
+# full, authoritative card is produced by the /adventurer:status command.
 
 set -euo pipefail
 
@@ -211,10 +211,10 @@ python3 - "$newly" <<'PY'
 import sys, json
 newly = sys.argv[1]
 msg = (
-    "claude-rpg: the user just newly unlocked achievement(s) from their real "
+    "adventurer: the user just newly unlocked achievement(s) from their real "
     "usage stats: " + newly + ". In one short, warm Japanese line, congratulate "
     "them and name the achievement(s). Do not show a full status card here and "
-    "do not interrupt the user's task — mention /claude-rpg:status only if it "
+    "do not interrupt the user's task — mention /adventurer:status only if it "
     "fits naturally. Keep it to a single line."
 )
 print(json.dumps({

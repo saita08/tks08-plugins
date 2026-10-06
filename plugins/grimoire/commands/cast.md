@@ -29,4 +29,4 @@ A spell is a template, not a fixed incantation. Fit it to this target: fill the 
 
 ## Step 4 — Cast and report
 
-Write the adapted script to a temp file and run it with the Workflow runner. When it finishes, report what the spell was for: the audit's findings, the migration's per-target results, the panel's verdict, the survey's synthesis. Attribute the result to the spell so the user knows which incantation produced it. If the spell wrote files in isolated worktrees, the user's tree is untouched until they approve applying the changes — say so, and wait. Do not commit; the user reviews the working tree.
+Run the adapted script with the Workflow tool, passing it inline as `script`. When it finishes, report what the spell was for: the audit's findings, the migration's per-target results, the panel's verdict, the survey's synthesis. Attribute the result to the spell so the user knows which incantation produced it. If the spell wrote files in isolated worktrees, the user's tree is untouched until they approve applying the changes — say so, and wait. Do not commit; the user reviews the working tree.

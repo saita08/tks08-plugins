@@ -1,6 +1,6 @@
 ---
 description: Design an AI company and generate its repository
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, TodoWrite, WebSearch
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, WebSearch
 ---
 
 Load the company-builder skill and follow its instructions to execute the AI company building workflow.
