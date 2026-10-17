@@ -1,0 +1,8 @@
+{
+  "name": "kagiban",
+  "description": "Keep the keys of an application's stored data: which fields to encrypt and what search, sort, and totals lose, where keys live and how they are backed up and rotated, what the operator holding the key can still see, and what an external API keeps of what you send it — checked against OWASP, NIST, and Japan's personal information guidelines.",
+  "version": "0.1.0",
+  "author": {
+    "name": "tks08"
+  }
+}

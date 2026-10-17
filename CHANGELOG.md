@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.22] - 2026-10-17
+
+### Added
+- kagiban: new plugin — principles Claude applies when you design encryption for the data an app stores: which fields to encrypt, how to keep and rotate the keys, and what an external API keeps of what you send it
+
 ## [1.4.21] - 2026-10-07
 
 ### Removed

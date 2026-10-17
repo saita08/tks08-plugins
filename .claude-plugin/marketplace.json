@@ -198,6 +198,11 @@
       "name": "pixel-fixer",
       "source": "./plugins/pixel-fixer",
       "description": "Turn image-generator \"pixel art\" into real pixel art a game can animate — find the generator's grid, read one colour per dot onto a shared palette, clear stray dots and doubled outlines — and check every frame against its original by overlap and colour difference, with a page that sets them side by side."
+    },
+    {
+      "name": "kagiban",
+      "source": "./plugins/kagiban",
+      "description": "Keep the keys of an application's stored data: which fields to encrypt and what search, sort, and totals lose, where keys live and how they are backed up and rotated, what the operator holding the key can still see, and what an external API keeps of what you send it — checked against OWASP, NIST, and Japan's personal information guidelines."
     }
   ],
   "renames": {
