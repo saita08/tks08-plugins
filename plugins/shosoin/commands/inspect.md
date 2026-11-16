@@ -1,5 +1,5 @@
 ---
-description: Verify each document's content against reality — stale claims in docs/, procedure skills whose steps no longer run, broken links, ADRs edited after acceptance, notes that outlived their task, reference data the code has moved past — and report what can no longer be trusted.
+description: Verify each document's content against reality — stale claims in docs/, procedure skills whose steps no longer run, broken links, ADRs edited after they were written, notes that outlived their task, reference data the code has moved past — and report what can no longer be trusted.
 argument-hint: "[点検対象のパス（省略時は全文書）]"
 allowed-tools: Read, Glob, Grep, Bash, Edit
 ---
@@ -20,7 +20,7 @@ Run the mechanical checks from the reference across the whole scope first: link 
 
 ## Step 3 — Claim verification
 
-Apply the per-shelf checks from the reference. Read each document, extract its checkable claims, and verify them against the repository. Assign each document a verdict: current, stale with the contradicted claims listed, or unverifiable with the reason. For accepted ADRs, check immutability through git history as the reference describes. For `notes/`, judge whether each note's task is visibly closed; a note that outlived its task unpromoted and undeleted is outside trust.
+Apply the per-shelf checks from the reference. Read each document, extract its checkable claims, and verify them against the repository. Assign each document a verdict: current, stale with the contradicted claims listed, or unverifiable with the reason. For ADRs, check immutability through git history as the reference describes. For `notes/`, judge whether each note's task is visibly closed; a note that outlived its task unpromoted and undeleted is outside trust.
 
 ## Step 4 — Report
 
@@ -28,4 +28,4 @@ Present the findings most damaging first: documents whose staleness would active
 
 ## Step 5 — Fix, only on approval
 
-Offer the mechanical fixes — dead links, renamed paths, index rows, supersede back-links, calque-to-ordinary word substitutions — as an approvable list, and execute only what the user approves, updating each affected index and cross-link in the same act. Notes whose task has closed are offered as promote-or-delete decisions, never resolved silently. Substantive rewrites are never performed silently: propose them as writing work, because closing a staleness finding by inventing content replaces stale truth with fresh fiction. Do not commit; the user reviews the working tree.
+Offer the mechanical fixes — dead links, renamed paths, index rows, supersede back-links, the ADR status migration to `Active` / `Inactive`, calque-to-ordinary word substitutions — as an approvable list, and execute only what the user approves, updating each affected index and cross-link in the same act. Notes whose task has closed are offered as promote-or-delete decisions, never resolved silently, and so are `Proposed` ADRs, each offered as an `Active`-or-`Inactive` decision. Substantive rewrites are never performed silently: propose them as writing work, because closing a staleness finding by inventing content replaces stale truth with fresh fiction. Do not commit; the user reviews the working tree.

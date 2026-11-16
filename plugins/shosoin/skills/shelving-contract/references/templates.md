@@ -127,20 +127,20 @@ alternatives that were live at the moment of choosing.
 
 ## Status values
 
-- `Proposed` — under discussion
-- `Accepted` — adopted; implementation builds on it
-- `Superseded by ADR-XXXX` — replaced by a later record; the body remains as history
-- `Deprecated` — retired without a successor
+- `Active` — in force; implementation builds on it
+- `Inactive` — no longer in force; the body remains as history
 
-An accepted record is never rewritten. When a decision changes, write a new
-record, mark the old one superseded, and link the two.
+A record is written when the decision is made, so it starts `Active`; there is
+no draft state to confirm later. A record is never rewritten. When a decision
+changes, write a new record, set the old one `Inactive`, and link the two both
+ways with a `Superseded by` / `Supersedes` line.
 
 ## Index
 
 | # | Title | Status |
 |---|---|---|
-| [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
-| [0002](0002-adopt-shelved-documentation.md) | Adopt the shelved documentation contract | Accepted |
+| [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Active |
+| [0002](0002-adopt-shelved-documentation.md) | Adopt the shelved documentation contract | Active |
 ```
 
 ## adr/template.md
@@ -148,7 +148,7 @@ record, mark the old one superseded, and link the two.
 ```markdown
 # NNNN. <Decision title, stated as the choice made>
 
-- Status: Proposed
+- Status: Active
 - Date: YYYY-MM-DD
 - Deciders: <who>
 

@@ -10,9 +10,9 @@ When this is done, the decision is on record while its alternatives are still li
 1. Find the next number: list `adr/`, take the highest `NNNN`, add one.
 2. Copy `adr/template.md` to `adr/NNNN-<the-choice-as-a-phrase>.md`. The title states the choice that was made, not the topic it belongs to.
 3. Fill Context, Decision, Consequences, and Alternatives Considered. Each alternative carries the reason it was rejected. When no alternative is known, ask the owner what else was on the table; do not invent one to fill the section.
-4. Set Status to `Proposed`. It becomes `Accepted` when the owner accepts it, and from then on the body is not rewritten.
+4. Set Status to `Active`. The record is written because the decision has been made, so there is no draft state to confirm; from now on the body is not rewritten.
 5. Add the row to the index in `adr/README.md`.
-6. When the record replaces an earlier one: set the earlier record's Status to `Superseded by ADR-NNNN`, update its index row, and link the two both ways. Leave the earlier body as it is.
+6. When the record replaces an earlier one: set the earlier record's Status to `Inactive`, update its index row, and link the two both ways with a `Superseded by ADR-NNNN` line on the earlier record and a `Supersedes ADR-NNNN` line on the new one. Leave the earlier body as it is.
 7. In the same change, update the `docs/` pages the decision shapes, link them from Consequences, and link the record from those pages. When a page is added or removed, update the table in `docs/README.md`.
 8. Only then implement.
 

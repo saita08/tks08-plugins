@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.23] - 2026-11-16
+
+### Changed
+- shosoin: ADR status is now just `Active` or `Inactive` — a new record is written as `Active`, so you are no longer asked to confirm a `Proposed` one; a replaced record becomes `Inactive` and links its successor. `/shosoin:inspect` offers to move an existing `adr/` to the two values and changes nothing until you approve; each `Proposed` record is put to you to mark `Active` or `Inactive`
+
 ## [1.4.22] - 2026-10-17
 
 ### Added

@@ -25,7 +25,7 @@ Also check the structural health of the shelves themselves:
 - Do the entrances exist — root README's documentation map, `docs/README.md`, `adr/README.md`?
 - Do the index tables match the actual files on disk?
 - Is `adr/` at the repository root? A `docs/adr/` is itself a finding.
-- Are superseded ADRs marked as such in the index, and do the old and new records link to each other?
+- Are superseded ADRs marked `Inactive` in the index, and do the old and new records link to each other?
 - Does the same content appear on more than one shelf?
 - Are there orphan documents no index or page links to?
 - Does any `docs/` page, or section of one, consist of steps? Each is a procedure waiting on the wrong shelf, and its move to a skill enters the shelving plan.

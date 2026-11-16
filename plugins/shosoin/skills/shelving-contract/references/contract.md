@@ -32,7 +32,7 @@ The description states what the procedure does and the moment it begins, in the 
 
 ### adr/ (repository root) — why
 
-Holds the decisions: what was chosen, why, and which alternatives were rejected. Records are numbered, time-ordered, and immutable once accepted — when a decision changes, a new ADR supersedes the old one, and the old one keeps its body as history. An ADR is written before the implementation lands, because an ADR written after the fact is a reconstruction that has already lost the alternatives that were live at the moment of choosing.
+Holds the decisions: what was chosen, why, and which alternatives were rejected. Records are numbered, time-ordered, and immutable once written — when a decision changes, a new ADR supersedes the old one, the old one becomes inactive, and it keeps its body as history. An ADR is written before the implementation lands, because an ADR written after the fact is a reconstruction that has already lost the alternatives that were live at the moment of choosing.
 
 `adr/` lives at the repository root, beside `docs/`, not inside it. Decisions are a first-class shelf of knowledge, not a subfolder of current-state documentation. `adr/README.md` explains the practice and carries the index table; `adr/template.md` is the form new records copy.
 

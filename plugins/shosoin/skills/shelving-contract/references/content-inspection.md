@@ -30,7 +30,8 @@ Extract what each step names — commands, scripts, paths, file names, other ski
 
 - Every record carries the expected sections: context, decision, consequences, and the alternatives that were considered. An ADR without alternatives is a memo wearing a uniform.
 - Status values come from the project's declared vocabulary, supersede chains link both ways, and no record is marked superseded by a record that does not exist.
-- Accepted records have not been rewritten after acceptance. Check with `git log --follow` on records whose status is Accepted: substantive edits after the acceptance date violate immutability. Status-line updates and link fixes are legitimate; changed reasoning is not.
+- The status vocabulary is the current one: `Active` and `Inactive`. A collection still on the older four values is a finding, offered as a migration with the mechanical fixes: `Accepted` becomes `Active`; `Superseded by ADR-XXXX` becomes `Inactive` with a `Superseded by ADR-XXXX` line, and the successor gains the matching `Supersedes` line; `Deprecated` becomes `Inactive`. A `Proposed` record is the one value with no mechanical answer — whether the decision was taken is the owner's to say — so each is listed for the owner to mark `Active` or `Inactive`. The migration rewrites the status section of `adr/README.md`, the `Status` line in `adr/template.md`, every record's status line, and the index rows in the same act; it touches only status lines and supersede links, which immutability permits.
+- Records have not been rewritten after they were written. Check with `git log --follow` on each record: substantive edits after its date violate immutability. Status-line updates and link fixes are legitimate; changed reasoning is not.
 - Consequences that name `docs/` pages point at pages that still exist.
 
 ### CLAUDE.md — are the values still values?
